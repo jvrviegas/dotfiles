@@ -4,11 +4,11 @@
 echo "• Putting dotfiles in your home path: $HOME"
 
 files=(
-  "./.aliases"
-  "./.exports"
+#  "./.aliases"
+#  "./.exports"
   "./.gitconfig"
-  "./.gitignore"
-  "./.screenrc"
+#  "./.gitignore"
+#  "./.screenrc"
   "./.vim"
   "./.vimrc"
 )
@@ -46,9 +46,9 @@ else
   echo "  - Done installing Homebrew"
 fi;
 
-echo "• Install Homebrew apps"
-source brew.sh
-echo ""
+#echo "• Install Homebrew apps"
+#source brew.sh
+#echo ""
 
 
 # Preparing VIM and Vundle Plugins
