@@ -83,4 +83,4 @@
 	tool = vimdiff
 
 [commit]
-	gpgsign = true
+	gpgsign = false

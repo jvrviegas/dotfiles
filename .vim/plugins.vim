@@ -1,9 +1,9 @@
-" plugins managed by vundle
-filetype off
+"Plugins managed by Vundle 
+set nocompatible              " be iMproved, required
+filetype off                  " required
 set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
 
-" Vundle
+call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'ervandew/supertab'
@@ -14,7 +14,11 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'sheerun/vim-polyglot'
-Plugin 'dracula/vim', { 'name': 'dracula' }
+Plugin 'gruvbox-community/gruvbox'
+Plugin 'Quramy/tsuquyomi'
+Plugin 'eslint/eslint'
+Plugin 'codota/tabnine-vim'
 
-call vundle#end()
-filetype plugin indent on
+call vundle#end()            " required
+colorscheme gruvbox
+filetype plugin indent on    " required
