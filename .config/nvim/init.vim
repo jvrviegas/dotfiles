@@ -1,9 +1,9 @@
 function! StartUp()
     if !argc() && !exists("s:std_in")
-        NvimTree
+        NERDTree
     end
     if argc() && isdirectory(argv()[0]) && !exists("s:std_in")
-        exe 'NvimTree' argv()[0]
+        exe 'NERDTree' argv()[0]
         wincmd p
         ene
     end
