@@ -14,6 +14,8 @@ autocmd VimEnter * call StartUp()
 
 autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
 autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+" set filetypes as typescriptreact
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
 " PLUGINS
 " ============================================
@@ -23,8 +25,12 @@ let $MYPLUGINS = '~/.config/nvim/plugins.vim'
 " load plugins managed by Plug
 exe 'so '.$MYPLUGINS
 
+" Create default mappings
+let g:NERDCreateDefaultMappings = 1
+
 set hidden
 set number
+set signcolumn=yes
 "set relativenumber
 set inccommand=split
 
@@ -119,6 +125,14 @@ vnoremap <leader>c "+y
 
 " set leader + v to paste from clipboard
 nnoremap <leader>v "+gP
+
+" set keys to copy line and paste above or below
+nnoremap <leader>J yyp
+nnoremap <leader>K yyP
+
+" remap gd to use coc-definition plugin
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gd <Plug>(coc-definition)
 
 " toggle NERDTree sidebar
 nnoremap <leader>s :NERDTreeToggle<cr>
