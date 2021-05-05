@@ -1,24 +1,22 @@
 "Plugins managed by Vundle 
 set nocompatible              " be iMproved, required
-filetype off                  " required
-set rtp+=~/.vim/bundle/Vundle.vim
 
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
+call plug#begin('~/.vim/plugged')
+Plug 'VundleVim/Vundle.vim'
 
-Plugin 'ervandew/supertab'
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'kien/ctrlp.vim'
-Plugin 'vim-airline/vim-airline'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'editorconfig/editorconfig-vim'
-Plugin 'sheerun/vim-polyglot'
-Plugin 'gruvbox-community/gruvbox'
-Plugin 'Quramy/tsuquyomi'
-Plugin 'eslint/eslint'
-Plugin 'codota/tabnine-vim'
+Plug 'ervandew/supertab'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'kien/ctrlp.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'airblade/vim-gitgutter'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'gruvbox-community/gruvbox'
+Plug 'Quramy/tsuquyomi'
+Plug 'eslint/eslint'
+Plug 'codota/tabnine-vim'
 
-call vundle#end()            " required
+call plug#end()            " required
 colorscheme gruvbox
 filetype plugin indent on    " required

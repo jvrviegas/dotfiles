@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 
 # Dotfiles
 echo "• Putting dotfiles in your home path: $HOME"
@@ -50,19 +49,19 @@ fi;
 #source brew.sh
 #echo ""
 
+# Preparing VIM and VIM Plug 
+echo "• Preparing Vim and Plugins"
 
-# Preparing VIM and Vundle Plugins
-echo "• Preparing Vim and Vundle Plugins"
-
-if [[ -r "$HOME/.vim/bundle/Vundle.vim" ]]; then
-  echo "  - Vundle already installed. Lets install the plugins"
-  vim +PluginInstall +qall
+if [[ -r "$HOME/.vim/plugged" ]]; then
+  echo "  - VIM Plug already installed. Lets install the plugins"
+  vim +PlugInstall +qall
   echo "  - Done installing the Plugins"
 
 else
-  echo "  - Lets install Vundle Plugin Manager"
-  git clone https://github.com/gmarik/Vundle.vim.git $HOME/.vim/bundle/Vundle.vim
-  vim +PluginInstall +qall
+  echo "  - Lets install VIM Plug Manager"
+  curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  vim +PlugInstall +qall
   echo " - Done installing the Plugins"
 fi;
 
