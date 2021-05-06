@@ -9,13 +9,44 @@ function! StartUp()
     end
 endfunction
 
+" Terminal Function
+let g:term_buf = 0
+let g:term_win = 0
+function! TermToggle(height)
+    if win_gotoid(g:term_win)
+        hide
+    else
+        botright new
+        exec "resize " . a:height
+        try
+            exec "buffer " . g:term_buf
+        catch
+            call termopen($SHELL, {"detach": 0})
+            let g:term_buf = bufnr("")
+            set nonumber
+            set norelativenumber
+            set signcolumn=no
+        endtry
+        startinsert!
+        let g:term_win = win_getid()
+    endif
+endfunction
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * call StartUp()
 
 autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
 autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
-" set filetypes as typescriptreact
-autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
 " PLUGINS
 " ============================================
@@ -108,9 +139,6 @@ nnoremap <leader>w :w<cr>
 " set leader + q to quit file
 nnoremap <leader>q :q<cr>
 
-" set leader + wq to write buffers and exit
-nnoremap <leader>wq :wq<cr>
-
 " set leader + sl to insert new line below with 2 spaces above 
 nnoremap <leader>nlb o<esc>o
 
@@ -132,7 +160,26 @@ nnoremap <leader>K yyP
 
 " remap gd to use coc-definition plugin
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+
+" Toggle terminal on/off (neovim)
+nnoremap <C-l> :call TermToggle(12)<CR>
+inoremap <C-l> <Esc>:call TermToggle(12)<CR>
+tnoremap <C-l> <C-\><C-n>:call TermToggle(12)<CR>
+
+" Terminal go back to normal mode
+tnoremap <Esc> <C-\><C-n>
+tnoremap :q! <C-\><C-n>:q!<CR>
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 " toggle NERDTree sidebar
 nnoremap <leader>s :NERDTreeToggle<cr>
