@@ -32,21 +32,15 @@ function! TermToggle(height)
     endif
 endfunction
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * call StartUp()
 
 autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
 autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+
+if (has("termguicolors"))
+  set termguicolors
+endif
 
 " PLUGINS
 " ============================================
@@ -58,6 +52,11 @@ exe 'so '.$MYPLUGINS
 
 " Create default mappings
 let g:NERDCreateDefaultMappings = 1
+
+" vim icons file type
+set encoding=utf8
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#branch#enabled=1
 
 set hidden
 set number
@@ -74,10 +73,10 @@ set smartindent
 " fill tabls with spaces
 set expandtab
 
-" 2 spaces everywhere please!
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
+" 4 spaces everywhere please!
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 
 " don't wrap lines
 set nowrap
@@ -92,7 +91,7 @@ set hidden
 set undolevels=50
 
 " do not highlight too long lines
-set synmaxcol=120
+"set synmaxcol=120
 
 " SCROLLING
 " ============================================
@@ -128,7 +127,7 @@ let mapleader=" "
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<cr>
 
 " set leader + sv to source nvim config
-nnoremap <leader>sv :source ~/.config/nvim/init.vim<cr>
+nnoremap <leader>0 :source ~/.config/nvim/init.vim<cr>
 
 " set leader + A to insert at the end of the line
 nnoremap <leader>aa A
@@ -171,15 +170,8 @@ tnoremap <C-l> <C-\><C-n>:call TermToggle(12)<CR>
 tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
 
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+" Vim Fugitive shortcuts
+nnoremap <leader>ds :Gdiffsplit<cr>
 
 " toggle NERDTree sidebar
 nnoremap <leader>s :NERDTreeToggle<cr>
@@ -187,18 +179,46 @@ let NERDTreeIgnore = ['\.pyc$', '__pycache', 'deps', '_build', 'node_modules', '
 let g:NERDTreeWinSize=40
 
 let g:ctrlp_working_path_mode = 'ra'
-set wildignore+=*/tmp/*,*/build/*,*/dist/*,node_modules,*.so,*.swp,*.zip
+set wildignore+=*/tmp/*,**/coverage/*,**/lib/*,/build/*,*/dist/*,node_modules,*.so,*.swp,*.zip
 
 " CoC Configuration
 let g:coc_global_extensions = [
   \ 'coc-tsserver'
   \ ]
 
-if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
-  let g:coc_global_extensions += ['coc-prettier']
+"if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  "let g:coc_global_extensions += ['coc-prettier']
+"endif
+
+"if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  "let g:coc_global_extensions += ['coc-eslint']
+"endif
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
-if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-  let g:coc_global_extensions += ['coc-eslint']
-endif
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" Use CR to confirm completion on insert mode
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 

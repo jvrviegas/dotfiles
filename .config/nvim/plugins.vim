@@ -13,16 +13,15 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'tpope/vim-fugitive'
+Plug 'codota/tabnine-vim'
 
 " Themes
 Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'morhetz/gruvbox'
-Plug 'nokobear/vim-colorscheme-edit'
+"Plug 'nokobear/vim-colorscheme-edit'
 
 " Javascript/Typescript and CSS Plugins
-"Plug 'pangloss/vim-javascript'
-"Plug 'leafgarland/typescript-vim'
-"Plug 'peitalin/vim-jsx-typescript'
 "Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
 " CoC Plugin
@@ -30,4 +29,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()            " required
 filetype plugin indent on    " required
+let g:dracula_colorterm = 0
 colorscheme dracula
+highlight Normal guibg=none
