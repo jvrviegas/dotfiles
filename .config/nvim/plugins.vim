@@ -5,6 +5,7 @@ call plug#begin()
 
 Plug 'ervandew/supertab'
 Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'preservim/nerdcommenter'
 Plug 'kien/ctrlp.vim'
 Plug 'vim-airline/vim-airline'
@@ -14,7 +15,9 @@ Plug 'sheerun/vim-polyglot'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'tpope/vim-fugitive'
-Plug 'codota/tabnine-vim'
+Plug 'APZelos/blamer.nvim'
+"Plug 'ryanoasis/vim-devicons'
+"Plug 'codota/tabnine-vim'
 
 " Themes
 Plug 'dracula/vim', {'as': 'dracula'}
