@@ -57,6 +57,7 @@ let g:NERDCreateDefaultMappings = 1
 set encoding=utf8
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#branch#enabled=1
+let g:blamer_enabled = 1
 
 set hidden
 set number
