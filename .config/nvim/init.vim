@@ -37,6 +37,8 @@ autocmd VimEnter * call StartUp()
 
 autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
 autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 if (has("termguicolors"))
   set termguicolors
@@ -59,6 +61,7 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#branch#enabled=1
 let g:blamer_enabled = 1
 
+set splitright
 set hidden
 set number
 set signcolumn=yes
@@ -171,29 +174,36 @@ tnoremap <C-l> <C-\><C-n>:call TermToggle(12)<CR>
 tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
 
+" Vim Telescope shortcuts
+" Find files using Telescope command-line sugar.
+nnoremap <C-p> <cmd>Telescope find_files find_command=rg,--ignore,--hidden,--files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
 " Vim Fugitive shortcuts
 nnoremap <leader>ds :Gdiffsplit<cr>
 
-" toggle NERDTree sidebar
-nnoremap <leader>s :NERDTreeToggle<cr>
-let NERDTreeIgnore = ['\.pyc$', '__pycache', 'deps', '_build', 'node_modules', 'bower_components']
-let g:NERDTreeWinSize=40
+" CHADTree
+"nnoremap <leader>s :CHADopen<cr>
+"let g:chadtree_settings = { 'theme': { 'text_colour_set': 'solarized_universal' } }
 
-let g:ctrlp_working_path_mode = 'ra'
-set wildignore+=*/tmp/*,**/coverage/*,**/lib/*,/build/*,*/dist/*,node_modules,*.so,*.swp,*.zip
+" NERDTree
+nnoremap <leader>s :NERDTreeToggle<CR>
+nnoremap <leader>mn :NERDTreeMirror<CR>
 
 " CoC Configuration
 let g:coc_global_extensions = [
   \ 'coc-tsserver'
   \ ]
 
-"if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
-  "let g:coc_global_extensions += ['coc-prettier']
-"endif
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
 
-"if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-  "let g:coc_global_extensions += ['coc-eslint']
-"endif
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
 
 " Use <c-space> to trigger completion.
 if has('nvim')
@@ -223,3 +233,5 @@ function! s:show_documentation()
   endif
 endfunction
 
+" load lua scripts
+lua require('jvrviegas')
