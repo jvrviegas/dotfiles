@@ -17,7 +17,6 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'tpope/vim-fugitive'
-Plug 'APZelos/blamer.nvim'
 
 " Icons
 " vim-devicons its for NERDTree and nvim-web-devicons for Telescope
