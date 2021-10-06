@@ -164,10 +164,6 @@ nnoremap <leader>v "+gP
 nnoremap <leader>J yyp
 nnoremap <leader>K yyP
 
-" remap gd to use coc-definition plugin
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-
 " Toggle terminal on/off (neovim)
 nnoremap <C-l> :call TermToggle(12)<CR>
 inoremap <C-l> <Esc>:call TermToggle(12)<CR>
@@ -187,55 +183,13 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 " Vim Fugitive shortcuts
 nnoremap <leader>ds :Gdiffsplit<cr>
 
-" CHADTree
-"nnoremap <leader>s :CHADopen<cr>
-"let g:chadtree_settings = { 'theme': { 'text_colour_set': 'solarized_universal' } }
-
 " NERDTree
 nnoremap <leader>s :NERDTreeToggle<CR>
 nnoremap <leader>mn :NERDTreeMirror<CR>
 nnoremap <leader>r :NERDTreeFind<CR>
 
-" CoC Configuration
-let g:coc_global_extensions = [
-  \ 'coc-tsserver'
-  \ ]
-
-if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
-  let g:coc_global_extensions += ['coc-prettier']
-endif
-
-if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-  let g:coc_global_extensions += ['coc-eslint']
-endif
-
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Use CTRL-S for selections ranges.
-" Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
 " Use CR to confirm completion on insert mode
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
 
 " load lua scripts
 lua require('jvrviegas')

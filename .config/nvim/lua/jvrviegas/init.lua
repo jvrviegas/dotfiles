@@ -1,5 +1,6 @@
 require('jvrviegas.telescope')
 require('jvrviegas.blamer')
+--require('jvrviegas.lsp')
 
 vim.api.nvim_command [[autocmd CursorHold   * lua require'jvrviegas.blamer'.blameVirtText()]]
 vim.api.nvim_command [[autocmd CursorMoved  * lua require'jvrviegas.blamer'.clearBlameVirtText()]]
