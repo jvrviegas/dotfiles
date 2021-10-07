@@ -4,11 +4,8 @@ require'compe'.setup {
   source = {
     path = true;
     buffer = true;
-    calc = true;
     nvim_lsp = true;
     nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
     treesitter = true;
   };
 }
@@ -57,3 +54,4 @@ vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete_prev()", opt)
 vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.tab_complete_next()", opt)
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.tab_complete_next()", opt)
 vim.api.nvim_set_keymap("i", "<CR>", 'compe#confirm("<CR>")', opt)
+
