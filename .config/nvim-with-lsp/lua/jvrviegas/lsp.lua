@@ -1,7 +1,7 @@
 local nvim_lsp = require('lspconfig')
 
---local capabilities = vim.lsp.protocol.make_client_capabilities()
---capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -21,31 +21,6 @@ vim.fn.sign_define('LspDiagnosticsSignError', { text = "", texthl = "LspDiagn
 vim.fn.sign_define('LspDiagnosticsSignWarning', { text = "", texthl = "LspDiagnosticsDefaultWarning" })
 vim.fn.sign_define('LspDiagnosticsSignInformation', { text = "", texthl = "LspDiagnosticsDefaultInformation" })
 vim.fn.sign_define('LspDiagnosticsSignHint', { text = "", texthl = "LspDiagnosticsDefaultHint" })
-
---vim.cmd("command! LspDef lua vim.lsp.buf.definition()")
---vim.cmd("command! LspFormatting lua vim.lsp.buf.formatting()")
---vim.cmd("command! LspCodeAction lua vim.lsp.buf.code_action()")
---vim.cmd("command! LspHover lua vim.lsp.buf.hover()")
---vim.cmd("command! LspRename lua vim.lsp.buf.rename()")
---vim.cmd("command! LspOrganize lua lsp_organize_imports()")
---vim.cmd("command! LspRefs lua vim.lsp.buf.references()")
---vim.cmd("command! LspTypeDef lua vim.lsp.buf.type_definition()")
---vim.cmd("command! LspImplementation lua vim.lsp.buf.implementation()")
---vim.cmd("command! LspDiagPrev lua vim.lsp.diagnostic.goto_prev()")
---vim.cmd("command! LspDiagNext lua vim.lsp.diagnostic.goto_next()")
---vim.cmd("command! LspDiagLine lua vim.lsp.diagnostic.show_line_diagnostics()")
---vim.cmd("command! LspSignatureHelp lua vim.lsp.buf.signature_help()")
---buf_map(bufnr, "n", "gd", ":LspDef<CR>", {silent = true})
---buf_map(bufnr, "n", "gr", ":LspRename<CR>", {silent = true})
---buf_map(bufnr, "n", "gR", ":LspRefs<CR>", {silent = true})
---buf_map(bufnr, "n", "gy", ":LspTypeDef<CR>", {silent = true})
---buf_map(bufnr, "n", "K", ":LspHover<CR>", {silent = true})
---buf_map(bufnr, "n", "gs", ":LspOrganize<CR>", {silent = true})
---buf_map(bufnr, "n", "[a", ":LspDiagPrev<CR>", {silent = true})
---buf_map(bufnr, "n", "]a", ":LspDiagNext<CR>", {silent = true})
---buf_map(bufnr, "n", "ga", ":LspCodeAction<CR>", {silent = true})
---buf_map(bufnr, "n", "<Leader>a", ":LspDiagLine<CR>", {silent = true})
---buf_map(bufnr, "i", "<C-x><C-x>", "<cmd> LspSignatureHelp<CR>", {silent = true})
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -87,7 +62,7 @@ end
 
 nvim_lsp.tsserver.setup {
     on_attach = on_attach,
-    --capabilities = capabilities,
+    capabilities = capabilities,
     flags = {
       debounce_text_changes = 150,
     }
@@ -139,15 +114,15 @@ nvim_lsp.diagnosticls.setup {
     linters = {
       eslint = {
         command = 'eslint_d',
-        rootPatterns = { '.git' },
+        rootPatterns = { '.eslintrc.json', 'package.json' },
         debounce = 100,
         args = { '--stdin', '--stdin-filename', '%filepath', '--format', 'json' },
-        sourceName = 'eslint_d',
+        sourceName = 'eslint',
         parseJson = {
           errorsRoot = '[0].messages',
           line = 'line',
           column = 'column',
-          endLine = 'endLine',
+          endLine = 'startLine',
           endColumn = 'endColumn',
           message = '[eslint] ${message} [${ruleId}]',
           security = 'severity'
