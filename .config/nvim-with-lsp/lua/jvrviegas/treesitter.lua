@@ -12,6 +12,7 @@ configs.setup {
     },
     ensure_installed = {
         "tsx",
+        "typescript",
         "json",
         "html",
         "scss",
