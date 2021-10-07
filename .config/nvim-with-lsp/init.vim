@@ -65,6 +65,7 @@ set splitright
 set hidden
 set number
 set signcolumn=yes
+set updatetime=100
 "set relativenumber
 set inccommand=split
 
