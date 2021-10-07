@@ -1,7 +1,7 @@
 local nvim_lsp = require('lspconfig')
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+--local capabilities = vim.lsp.protocol.make_client_capabilities()
+--capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -87,7 +87,7 @@ end
 
 nvim_lsp.tsserver.setup {
     on_attach = on_attach,
-    capabilities = capabilities,
+    --capabilities = capabilities,
     flags = {
       debounce_text_changes = 150,
     }
