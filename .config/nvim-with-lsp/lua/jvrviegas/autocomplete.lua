@@ -6,7 +6,9 @@ require'compe'.setup {
     buffer = true;
     nvim_lsp = true;
     nvim_lua = true;
+    luasnip = true;
     treesitter = true;
+    tabnine = true;
   };
 }
 
