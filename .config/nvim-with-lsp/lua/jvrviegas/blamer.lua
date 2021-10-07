@@ -21,7 +21,7 @@ function M.blameVirtText()
   local text
 
   if hash == '00000000' then
-    text = 'Nt Committed Yet'
+    text = 'Not Committed Yet'
   else
     text = vim.fn.system(cmd)
     text = vim.split(text, '\n')[1]
@@ -30,6 +30,12 @@ function M.blameVirtText()
       text = 'Not Committed Yet'
     end
   end
+  local opts = {
+    end_line = 10,
+    id = 1,
+    virt_text_pos = 'eol'
+  }
+  --api.nvim_buf_set_extmark(0, 2, line[1] - 1, {{ text,'GitLens' }}, {opts}) -- set virtual text for namespace 2 with the content from git and assign it to the higlight group 'GitLens'
   api.nvim_buf_set_virtual_text(0, 2, line[1] - 1, {{ text,'GitLens' }}, {}) -- set virtual text for namespace 2 with the content from git and assign it to the higlight group 'GitLens'
 end
 
