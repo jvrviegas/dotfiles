@@ -8,7 +8,6 @@ Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'preservim/nerdcommenter'
 Plug 'hoob3rt/lualine.nvim'
-Plug 'airblade/vim-gitgutter'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
@@ -17,6 +16,8 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'tpope/vim-fugitive'
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+Plug 'lewis6991/gitsigns.nvim'
 
 " Icons
 Plug 'ryanoasis/vim-devicons'
@@ -41,6 +42,7 @@ Plug 'hrsh7th/nvim-compe'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
+Plug 'ray-x/cmp-treesitter'
 Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
 Plug 'L3MON4D3/LuaSnip' " Snippets plugin
 Plug 'glepnir/lspsaga.nvim'
@@ -48,7 +50,7 @@ Plug 'glepnir/lspsaga.nvim'
 call plug#end()            " required
 filetype plugin indent on    " required
 "let g:dracula_colorterm = 0
-let g:gruvbox_italic=1
+"let g:gruvbox_italic=1
 set background=dark
 colorscheme gruvbox
 highlight Normal guibg=none
