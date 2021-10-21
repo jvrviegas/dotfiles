@@ -13,7 +13,8 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       spacing = 4,
     },
     signs = true,
-    update_in_insert = false,
+    update_in_insert = true,
+    severity_sort = true,
   }
 )
 
@@ -40,9 +41,9 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  --buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  --buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  --buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
@@ -97,7 +98,16 @@ nvim_lsp.sumneko_lua.setup {
             },
             diagnostics = {
                 -- Get the language server to recognize the `vim` global
-                globals = {'vim'}
+                globals = {
+                    "global",
+                    "vim",
+                    "use",
+                    "describe",
+                    "it",
+                    "assert",
+                    "before_each",
+                    "after_each",
+                },
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files
@@ -128,8 +138,8 @@ nvim_lsp.diagnosticls.setup {
           security = 'severity'
         },
         securities = {
-          [2] = 'error',
-          [1] = 'warning'
+          [1] = 'error',
+          [2] = 'warning'
         }
       },
     },
@@ -146,7 +156,7 @@ nvim_lsp.diagnosticls.setup {
         rootPatterns = { '.git' },
       },
       prettier = {
-        command = 'prettier',
+        command = 'prettier_d_slim',
         args = { '--stdin-filepath', '%filename' }
       }
     },

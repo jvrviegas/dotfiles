@@ -187,7 +187,7 @@ nnoremap <leader>ds :Gdiffsplit<cr>
 " NERDTree
 nnoremap <leader>s :NERDTreeToggle<CR>
 nnoremap <leader>mn :NERDTreeMirror<CR>
-nnoremap <leader>r :NERDTreeFind<CR>
+nnoremap <leader>f :NERDTreeFind<CR>
 
 " Use CR to confirm completion on insert mode
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
