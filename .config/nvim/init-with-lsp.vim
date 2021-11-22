@@ -65,6 +65,7 @@ set splitright
 set hidden
 set number
 set signcolumn=yes
+set updatetime=100
 "set relativenumber
 set inccommand=split
 
@@ -78,9 +79,9 @@ set smartindent
 set expandtab
 
 " 4 spaces everywhere please!
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 
 " don't wrap lines
 set nowrap
@@ -129,6 +130,9 @@ set timeoutlen=400
 " REMAPS 
 " set leader key to space
 let mapleader=" "
+
+" Remap <C-c> to Esc so LSP can work properly when exiting insert mode with <C-c>
+inoremap <C-c> <Esc>
 
 " set leader + ev to open nvim config file
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<cr>
@@ -179,6 +183,7 @@ nnoremap <C-p> <cmd>Telescope find_files find_command=rg,--ignore,--hidden,--fil
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>fc <cmd>Telescope find_files cwd=. find_command=rg,--ignore,--hidden,--files<cr>
 
 " Vim Fugitive shortcuts
 nnoremap <leader>ds :Gdiffsplit<cr>
@@ -186,7 +191,7 @@ nnoremap <leader>ds :Gdiffsplit<cr>
 " NERDTree
 nnoremap <leader>s :NERDTreeToggle<CR>
 nnoremap <leader>mn :NERDTreeMirror<CR>
-nnoremap <leader>r :NERDTreeFind<CR>
+nnoremap <leader>f :NERDTreeFind<CR>
 
 " Use CR to confirm completion on insert mode
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"

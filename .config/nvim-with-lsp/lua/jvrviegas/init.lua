@@ -4,12 +4,14 @@ global = {}
 require('jvrviegas.telescope')
 --require('jvrviegas.blamer')
 require('jvrviegas.lsp')
---require('jvrviegas.autocomplete')
+require('jvrviegas.autopairs')
 require('jvrviegas.cmp')
 require('jvrviegas.lualine')
 require('jvrviegas.treesitter')
 --require('jvrviegas.saga')
 require('jvrviegas.gitsigns')
+require('jvrviegas.kommentary')
+require('jvrviegas.indent-blankline')
 
 vim.cmd [[let g:blamer_enabled = 1]]
 vim.cmd [[let g:blamer_delay = 500]]

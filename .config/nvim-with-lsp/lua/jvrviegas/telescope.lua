@@ -30,7 +30,7 @@ telescope.setup{
       },
     },
     file_sorter =  require'telescope.sorters'.get_fuzzy_sorter,
-    file_ignore_patterns = {"*/tmp/*", "**/coverage/*", "**/lib/*", "/build/*", "*/dist/*", "node_modules", "*.so", "*.swp", "*.zip", "autoload", "plugged", ".DS_Store", ".git/.*"},
+    file_ignore_patterns = {"*/tmp/*", "**/coverage/*", "**/lib/*", "/build/.*", "*/dist/*", "node_modules", "*.so", "*.swp", "*.zip", "autoload", "plugged", ".DS_Store", ".git/.*"},
     generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
     winblend = 0,
     border = {},

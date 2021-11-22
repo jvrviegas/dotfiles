@@ -4,7 +4,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
+vim.o.completeopt = 'menu,menuone,noselect'
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -13,7 +13,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       spacing = 4,
     },
     signs = true,
-    update_in_insert = true,
+    update_in_insert = false,
     severity_sort = true,
   }
 )
@@ -67,6 +67,22 @@ nvim_lsp.tsserver.setup {
     flags = {
       debounce_text_changes = 150,
     }
+}
+
+local another_capabilities = vim.lsp.protocol.make_client_capabilities()
+another_capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+nvim_lsp.cssls.setup {
+  capabilities = another_capabilities,
+}
+
+nvim_lsp.html.setup {
+  capabilities = another_capabilities,
+}
+
+nvim_lsp.prismals.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
 
 -- Lua Configs

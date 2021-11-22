@@ -1,12 +1,38 @@
--- luasnip setup
-local luasnip = require 'luasnip'
+local cmp = require 'cmp'
+local luasnip = require('luasnip')
+local lspkind = require('lspkind')
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+
+-- lspkind
+lspkind.init({
+    with_text = true,
+    preset = 'codicons'
+})
+
+-- nvim-autopairs
+cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
 
 -- nvim-cmp setup
-local cmp = require 'cmp'
 cmp.setup {
+    formatting = {
+        format = function(entry, vim_item)
+            vim_item.kind = lspkind.presets.default[vim_item.kind]
+            vim_item.menu = ({
+                nvim_lsp = "[LSP]",
+                nvim_lua = "[Lua]",
+                buffer = "[Buffer]",
+                luasnip = "[Snippet]",
+                treesitter = "[Treesitter]",
+                path = "[Path]",
+                cmp_tabnine = "[Tabnine]"
+            })[entry.source.name]
+
+            return vim_item
+        end
+    },
   snippet = {
     expand = function(args)
-      require('luasnip').lsp_expand(args.body)
+      luasnip.lsp_expand(args.body)
     end,
   },
   mapping = {

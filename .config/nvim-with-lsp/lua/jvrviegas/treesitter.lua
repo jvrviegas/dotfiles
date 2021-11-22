@@ -7,8 +7,11 @@ configs.setup {
         disable = {},
     },
     indent = {
-        enable = false,
+        enable = true,
         disable = {},
+    },
+    autotag = {
+      enable = true,
     },
     ensure_installed = {
         "tsx",
