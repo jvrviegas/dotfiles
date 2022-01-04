@@ -11,10 +11,12 @@ require('jvrviegas.treesitter')
 --require('jvrviegas.saga')
 require('jvrviegas.gitsigns')
 require('jvrviegas.kommentary')
-require('jvrviegas.indent-blankline')
+-- require('jvrviegas.indent-blankline')
 
 vim.cmd [[let g:blamer_enabled = 1]]
 vim.cmd [[let g:blamer_delay = 500]]
+-- vim.o.updatetime = 250
+-- vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
 
 --vim.api.nvim_command [[autocmd CursorHold   * lua require'jvrviegas.blamer'.blameVirtText()]]
 --vim.api.nvim_command [[autocmd CursorMoved  * lua require'jvrviegas.blamer'.clearBlameVirtText()]]
