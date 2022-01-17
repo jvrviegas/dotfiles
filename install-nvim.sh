@@ -3,8 +3,8 @@
 echo "• Putting dotfiles in your home path: $HOME"
 
 files=(
-#  "./.aliases"
-#  "./.exports"
+  #"./.aliases"
+  #"./.exports"
   "./.gitconfig"
 	"./.config"
 #  "./.gitignore"
@@ -46,23 +46,23 @@ else
   echo "  - Done installing Homebrew"
 fi;
 
-#echo "• Install Homebrew apps"
-#source brew.sh
-#echo ""
+echo "• Install Homebrew apps"
+source brew.sh
+echo ""
 
 # Preparing NeoVim and VIM Plug 
 echo "• Preparing NeoVim and Plugins"
 
 if [[ -r "$HOME/.config/nvim/plugged" ]]; then
   echo "  - VIM Plug already installed. Lets install the plugins"
-  vim +PlugInstall +qall
+  nvim +PlugInstall +qall
   echo "  - Done installing the Plugins"
 
 else
   echo "  - Lets install VIM Plug Manager"
   curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  vim +PlugInstall +qall
+  nvim +PlugInstall +qall
   echo " - Done installing the Plugins"
 fi;
 

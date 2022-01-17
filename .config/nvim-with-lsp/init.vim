@@ -9,29 +9,6 @@ function! StartUp()
     end
 endfunction
 
-" Terminal Function
-let g:term_buf = 0
-let g:term_win = 0
-function! TermToggle(height)
-    if win_gotoid(g:term_win)
-        hide
-    else
-        botright new
-        exec "resize " . a:height
-        try
-            exec "buffer " . g:term_buf
-        catch
-            call termopen($SHELL, {"detach": 0})
-            let g:term_buf = bufnr("")
-            set nonumber
-            set norelativenumber
-            set signcolumn=no
-        endtry
-        startinsert!
-        let g:term_win = win_getid()
-    endif
-endfunction
-
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * call StartUp()
 
@@ -64,6 +41,7 @@ let g:blamer_enabled = 1
 set splitright
 set hidden
 set number
+set relativenumber
 set signcolumn=yes
 set updatetime=100
 "set relativenumber
@@ -79,9 +57,9 @@ set smartindent
 set expandtab
 
 " 4 spaces everywhere please!
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 
 " don't wrap lines
 set nowrap
@@ -167,15 +145,6 @@ nnoremap <leader>v "+gP
 " set keys to copy line and paste above or below
 nnoremap <leader>J yyp
 nnoremap <leader>K yyP
-
-" Toggle terminal on/off (neovim)
-nnoremap <C-l> :call TermToggle(12)<CR>
-inoremap <C-l> <Esc>:call TermToggle(12)<CR>
-tnoremap <C-l> <C-\><C-n>:call TermToggle(12)<CR>
-
-" Terminal go back to normal mode
-tnoremap <Esc> <C-\><C-n>
-tnoremap :q! <C-\><C-n>:q!<CR>
 
 " Vim Telescope shortcuts
 " Find files using Telescope command-line sugar.

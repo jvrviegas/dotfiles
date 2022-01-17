@@ -22,17 +22,20 @@ function home() {
 # Quick move
 alias home=home
 
+# Applications alias
+alias vim="nvim"
+
 # Move to Code folder
-alias code="cd ~/Code"
+alias projects="cd ~/Projects"
+alias pf-backend="cd ~/Projects/Pedefacil/pedefacil-backend"
+alias pf-web="cd ~/Projects/Pedefacil/web"
+alias pf-mobile="cd ~/Projects/Pedefacil/mobile"
 
 # Move to Download folder
 alias downloads="cd ~/Downloads"
 
 # Pretty json
 alias prettyjson="python -m json.tool | pygmentize -l json"
-
-# Add space in the Dock
-alias add-dock-space="defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type=\"spacer-tile\";}' | killall Dock"
 
 # Sha1 generation
 function sha1() {
@@ -98,19 +101,6 @@ function gh_branch() {
   open "$repo/tree/$branch"
 }
 alias ghbranch=gh_branch
-
-# Get information about an ec2 instance
-function ec2_info() {
-  aws ec2 describe-instances --filters "Name=tag:Name,Values=$@"
-}
-alias ec2_info=ec2_info
-
-# Docker ip
-function docker_ip() {
-  docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
-}
-alias docker_ip=docker_ip
-
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
