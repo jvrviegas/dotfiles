@@ -1,0 +1,46 @@
+# ALIASES
+alias nppm='pnpm'
+alias ppm='pnpm'
+alias vim='nvim'
+alias nvim-config='vim ~/.config/nvim/'
+alias nvim-dir='cd ~/.config/nvim'
+alias proj='cd ~/Projects/'
+alias usedPort='usedPort.sh'
+alias ipod="cd ios && pod install && .."
+alias sozsh="exec zsh"
+alias monitor-cpu-freq='monitor-cpu-freq.sh'
+
+#Intel Platform
+alias intel="arch -x86_64"
+
+# Where should I put you?
+bindkey -s ^f "tmux-sessionizer\n"
+
+setupWorkGitlab() {
+    git config user.name "João Viegas"
+    git config user.email "joao.viegas@rummo.com"
+}
+
+setupPersonalGithub() {
+    git config user.name "João Vitor Viegas Rêgo"
+    git config user.email "jvrviegas@gmail.com"
+}
+
+connectToHive() {
+    ssh user@192.168.25.11
+}
+
+lintersStatus() {
+    echo "ESLint \t"
+    eslint_d status
+    echo "\n"
+    echo "Prettier \t"
+    prettierd status
+}
+
+lintersRestart() {
+    echo "Cleaning linters..."
+    eslint_d restart
+    prettierd restart
+    echo "Linters cleaned..."
+}

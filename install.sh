@@ -3,13 +3,12 @@
 echo "• Putting dotfiles in your home path: $HOME"
 
 files=(
-#  "./.aliases"
-#  "./.exports"
+  "./.aliases"
+  "./.exports"
   "./.gitconfig"
-#  "./.gitignore"
-#  "./.screenrc"
-  "./.vim"
-  "./.vimrc"
+  "./.local"
+  "./.zshrc"
+  "./.zsh_profile"
 )
 
 for file in ${files[@]}; do
@@ -41,27 +40,33 @@ if [[ $(which brew) != "" ]]; then
   echo "  - Homebrew already installed"
 
 else
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   echo "  - Done installing Homebrew"
 fi;
 
-#echo "• Install Homebrew apps"
-#source brew.sh
-#echo ""
+echo "• Install Homebrew apps"
+source brew.sh
+echo ""
 
-# Preparing VIM and VIM Plug 
-echo "• Preparing Vim and Plugins"
+echo "• Cloning Neovim configs"
+if [[ -r "$HOME/.config/nvim" ]]; then
+    mkdir "$HOME/.config/nvim"
+fi
+git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
 
-if [[ -r "$HOME/.vim/plugged" ]]; then
+
+# Preparing NeoVim and VIM Plug 
+echo "• Preparing NeoVim and Plugins"
+
+if [[ -r "$HOME/.local/share/nvim/plugged" ]]; then
   echo "  - VIM Plug already installed. Lets install the plugins"
-  vim +PlugInstall +qall
+  nvim +PlugInstall +qall
   echo "  - Done installing the Plugins"
 
 else
   echo "  - Lets install VIM Plug Manager"
-  curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  vim +PlugInstall +qall
+  curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  nvim +PlugInstall +qall
   echo " - Done installing the Plugins"
 fi;
-

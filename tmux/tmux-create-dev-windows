@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-tmux rename-window -t 1 code
-tmux new-window -n server
-tmux select-window -t 1

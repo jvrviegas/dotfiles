@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+$(ruby -e 'puts File.expand_path("../../share/git-core/contrib/diff-highlight/diff-highlight", File.realpath(`/usr/bin/which git`.strip))') "$@"

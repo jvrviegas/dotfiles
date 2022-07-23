@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+dirname=$(basename $PWD | tr . _)
+tmux new-session -s $dirname

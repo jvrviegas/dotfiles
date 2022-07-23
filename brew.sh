@@ -19,7 +19,7 @@ brew install coreutils
 brew install vim --override-system-vi
 brew install nvim
 brew install openssh
-# brew install python
+brew install python
 
 # Install everything else.
 brew install git
