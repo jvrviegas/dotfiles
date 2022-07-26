@@ -76,3 +76,5 @@ export NVM_DIR="$HOME/.nvm"
 
 export PNPM_HOME="/Users/joaovvr/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
+
+source $HOME/.zsh_profile
