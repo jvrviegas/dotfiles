@@ -55,18 +55,18 @@ fi
 git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
 
 
-# Preparing NeoVim and VIM Plug 
+# Preparing NeoVim and Packer
 echo "• Preparing NeoVim and Plugins"
 
 if [[ -r "$HOME/.local/share/nvim/plugged" ]]; then
-  echo "  - VIM Plug already installed. Lets install the plugins"
-  nvim +PlugInstall +qall
+  echo "  - Packer.nvim already installed. Lets install the plugins"
+  nvim +PackerInstall +qall
   echo "  - Done installing the Plugins"
 
 else
-  echo "  - Lets install VIM Plug Manager"
-  curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  nvim +PlugInstall +qall
+  echo "  - Lets install Packer.nvim Manager"
+  git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+    ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+  nvim +PackerInstall +qall
   echo " - Done installing the Plugins"
 fi;
