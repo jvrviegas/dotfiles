@@ -20,10 +20,12 @@ installcask insomnia
 installcask dbeaver-community
 installcask mongodb-compass
 installcask visual-studio-code
+installcask kitty
 
 # Fonts
 installcask font-caskaydia-cove-nerd-font
 installcask font-jetbrains-mono-nerd-font
+installcask font-hack-nerd-font
 
 # Others
 installcask notion
