@@ -49,7 +49,7 @@ source brew.sh
 echo ""
 
 echo "• Cloning Neovim configs"
-if [[ -r "$HOME/.config/nvim" ]]; then
+if [[ ! -r "$HOME/.config/nvim" ]]; then
     mkdir "$HOME/.config/nvim"
 fi
 git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
