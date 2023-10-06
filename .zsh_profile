@@ -1,5 +1,4 @@
 # ALIASES
-alias nppm='pnpm'
 alias ppm='pnpm'
 alias vim='nvim'
 alias nvim-config='vim ~/.config/nvim/'
@@ -16,6 +15,7 @@ alias intel="arch -x86_64"
 # Where should I put you?
 bindkey -s ^f "tmux-sessionizer\n"
 
+# Git
 setupWorkGitlab() {
     git config user.name "João Viegas"
     git config user.email "joao.viegas@rummo.com"
@@ -26,10 +26,11 @@ setupPersonalGithub() {
     git config user.email "jvrviegas@gmail.com"
 }
 
-connectToHive() {
-    ssh user@192.168.25.11
+gitwip() {
+    git add . && git commit -m "WIP"
 }
 
+# Linters
 lintersStatus() {
     echo "ESLint \t"
     eslint_d status
@@ -44,3 +45,8 @@ lintersRestart() {
     prettierd restart
     echo "Linters cleaned..."
 }
+
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"

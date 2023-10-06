@@ -19,7 +19,7 @@ brew install coreutils
 brew install vim --override-system-vi
 brew install nvim
 brew install openssh
-brew install python
+brew install python@3.11 python-tk@3.11
 
 # Install everything else.
 brew install git
@@ -31,6 +31,16 @@ brew install nvm
 brew install rg
 # Find replace
 brew install fzf
+
+# Window Management
+brew install koekeishiya/formulae/yabai
+brew install koekeishiya/formulae/skhd
+brew tap FelixKratz/formulae
+brew install sketchybar
+
+yabai --start-service
+skhd --start-service
+brew services start sketchybar
 
 # Clean it up.
 brew cleanup

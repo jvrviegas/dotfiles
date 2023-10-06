@@ -2,9 +2,9 @@
 # reset border color in default mode
 # :: default : yabai -m config active_window_border_color 0xE032CD32
 # kickstart yabai 
-hyper - y : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
+# hyper - y : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
 # lock screen immediately
-cmd - escape : pmset displaysleepnow 
+# cmd - escape : pmset displaysleepnow 
 # logout
 # cmd + shift - e : osascript -e 'tell app "System Events" to log out'
 # power down 
@@ -16,9 +16,9 @@ cmd + shift - s : osascript -e 'tell application "System Events" to sleep'
 
 # === Launch commands ===
 # open kitty terminal, blazingly fast compared to iTerm/Hyper
-cmd - return : /Applications/kitty.app/Contents/MacOS/kitty --single-instance -d ~
+cmd + shift - return : /Applications/kitty.app/Contents/MacOS/kitty --single-instance -d ~
 # open chrome
-cmd + shift - return : open -na /Applications/Google\ Chrome.app
+# cmd + shift - return : open -na /Applications/Google\ Chrome.app
 # open vscode
 # cmd + ctrl - return : open -na /Applications/Visual\ Studio\ Code.app/
 # open finder
@@ -48,10 +48,10 @@ resize < right : yabai -m window --resize right:50:0; \
 
 # === Navigation ===
 # window focus
-cmd - h : yabai -m window --focus west
-cmd - j : yabai -m window --focus south
-cmd - k : yabai -m window --focus north
-cmd - l : yabai -m window --focus east
+cmd + ctrl - m : yabai -m window --focus west
+cmd + ctrl - n : yabai -m window --focus south
+cmd + ctrl - e : yabai -m window --focus north
+cmd + ctrl - i : yabai -m window --focus east
 
 # space focus and creation
 # cmd - tab : yabai -m space --focus next || yabai -m space --focus first
@@ -75,20 +75,27 @@ cmd - l : yabai -m window --focus east
 
 # === Modification === 
 # Move window relatively
-cmd + shift - h : yabai -m window --warp west
-cmd + shift - j : yabai -m window --warp south
-cmd + shift - k : yabai -m window --warp north
-cmd + shift - l : yabai -m window --warp east
+cmd + shift - m : yabai -m window --warp west
+cmd + shift - n : yabai -m window --warp south
+cmd + shift - e : yabai -m window --warp north
+cmd + shift - i : yabai -m window --warp east
 
 # send window to space 
-cmd + shift - x : yabai -m window --space recent
-cmd + shift - 1 : yabai -m window --space 1
-cmd + shift - 2 : yabai -m window --space 2
-cmd + shift - 3 : yabai -m window --space 3
-cmd + shift - 4 : yabai -m window --space 4
-cmd + shift - 5 : yabai -m window --space 5
-cmd + shift - 6 : yabai -m window --space 6
-cmd + shift - 7 : yabai -m window --space 7
+shift + alt - 1 : yabai -m window --space 1;
+shift + alt - 2 : yabai -m window --space 2;
+shift + alt - 3 : yabai -m window --space 3;
+shift + alt - 4 : yabai -m window --space 4;
+shift + alt - 5 : yabai -m window --space 5;
+shift + alt - 6 : yabai -m window --space 6;
+shift + alt - 7 : yabai -m window --space 7;
+# cmd + shift - x : yabai -m window --space recent
+# cmd + shift - 1 : yabai -m window --space 1
+# cmd + shift - 2 : yabai -m window --space 2
+# cmd + shift - 3 : yabai -m window --space 3
+# cmd + shift - 4 : yabai -m window --space 4
+# cmd + shift - 5 : yabai -m window --space 5
+# cmd + shift - 6 : yabai -m window --space 6
+# cmd + shift - 7 : yabai -m window --space 7
 
 # Move focus + window to space
 cmd + ctrl - 1 : yabai -m window --space 1; switchdesktop 1
@@ -99,8 +106,12 @@ cmd + ctrl - 5 : yabai -m window --space 5; switchdesktop 5
 cmd + ctrl - 6 : yabai -m window --space 6; switchdesktop 6
 cmd + ctrl - 7 : yabai -m window --space 7; switchdesktop 7
 
+# send window to monitor and follow focus
+# shift + alt - n : yabai -m window --display next; yabai -m display --focus next
+# shift + alt - p : yabai -m window --display previous; yabai -m display --focus previous
+
 # Equalize size of windows
-hyper - e : yabai -m space --balance
+shift + alt - e : yabai -m space --balance
 
 # Enable / Disable gaps in current workspace
 # lcmd - i : yabai -m space --toggle padding; \
@@ -137,4 +148,4 @@ alt - f         : yabai -m window --toggle zoom-fullscreen
 # shift + alt - f : yabai -m window --toggle native-fullscreen
 
 # Restart yabai
-ctrl + alt - r : brew services restart yabai
+ctrl + alt - r : yabai --restart-service

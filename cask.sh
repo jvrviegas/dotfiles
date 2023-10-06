@@ -8,18 +8,18 @@ function installcask() {
 brew tap homebrew/cask-fonts
 
 # Browsers
-installcask google-chrome
-installcask brave-browser
+# installcask google-chrome
+# installcask brave-browser
 
 # Code
 installcask gpgtools
 installcask docker
+installcask orbstack
 installcask postman
-installcask visual-studio-code
+# installcask visual-studio-code
 installcask insomnia
 installcask dbeaver-community
 installcask mongodb-compass
-installcask visual-studio-code
 installcask kitty
 
 # Fonts
@@ -28,8 +28,9 @@ installcask font-jetbrains-mono-nerd-font
 installcask font-hack-nerd-font
 
 # Others
+installcask raycast
 installcask notion
-installcask slack
+# installcask slack
 installcask spotify
 installcask discord
 installcask gimp
@@ -37,8 +38,7 @@ installcask inkdrop
 installcask iterm2
 installcask karabiner-elements
 installcask menumeters
-installcask rectangle
 installcask scroll-reverser
-installcask telegram
-installcask textmate
-installcask zoom
+# installcask telegram
+# installcask textmate
+# installcask zoom

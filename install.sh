@@ -3,12 +3,13 @@
 echo "• Putting dotfiles in your home path: $HOME"
 
 files=(
-  "./.aliases"
-  "./.exports"
+  # "./.aliases"
+  # "./.exports"
   "./.gitconfig"
   "./.local"
   "./.zshrc"
   "./.zsh_profile"
+  "./.zshenv"
 )
 
 for file in ${files[@]}; do
@@ -41,6 +42,9 @@ if [[ $(which brew) != "" ]]; then
 
 else
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Add Homebrew to your PATH in ~/.zprofile:
+  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+  eval "$(/opt/homebrew/bin/brew shellenv)"
   echo "  - Done installing Homebrew"
 fi;
 
@@ -57,16 +61,4 @@ git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
 
 # Preparing NeoVim and Packer
 echo "• Preparing NeoVim and Plugins"
-
-if [[ -r "$HOME/.local/share/nvim/plugged" ]]; then
-  echo "  - Packer.nvim already installed. Lets install the plugins"
-  nvim +PackerInstall +qall
-  echo "  - Done installing the Plugins"
-
-else
-  echo "  - Lets install Packer.nvim Manager"
-  git clone --depth 1 https://github.com/wbthomason/packer.nvim\
-    ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-  nvim +PackerInstall +qall
-  echo " - Done installing the Plugins"
-fi;
+git clone https://github.com/jvrviegas/nvim-config.git ~/.config/nvim

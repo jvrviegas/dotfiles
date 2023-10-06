@@ -1,0 +1,7 @@
+# Inserts a blank line between shell prompts
+add_newline = false
+
+command_timeout = 1800000 # 1800000ms = 30min
+
+[username]
+show_always = true

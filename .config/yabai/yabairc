@@ -38,10 +38,10 @@ yabai -m config                                 \
     split_ratio                  0.50           \
     split_type                   auto           \
     auto_balance                 off            \
-    top_padding                  8              \
-    bottom_padding               8              \
-    left_padding                 8              \
-    right_padding                8              \
+    top_padding                  4              \
+    bottom_padding               4              \
+    left_padding                 4              \
+    right_padding                4              \
     window_gap                   06             \
     layout                       bsp            \
     mouse_modifier               alt            \
@@ -59,12 +59,15 @@ yabai -m rule --add label="Calculator" app="^Calculator$" manage=off
 yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
 yabai -m rule --add label="Software Update" title="Software Update" manage=off
-# yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
+yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add app="^Finder$" manage=off
+yabai -m rule --add app="^Docker Desktop$" manage=off
+yabai -m rule --add app="^OrbStack$" manage=off
 yabai -m rule --add app="^Raycast$" manage=off
 yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^Spotify$" manage=off
-yabai -m rule --add app="^Barrier$" manage=off
+yabai -m rule --add app="^Loom$" manage=off
+yabai -m rule --add app="^FaceTime" manage=off
 yabai -m rule --add label="WhatsApp" app="^WhatsApp$" title="WhatsApp" manage=off
 yabai -m rule --add label="Telegram" app="^Telegram$" title="Telegram" manage=off
 yabai -m rule --add label="WhatsApp Beta" app="^WhatsApp Beta$" title="WhatsApp|WhatsApp Beta" manage=off

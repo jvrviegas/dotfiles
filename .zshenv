@@ -14,3 +14,4 @@ switchdesktop() {
     osascript -e "tell application \"System Events\" to key code $desktopkey using control down"
 }
 alias switchdesktop=switchdesktop
+. "$HOME/.cargo/env"

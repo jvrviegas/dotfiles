@@ -34,6 +34,7 @@
   # pager = /usr/local/share/git-core/contrib/diff-highlight/diff-highlight | less
 
 [color] # Use colors in Git commands that are capable of colored output
+ # Use colors in Git commands that are capable of colored output
   ui = auto
 
 [color "branch"]
@@ -61,6 +62,7 @@
   untracked = cyan
 
 [merge] # Include summaries of merged commits in newly created merge commit messages
+ # Include summaries of merged commits in newly created merge commit messages
   log = true
 	tool = vimdiff
 
