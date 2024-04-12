@@ -1,0 +1,313 @@
+[ca/desrt/dconf-editor]
+saved-pathbar-path='/org/gnome/desktop/wm/keybindings/switch-to-workspace-7'
+saved-view='/org/gnome/desktop/'
+show-warning=false
+window-height=1352
+window-is-maximized=false
+window-width=2552
+
+[com/github/donadigo/eddy]
+mime-types=['application/vnd.debian.binary-package', 'application/x-deb']
+window-x=54
+window-y=86
+
+[io/elementary/appcenter/settings]
+cached-drivers=['nvidia-driver-470-server', 'nvidia-driver-545-open', 'nvidia-driver-470', 'nvidia-driver-550-server', 'nvidia-driver-550-server-open', 'nvidia-driver-535-open', 'nvidia-driver-535-server', 'nvidia-driver-535-server-open', 'nvidia-driver-550-open', 'nvidia-driver-550', 'bcmwl-kernel-source']
+last-refresh-time=int64 1712878134
+window-height=987
+window-maximized=false
+window-width=1329
+
+[org/gnome/control-center]
+last-panel='keyboard'
+
+[org/gnome/desktop/app-folders/folders/Pop-Office]
+apps=['libreoffice-calc.desktop', 'libreoffice-draw.desktop', 'libreoffice-impress.desktop', 'libreoffice-math.desktop', 'libreoffice-startcenter.desktop', 'libreoffice-writer.desktop']
+name='Office'
+translate=true
+
+[org/gnome/desktop/app-folders/folders/Pop-System]
+apps=['gnome-language-selector.desktop', 'gnome-session-properties.desktop', 'gnome-system-monitor.desktop', 'im-config.desktop', 'nm-connection-editor.desktop', 'nvidia-settings.desktop', 'org.gnome.baobab.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.PowerStats.desktop', 'org.gnome.seahorse.Application.desktop', 'software-properties-gnome.desktop', 'system76-driver.desktop', 'system76-firmware.desktop']
+name='System'
+translate=true
+
+[org/gnome/desktop/app-folders/folders/Pop-Utility]
+apps=['com.github.donadigo.eddy.desktop', 'com.system76.Popsicle.desktop', 'gucharmap.desktop', 'info.desktop', 'org.gnome.eog.desktop', 'org.gnome.Evince.desktop', 'org.gnome.Extensions.desktop', 'org.gnome.FileRoller.desktop', 'org.gnome.font-viewer.desktop', 'org.gnome.Screenshot.desktop', 'org.gnome.Totem.desktop', 'pop-cosmic-applications.desktop', 'pop-cosmic-launcher.desktop', 'pop-cosmic-workspaces.desktop', 'simple-scan.desktop', 'yelp.desktop']
+name='Utilities'
+translate=true
+
+[org/gnome/desktop/background]
+color-shading-type='solid'
+picture-options='zoom'
+picture-uri='file:///home/joaovvr/Pictures/milad-fakurian-NgLtdWk-6FI-unsplash(1).jpg'
+picture-uri-dark='file:///home/joaovvr/.local/share/backgrounds/2024-04-02-21-10-11-milad-fakurian-NgLtdWk-6FI-unsplash(1).jpg'
+primary-color='#000000000000'
+secondary-color='#000000000000'
+
+[org/gnome/desktop/calendar]
+show-weekdate=false
+
+[org/gnome/desktop/input-sources]
+current=uint32 0
+mru-sources=[('xkb', 'us+alt-intl'), ('xkb', 'us+mac')]
+per-window=false
+sources=[('xkb', 'us+alt-intl'), ('xkb', 'us+mac')]
+xkb-options=['lv3:ralt_alt']
+
+[org/gnome/desktop/interface]
+clock-format='24h'
+clock-show-weekday=true
+color-scheme='prefer-dark'
+cursor-theme='volantes_cursors'
+enable-hot-corners=false
+font-antialiasing='grayscale'
+font-hinting='slight'
+gtk-theme='Catppuccin-Frappe-Standard-Lavender-Dark'
+icon-theme='Tela-circle'
+show-battery-percentage=true
+
+[org/gnome/desktop/notifications]
+application-children=['gnome-network-panel', 'gnome-control-center', 'io-elementary-appcenter', 'org-gnome-terminal', 'firefox', 'gnome-power-panel', 'com-github-donadigo-eddy', 'org-gnome-tweaks', 'org-gnome-nautilus', 'mountable-volume-0efb-3351', 'org-gnome-fileroller', 'woeusbgui', 'ca-desrt-dconf-editor']
+
+[org/gnome/desktop/notifications/application/ca-desrt-dconf-editor]
+application-id='ca.desrt.dconf-editor.desktop'
+
+[org/gnome/desktop/notifications/application/com-github-donadigo-eddy]
+application-id='com.github.donadigo.eddy.desktop'
+
+[org/gnome/desktop/notifications/application/firefox]
+application-id='firefox.desktop'
+
+[org/gnome/desktop/notifications/application/gnome-control-center]
+application-id='gnome-control-center.desktop'
+
+[org/gnome/desktop/notifications/application/gnome-network-panel]
+application-id='gnome-network-panel.desktop'
+
+[org/gnome/desktop/notifications/application/gnome-power-panel]
+application-id='gnome-power-panel.desktop'
+
+[org/gnome/desktop/notifications/application/io-elementary-appcenter]
+application-id='io.elementary.appcenter.desktop'
+
+[org/gnome/desktop/notifications/application/mountable-volume-0efb-3351]
+application-id='mountable-volume:0EFB-3351.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-fileroller]
+application-id='org.gnome.FileRoller.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-nautilus]
+application-id='org.gnome.Nautilus.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-terminal]
+application-id='org.gnome.Terminal.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-tweaks]
+application-id='org.gnome.tweaks.desktop'
+
+[org/gnome/desktop/notifications/application/woeusbgui]
+application-id='woeusbgui.desktop'
+
+[org/gnome/desktop/peripherals/mouse]
+natural-scroll=false
+speed=-0.2992700729927007
+
+[org/gnome/desktop/peripherals/touchpad]
+edge-scrolling-enabled=false
+natural-scroll=false
+speed=0.2116788321167884
+two-finger-scrolling-enabled=true
+
+[org/gnome/desktop/privacy]
+report-technical-problems=false
+
+[org/gnome/desktop/screensaver]
+color-shading-type='solid'
+picture-options='zoom'
+picture-uri='file:///home/joaovvr/.local/share/backgrounds/2024-04-02-21-10-11-milad-fakurian-NgLtdWk-6FI-unsplash(1).jpg'
+primary-color='#000000000000'
+secondary-color='#000000000000'
+
+[org/gnome/desktop/sound]
+allow-volume-above-100-percent=false
+theme-name='Pop'
+
+[org/gnome/desktop/wm/keybindings]
+activate-window-menu=@as []
+move-to-workspace-1=['<Shift><Super>Home', '<Shift><Alt>1']
+move-to-workspace-2=['<Shift><Alt>2']
+move-to-workspace-3=['<Shift><Alt>3']
+move-to-workspace-4=['<Shift><Alt>4']
+move-to-workspace-5=['<Shift><Alt>5']
+move-to-workspace-6=['<Shift><Alt>6']
+move-to-workspace-7=['<Shift><Alt>7']
+switch-to-workspace-1=['<Super>Home', '<Alt>1']
+switch-to-workspace-2=['<Alt>2']
+switch-to-workspace-3=['<Alt>3']
+switch-to-workspace-4=['<Alt>4']
+switch-to-workspace-5=['<Alt>5']
+switch-to-workspace-6=['<Alt>6']
+switch-to-workspace-7=['<Alt>7']
+
+[org/gnome/desktop/wm/preferences]
+button-layout='close,minimize,maximize:appmenu'
+num-workspaces=7
+
+[org/gnome/evolution-data-server]
+migrated=true
+network-monitor-gio-name=''
+
+[org/gnome/file-roller/dialogs/extract]
+recreate-folders=true
+skip-newer=false
+
+[org/gnome/file-roller/listing]
+list-mode='as-folder'
+name-column-width=250
+show-path=false
+sort-method='name'
+sort-type='ascending'
+
+[org/gnome/file-roller/ui]
+sidebar-width=200
+window-height=470
+window-width=954
+
+[org/gnome/gedit/plugins]
+active-plugins=['docinfo', 'filebrowser', 'sort', 'openlinks', 'spell', 'modelines']
+
+[org/gnome/gedit/plugins/filebrowser]
+root='file:///'
+tree-view=true
+virtual-root='file:///home/joaovvr'
+
+[org/gnome/gedit/preferences/ui]
+show-tabs-mode='auto'
+
+[org/gnome/gedit/state/window]
+bottom-panel-size=140
+side-panel-active-page='GeditWindowDocumentsPanel'
+side-panel-size=200
+size=(954, 443)
+state=87168
+
+[org/gnome/mutter]
+dynamic-workspaces=false
+edge-tiling=false
+experimental-features=@as []
+
+[org/gnome/nautilus/compression]
+default-compression-format='zip'
+
+[org/gnome/nautilus/preferences]
+default-folder-viewer='icon-view'
+search-filter-time-type='last_modified'
+
+[org/gnome/nautilus/window-state]
+initial-size=(1274, 1400)
+maximized=false
+
+[org/gnome/settings-daemon/plugins/media-keys]
+terminal=@as []
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/PopLaunch1]
+binding='Launch1'
+command='gnome-control-center wifi'
+name='WiFi'
+
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-timeout=1800
+sleep-inactive-ac-type='suspend'
+sleep-inactive-battery-timeout=1800
+sleep-inactive-battery-type='suspend'
+
+[org/gnome/shell]
+disabled-extensions=['cosmic-workspaces@system76.com', 'blur-my-shell@aunetx']
+enabled-extensions=['ding@rastersoft.com', 'pop-cosmic@system76.com', 'pop-shell@system76.com', 'system76-power@system76.com', 'ubuntu-appindicators@ubuntu.com', 'cosmic-dock@system76.com', 'popx11gestures@system76.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Vitals@CoreCoding.com', 'space-bar@luchrioh']
+favorite-apps=['pop-cosmic-applications.desktop', 'microsoft-edge.desktop', 'org.gnome.Nautilus.desktop', 'alacritty_alacritty.desktop', 'obsidian.desktop', 'io.elementary.appcenter.desktop', 'gnome-control-center.desktop']
+had-bluetooth-devices-setup=true
+welcome-dialog-last-shown-version='42.5'
+
+[org/gnome/shell/extensions/blur-my-shell]
+brightness=0.59999999999999998
+noise-amount=0.0
+sigma=90
+
+[org/gnome/shell/extensions/blur-my-shell/dash-to-panel]
+blur-original-panel=false
+
+[org/gnome/shell/extensions/blur-my-shell/hidetopbar]
+compatibility=false
+
+[org/gnome/shell/extensions/blur-my-shell/panel]
+blur=true
+override-background=true
+style-panel=0
+
+[org/gnome/shell/extensions/dash-to-dock]
+click-action='minimize-or-previews'
+dash-max-icon-size=42
+dock-fixed=false
+extend-height=false
+intellihide=true
+manualhide=false
+
+[org/gnome/shell/extensions/pop-cosmic]
+clock-alignment='RIGHT'
+show-applications-button=false
+show-workspaces-button=false
+
+[org/gnome/shell/extensions/pop-shell]
+activate-launcher=['<Super>slash', '<Alt>space']
+active-hint=false
+active-hint-border-radius=uint32 0
+focus-down=['<Super>Down', '<Super>KP_Down', '<Primary><Super>n']
+focus-left=['<Super>Left', '<Super>KP_Left', '<Primary><Super>m']
+focus-right=['<Super>Right', '<Super>KP_Right', '<Primary><Super>i']
+focus-up=['<Super>Up', '<Super>KP_Up', '<Primary><Super>e']
+gap-inner=uint32 1
+gap-outer=uint32 1
+show-title=true
+tile-by-default=true
+tile-move-left=['Left', 'KP_Left', 'h']
+tile-move-right=['Right', 'KP_Right', 'l']
+tile-swap-down=['<Primary>Down', '<Primary>KP_Down', '<Primary>j']
+tile-swap-left=['<Primary>Left', '<Primary>KP_Left', '<Primary>h']
+tile-swap-right=['<Primary>Right', '<Primary>KP_Right', '<Primary>l']
+tile-swap-up=['<Primary>Up', '<Primary>KP_Up', '<Primary>k']
+
+[org/gnome/shell/extensions/user-theme]
+name='Catppuccin-Frappe-Standard-Lavender-Dark'
+
+[org/gnome/shell/extensions/vitals]
+alphabetize=true
+battery-slot=1
+fixed-widths=true
+hide-icons=false
+hide-zeros=false
+hot-sensors=['__temperature_avg__', '_processor_frequency_', '_processor_usage_', '_memory_allocated_', '_network-rx_eno1_rx_', '_network-tx_eno1_tx_']
+position-in-panel=2
+show-battery=true
+update-time=5
+use-higher-precision=false
+
+[org/gnome/shell/keybindings]
+show-screenshot-ui=['Print', '<Primary><Shift><Alt><Super>at']
+
+[org/gnome/system/location]
+enabled=false
+
+[org/gtk/settings/file-chooser]
+clock-format='24h'
+date-format='regular'
+location-mode='path-bar'
+show-hidden=false
+show-size-column=true
+show-type-column=true
+sidebar-width=158
+sort-column='name'
+sort-directories-first=false
+sort-order='ascending'
+type-format='category'
+window-position=(732, 301)
+window-size=(1096, 822)
