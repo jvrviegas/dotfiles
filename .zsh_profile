@@ -9,7 +9,6 @@ alias proj='cd ~/Projects/'
 alias usedPort='usedPort.sh'
 alias ipod="cd ios && pod install && .."
 alias sozsh="exec zsh"
-alias monitor-cpu-freq='monitor-cpu-freq.sh'
 
 #Intel Platform
 alias intel="arch -x86_64"
