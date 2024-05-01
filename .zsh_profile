@@ -1,5 +1,4 @@
 # ALIASES
-alias nppm='pnpm'
 alias ppm='pnpm'
 alias vim='nvim'
 alias ls='exa'
@@ -12,10 +11,6 @@ alias ipod="cd ios && pod install && .."
 alias sozsh="exec zsh"
 alias monitor-cpu-freq='monitor-cpu-freq.sh'
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
-
-export OPENAI_API_KEY='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'
-
 #Intel Platform
 alias intel="arch -x86_64"
 
@@ -24,12 +19,12 @@ bindkey -s ^f "tmux-sessionizer\n"
 
 # Git
 setupWorkGitlab() {
-    git config user.name "Jo√£o Viegas"
+    git config user.name "João Viegas"
     git config user.email "joao.viegas@rummo.com"
 }
 
 setupPersonalGithub() {
-    git config user.name "Jo√£o Vitor Viegas R√™go"
+    git config user.name "João Vitor Viegas Rêgo"
     git config user.email "jvrviegas@gmail.com"
 }
 
@@ -53,24 +48,7 @@ lintersRestart() {
     echo "Linters cleaned..."
 }
 
-# I'll be doing another one for Linux, but this one will give you 
-# a pop up notification and sound alert (using the built-in sounds for macOS)
-
-# Requires https://github.com/caarlos0/timer to be installed
-
-# Mac setup for pomo
-alias work="timer 20m && terminal-notifier -message 'Pomodoro'\
-        -title 'Work Timer is up! Take a Break üòä'\
-        -appIcon '~/Pictures/pumpkin.png'\
-        -sound Crystal"
-        
-alias rest="timer 5m && terminal-notifier -message 'Pomodoro'\
-        -title 'Break is over! Get back to work üò¨'\
-        -appIcon '~/Pictures/pumpkin.png'\
-        -sound Crystal"
-
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
 --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
-
