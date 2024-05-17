@@ -10,6 +10,9 @@ alias usedPort='usedPort.sh'
 alias ipod="cd ios && pod install && .."
 alias sozsh="exec zsh"
 
+#Intel Platform
+alias intel="arch -x86_64"
+
 # Where should I put you?
 bindkey -s ^f "tmux-sessionizer\n"
 
