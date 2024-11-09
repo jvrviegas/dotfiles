@@ -28,7 +28,9 @@ plug "zsh-users/zsh-syntax-highlighting"
 autoload -Uz compinit
 compinit
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# zsh
+source <(fzf --zsh)
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 alias luamake=/Users/joaovitor-work/.config/nvim/ls/lua-language-server/3rd/luamake/luamake
 
@@ -54,3 +56,8 @@ bindkey "^[[B" history-search-forward
 eval "$(zoxide init zsh)"
 
 source $HOME/.zsh_profile
+
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# Change Starship config file path
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
