@@ -4,15 +4,21 @@ if [[ $# -eq 1 ]]; then
   selected=$1
   echo "$selected"
 else
-  selected=$(find ~/Projects -mindepth 1 -maxdepth 5 -type d | fzf)
+  selected=$(fd . ~/Projects --min-depth 1 --max-depth 5 --type d | fzf)
 fi
 
 if [[ -z $selected ]]; then
   exit 0
 fi
 
-selected_name=$(basename "$selected" | tr . _)
+# Merge current dir and parent dir names to prevent collisions
+# when trying to create a session from a folder with the same name
+parent_dir=$(basename "$(dirname "$selected")")
+current_dir=$(basename "$selected")
+selected_name=$(echo "${parent_dir}_${current_dir}" | tr . _)
+
 tmux_running=$(pgrep tmux)
+
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
   tmux new-session -ds $selected_name -c $selected
   tmux send-keys -t $selected_name 'tmux-create-dev-windows' C-m
