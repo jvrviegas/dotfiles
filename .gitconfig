@@ -68,10 +68,6 @@
 
 [push]
   default = simple
-
-[credential]
-	helper = osxkeychain
-
 [difftool]
 	prompt = false
 
@@ -88,4 +84,4 @@
 	gpgsign = false
 
 [init]
-	defaultBranch = master
+	defaultBranch = main
