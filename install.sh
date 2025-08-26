@@ -3,9 +3,8 @@
 echo "• Putting dotfiles in your home path: $HOME"
 
 files=(
-  # "./.aliases"
-  # "./.exports"
   "./.gitconfig"
+  "./.tmux.conf"
   "./.local"
   "./zsh/.zshrc"
   "./zsh/.zsh_profile"
@@ -46,4 +45,14 @@ echo "• Cloning Neovim configs"
 if [[ ! -r "$HOME/.config/nvim" ]]; then
     mkdir "$HOME/.config/nvim"
 fi
-git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
+if [[ ! -r "$HOME/.config/nvim/init.lua" ]]; then
+    git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
+fi
+echo ""
+
+echo "• Installing Node LTS and PNPM"
+source node.sh
+echo ""
+
+echo "• Installing zsh plugins"
+source zsh/zap_zsh.sh
