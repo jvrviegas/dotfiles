@@ -38,6 +38,7 @@ brew install tree-sitter
 brew install watchman
 brew install yarn
 brew install zoxide
+brew install openjdk@17
 
 # Clean it up.
 brew cleanup
