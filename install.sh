@@ -7,9 +7,8 @@ files=(
   # "./.exports"
   "./.gitconfig"
   "./.local"
-  "./.zshrc"
-  "./.zsh_profile"
-  "./.zshenv"
+  "./zsh/.zshrc"
+  "./zsh/.zsh_profile"
 )
 
 for file in ${files[@]}; do
@@ -21,16 +20,6 @@ for file in ${files[@]}; do
     fi;
 done;
 unset file files;
-echo ""
-
-
-# Git configuration
-echo "• Git / GitHub configuration"
-read -p "  - What your Git user.name? " git_name
-git config --global user.name "$git_name"
-
-read -p "  - What your Git user.email? " git_email
-git config --global user.email $git_email
 echo ""
 
 
@@ -49,7 +38,8 @@ else
 fi;
 
 echo "• Install Homebrew apps"
-source brew.sh
+source brew/formulae.sh
+source brew/cask.sh
 echo ""
 
 echo "• Cloning Neovim configs"
@@ -57,8 +47,3 @@ if [[ ! -r "$HOME/.config/nvim" ]]; then
     mkdir "$HOME/.config/nvim"
 fi
 git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
-
-
-# Preparing NeoVim and Packer
-echo "• Preparing NeoVim and Plugins"
-git clone https://github.com/jvrviegas/nvim-config.git ~/.config/nvim
