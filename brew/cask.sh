@@ -9,30 +9,32 @@ brew tap homebrew/cask-fonts
 
 # Browsers
 installcask google-chrome
-installcask zen
 installcask microsoft-edge
+installcask zen
 
 # Code
-installcask ghostty
+installcask android-studio
+installcask dbeaver-community
 installcask docker
+installcask gcloud-cli
+installcask ghostty
+installcask mongodb-compass
 installcask orbstack
 installcask postman
 installcask visual-studio-code
-installcask dbeaver-community
-installcask mongodb-compass
-installcask android-studio
-installcask gcloud-cli
 
 # Fonts
 installcask font-jetbrains-mono-nerd-font
 installcask font-hack-nerd-font
 
 # Others
-installcask raycast
-installcask notion
-installcask spotify
-installcask karabiner-elements
-installcask scroll-reverser
-installcask android-file-transfer
-installcask todoist-app
 installcask akiflow
+installcask android-file-transfer
+installcask ankerwork
+installcask karabiner-elements
+installcask notion
+installcask raycast
+installcask scroll-reverser
+installcask shottr
+installcask spotify
+installcask todoist-app
