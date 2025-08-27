@@ -7,6 +7,7 @@ files=(
   # "./.exports"
   "./.gitconfig"
   "./.local"
+  "./.config"
   "./.zshrc"
   "./.zsh_profile"
   "./.zshenv"
