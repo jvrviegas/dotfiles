@@ -3,14 +3,12 @@
 echo "• Putting dotfiles in your home path: $HOME"
 
 files=(
-  # "./.aliases"
-  # "./.exports"
   "./.gitconfig"
+  "./.tmux.conf"
   "./.local"
   "./.config"
-  "./.zshrc"
-  "./.zsh_profile"
-  "./.zshenv"
+  "./zsh/.zshrc"
+  "./zsh/.zsh_profile"
 )
 
 for file in ${files[@]}; do
@@ -22,16 +20,6 @@ for file in ${files[@]}; do
     fi;
 done;
 unset file files;
-echo ""
-
-
-# Git configuration
-echo "• Git / GitHub configuration"
-read -p "  - What your Git user.name? " git_name
-git config --global user.name "$git_name"
-
-read -p "  - What your Git user.email? " git_email
-git config --global user.email $git_email
 echo ""
 
 
@@ -50,16 +38,22 @@ else
 fi;
 
 echo "• Install Homebrew apps"
-source brew.sh
+source brew/formulae.sh
+source brew/cask.sh
 echo ""
 
 echo "• Cloning Neovim configs"
 if [[ ! -r "$HOME/.config/nvim" ]]; then
     mkdir "$HOME/.config/nvim"
 fi
-git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
+if [[ ! -r "$HOME/.config/nvim/init.lua" ]]; then
+    git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
+fi
+echo ""
 
+echo "• Installing Node LTS and PNPM"
+source node.sh
+echo ""
 
-# Preparing NeoVim and Packer
-echo "• Preparing NeoVim and Plugins"
-git clone https://github.com/jvrviegas/nvim-config.git ~/.config/nvim
+echo "• Installing zsh plugins"
+source zsh/zap_zsh.sh
