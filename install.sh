@@ -28,7 +28,6 @@ echo "• Check if Homebrew is installed"
 
 if [[ $(which brew) != "" ]]; then
   echo "  - Homebrew already installed"
-
 else
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   # Add Homebrew to your PATH in ~/.zprofile:
@@ -41,6 +40,12 @@ echo "• Install Homebrew apps"
 source brew/formulae.sh
 source brew/cask.sh
 echo ""
+
+echo "• NVM Setup"
+# Add NVM setup to .zshrc
+echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+echo '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm' >> ~/.zshrc
+echo '[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.zshrc
 
 echo "• Cloning Neovim configs"
 if [[ ! -r "$HOME/.config/nvim" ]]; then
