@@ -47,12 +47,18 @@ echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
 echo '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm' >> ~/.zshrc
 echo '[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.zshrc
 
-echo "• Cloning Neovim configs"
-if [[ ! -r "$HOME/.config/nvim" ]]; then
-    mkdir "$HOME/.config/nvim"
+echo "• Setting up Neovim config symlink"
+# Backup existing nvim config if it exists and is not already a symlink
+if [[ -d "$HOME/.config/nvim" ]] && [[ ! -L "$HOME/.config/nvim" ]]; then
+    mv "$HOME/.config/nvim" "$HOME/.config/nvim-old"
+    echo "  - Backed up existing nvim config to $HOME/.config/nvim-old"
 fi
-if [[ ! -r "$HOME/.config/nvim/init.lua" ]]; then
-    git clone https://github.com/jvrviegas/nvim-config "$HOME/.config/nvim/"
+# Create symlink to nvim config in dotfiles repo
+if [[ ! -e "$HOME/.config/nvim" ]]; then
+    ln -s "$(pwd)/.config/nvim" "$HOME/.config/nvim"
+    echo "  - Created symlink from $HOME/.config/nvim to $(pwd)/.config/nvim"
+else
+    echo "  - Symlink already exists"
 fi
 echo ""
 
