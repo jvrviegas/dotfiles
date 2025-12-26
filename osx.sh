@@ -37,7 +37,7 @@ defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 # 	"/System/Library/CoreServices/Menu Extras/Clock.menu"
 
 # Set highlight color to green
-# defaults write NSGlobalDomain AppleHighlightColor -string "0.752941 0.964706 0.678431"
+defaults write NSGlobalDomain AppleHighlightColor -string "1.000000 0.380392 0.533333"
 
 # Set sidebar icon size to medium
 # defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
@@ -86,39 +86,39 @@ defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 # defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
 
 # Disable smart quotes as they’re annoying when typing code
-# defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 
 # Disable smart dashes as they’re annoying when typing code
-# defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 
 ###############################################################################
 # SSD-specific tweaks                                                         #
 ###############################################################################
 
 # Disable local Time Machine snapshots
-# sudo tmutil disablelocal
+sudo tmutil disablelocal
 
 # Disable hibernation (speeds up entering sleep mode)
-# sudo pmset -a hibernatemode 0
+sudo pmset -a hibernatemode 0
 
 # Remove the sleep image file to save disk space
-# sudo rm /Private/var/vm/sleepimage
+sudo rm /Private/var/vm/sleepimage
 
 # Create a zero-byte file instead…
-# sudo touch /Private/var/vm/sleepimage
+sudo touch /Private/var/vm/sleepimage
 
 # …and make sure it can’t be rewritten
-# sudo chflags uchg /Private/var/vm/sleepimage
+sudo chflags uchg /Private/var/vm/sleepimage
 
 # Disable the sudden motion sensor as it’s not useful for SSDs
-# sudo pmset -a sms 0
+sudo pmset -a sms 0
 
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
 
 # Disable automatic period with double spaces
-# defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 
 # Trackpad: enable tap to click for this user and for the login screen
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking 0
@@ -148,18 +148,18 @@ defaults write -g ApplePressAndHoldEnabled -bool false
 
 # Set a blazingly fast keyboard repeat rate
 defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain InitialKeyRepeat -int 20
+defaults write NSGlobalDomain InitialKeyRepeat -int 10
 
 # Set language and text formats
 # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with
 # `Inches`, `en_GB` with `en_US`, and `true` with `false`.
-defaults write NSGlobalDomain AppleLanguages -array "en" "nl"
+# defaults write NSGlobalDomain AppleLanguages -array "en" "nl"
 # defaults write NSGlobalDomain AppleLocale -string "en_US@currency=USD"
 defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
 defaults write NSGlobalDomain AppleMetricUnits -bool true
 
 # Set the timezone; see `systemsetup -listtimezones` for other values
-systemsetup -settimezone "America/Fortaleza" > /dev/null
+# systemsetup -settimezone "America/Fortaleza" > /dev/null
 
 # Disable auto-correct
 # defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
@@ -182,7 +182,7 @@ defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screen
 # defaults write com.apple.screencapture disable-shadow -bool true
 
 # Enable subpixel font rendering on non-Apple LCDs
-# defaults write NSGlobalDomain AppleFontSmoothing -int 2
+defaults write NSGlobalDomain AppleFontSmoothing -int 2
 
 # Enable HiDPI display modes (requires restart)
 sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
@@ -209,16 +209,16 @@ sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutio
 # defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
 
 # Finder: dont show hidden files by default
-defaults write com.apple.finder AppleShowAllFiles -bool false
+# defaults write com.apple.finder AppleShowAllFiles -bool false
 
 # Finder: show all filename extensions
 # defaults write NSGlobalDomain AppleShowAllExtensions -bool false
 
 # Finder: show status bar
-defaults write com.apple.finder ShowStatusBar -bool true
+# defaults write com.apple.finder ShowStatusBar -bool true
 
 # Finder: show path bar
-defaults write com.apple.finder ShowPathbar -bool false
+# defaults write com.apple.finder ShowPathbar -bool false
 
 # Finder: allow text selection in Quick Look
 # defaults write com.apple.finder QLEnableTextSelection -bool true
@@ -285,13 +285,13 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.finder EmptyTrashSecurely -bool true
 
 # Enable AirDrop over Ethernet and on unsupported Macs running Lion
-defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
+# defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 
 # Enable the MacBook Air SuperDrive on any Mac
 # sudo nvram boot-args="mbasd=1"
 
 # Show the ~/Library folder
-chflags nohidden ~/Library
+# chflags nohidden ~/Library
 
 # Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”
@@ -326,7 +326,7 @@ defaults write com.apple.dock show-process-indicators -bool true
 # defaults write com.apple.dock launchanim -bool false
 
 # Speed up Mission Control animations
-# defaults write com.apple.dock expose-animation-duration -float 0.1
+defaults write com.apple.dock expose-animation-duration -float 0.1
 
 # Don’t group windows by application in Mission Control
 # (i.e. use the old Exposé behavior instead)
@@ -342,13 +342,13 @@ defaults write com.apple.dock show-process-indicators -bool true
 defaults write com.apple.dock mru-spaces -bool false
 
 # Remove the auto-hiding Dock delay
-# defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-delay -float 0
 
 # Remove the animation when hiding/showing the Dock
 # defaults write com.apple.dock autohide-time-modifier -float 0
 
 # Automatically hide and show the Dock
-# defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide -bool true
 
 # Make Dock icons of hidden applications translucent
 defaults write com.apple.dock showhidden -bool true
@@ -357,7 +357,7 @@ defaults write com.apple.dock showhidden -bool true
 defaults write com.apple.dock hide-mirror -bool true
 
 # Reset Launchpad
-find ~/Library/Application\ Support/Dock -name "*.db" -maxdepth 1 -delete
+# find ~/Library/Application\ Support/Dock -name "*.db" -maxdepth 1 -delete
 
 # Add a spacer to the left side of the Dock (where the applications are)
 #defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type="spacer-tile";}'
@@ -396,62 +396,65 @@ find ~/Library/Application\ Support/Dock -name "*.db" -maxdepth 1 -delete
 ###############################################################################
 
 # Set Safari’s home page to `about:blank` for faster loading
-defaults write com.apple.Safari HomePage -string "about:blank"
+# defaults write com.apple.Safari HomePage -string "about:blank"
 
 # Prevent Safari from opening ‘safe’ files automatically after downloading
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+# defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 
 # Allow hitting the Backspace key to go to the previous page in history
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
+# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
 
 # Hide Safari’s bookmarks bar by default
-defaults write com.apple.Safari ShowFavoritesBar -bool false
+# defaults write com.apple.Safari ShowFavoritesBar -bool false
 
 # Hide Safari’s sidebar in Top Sites
-defaults write com.apple.Safari ShowSidebarInTopSites -bool false
+# defaults write com.apple.Safari ShowSidebarInTopSites -bool false
 
 # Disable Safari’s thumbnail cache for History and Top Sites
-defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
+# defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
 
 # Enable Safari’s debug menu
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+# defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
 # Make Safari’s search banners default to Contains instead of Starts With
 # defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
 
 # Remove useless icons from Safari’s bookmarks bar
-defaults write com.apple.Safari ProxiesInBookmarksBar "()"
+# defaults write com.apple.Safari ProxiesInBookmarksBar "()"
 
 # Enable the Develop menu and the Web Inspector in Safari
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+# defaults write com.apple.Safari IncludeDevelopMenu -bool true
+# defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
 
 # Add a context menu item for showing the Web Inspector in web views
-defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+# defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
 ###############################################################################
 # Spotlight                                                                   #
 ###############################################################################
 
+# Disable Spotlight
+sudo mdutil -a -i off
+
 # Hide Spotlight tray-icon (and subsequent helper)
 # sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
 
 # Load new settings before rebuilding the index
-killall mds > /dev/null 2>&1
+# killall mds > /dev/null 2>&1
 
 # Make sure indexing is enabled for the main volume
-sudo mdutil -i on / > /dev/null
+# sudo mdutil -i on / > /dev/null
 
 # Rebuild the index from scratch
-sudo mdutil -E / > /dev/null
+# sudo mdutil -E / > /dev/null
 
 ###############################################################################
 # Terminal                                                                    #
 ###############################################################################
 
 # Only use UTF-8 in Terminal.app
-defaults write com.apple.terminal StringEncodings -array 4
+# defaults write com.apple.terminal StringEncodings -array 4
 
 ###############################################################################
 # Activity Monitor                                                            #
