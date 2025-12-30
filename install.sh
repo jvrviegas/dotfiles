@@ -5,10 +5,9 @@ echo "• Putting dotfiles in your home path: $HOME"
 files=(
   "./.gitconfig"
   "./.tmux.conf"
+  "./.zshenv"
   "./.local"
   "./.config"
-  "./zsh/.zshrc"
-  "./zsh/.zsh_profile"
 )
 
 for file in ${files[@]}; do
@@ -43,9 +42,9 @@ echo ""
 
 echo "• NVM Setup"
 # Add NVM setup to .zshrc
-echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
-echo '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm' >> ~/.zshrc
-echo '[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.zshrc
+echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.config/zsh/.zshrc
+echo '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm' >> ~/.config/zsh/.zshrc
+echo '[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.config/zsh/.zshrc
 
 echo "• Setting up Neovim config symlink"
 # Backup existing nvim config if it exists and is not already a symlink
@@ -67,4 +66,4 @@ source node.sh
 echo ""
 
 echo "• Installing zsh plugins"
-source zsh/zap_zsh.sh
+source .config/zsh/zap_zsh.sh
