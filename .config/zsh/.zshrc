@@ -1,15 +1,13 @@
+# PATH setup
 export PNPM_HOME="$HOME/Library/pnpm"
-
-export PATH="$PNPM_HOME:$HOME/.local/bin:$PATH"
-export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
-eval "$(starship init zsh)"
-
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:~/.local/bin:$PATH
-export PATH=$HOME/homebrew/bin:$PATH
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$PNPM_HOME:$BUN_INSTALL/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/homebrew/bin:/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="${PATH}:${HOME}/.cargo/env"
 
 export JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
+
+export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+eval "$(starship init zsh)"
 
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
@@ -52,13 +50,5 @@ eval "$(zoxide init zsh)"
 
 source $HOME/.zsh_profile
 
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-
-# Starship config path is set at the top of this file, before init
-
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
