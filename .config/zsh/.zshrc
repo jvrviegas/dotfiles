@@ -1,7 +1,9 @@
 # PATH setup
 export PNPM_HOME="$HOME/Library/pnpm"
 export BUN_INSTALL="$HOME/.bun"
-export PATH="$PNPM_HOME:$BUN_INSTALL/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/homebrew/bin:/opt/homebrew/opt/libpq/bin:$PATH"
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export DOTNET_ROOT="/opt/homebrew/Cellar/dotnet/10.0.102/libexec"
+export PATH="$PNPM_HOME:$BUN_INSTALL/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/homebrew/bin:/opt/homebrew/opt/libpq/bin:$HOME/.opencode/bin:$HOME/.antigravity/antigravity/bin:$PATH"
 export PATH="${PATH}:${HOME}/.cargo/env"
 
 export JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
@@ -52,3 +54,6 @@ source $HOME/.zsh_profile
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# Go binaries (asdf)
+export PATH="$PATH:$(go env GOBIN)"

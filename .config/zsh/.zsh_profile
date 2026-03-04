@@ -4,7 +4,7 @@ alias ppm='pnpm'
 alias vim='nvim'
 alias ls='eza --icons'
 alias ll='eza --icons -la'
-alias cd='z'
+# alias cd='z'
 alias nvim-config='vim ~/.config/nvim/'
 alias nvim-dir='cd ~/.config/nvim'
 alias proj='cd ~/Projects/'
@@ -23,7 +23,10 @@ alias intel="arch -x86_64"
 # Where should I put you?
 bindkey -s ^f "tmux-sessionizer\n"
 
-bindkey -s ^t "~/.config/colorscheme/colorscheme-selector.sh\n"
+# Where should I put you in your notes?
+bindkey -s ^t "tmux-notes-sessionizer\n"
+
+# bindkey -s ^t "~/.config/colorscheme/colorscheme-selector.sh\n"
 
 # Git
 setupWorkGitlab() {
@@ -40,6 +43,17 @@ gitwip() {
     git add . && git commit -m "WIP"
 }
 
+gcb () {
+    branch=$( (git branch --format='%(refname:short)'; git branch -r --format='%(refname:short)') | grep -v 'HEAD' | sort -u | fzf)
+
+    if git show-ref --verify --quiet refs/heads/"$branch"; then
+        git checkout "$branch"
+    else
+    # branch not found locally, assume remote branch
+        git checkout -b "${branch#origin/}" --track "$branch"
+    fi
+}
+
 # Zoxide + fzf
 zd() {
     local dir
@@ -54,26 +68,51 @@ zd() {
 # export FZF_DEFAULT_OPTS="--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
 
 ## Tokyonight
+# export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+#   --highlight-line \
+#   --info=inline-right \
+#   --ansi \
+#   --layout=reverse \
+#   --border=none
+#   --color=bg+:#2d3f76 \
+#   --color=bg:#1e2030 \
+#   --color=border:#589ed7 \
+#   --color=fg:#c8d3f5 \
+#   --color=gutter:#1e2030 \
+#   --color=header:#ff966c \
+#   --color=hl+:#65bcff \
+#   --color=hl:#65bcff \
+#   --color=info:#545c7e \
+#   --color=marker:#ff007c \
+#   --color=pointer:#ff007c \
+#   --color=prompt:#65bcff \
+#   --color=query:#c8d3f5:regular \
+#   --color=scrollbar:#589ed7 \
+#   --color=separator:#ff966c \
+#   --color=spinner:#ff007c \
+# "
+
+## Hollow Knight
 export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
   --highlight-line \
   --info=inline-right \
   --ansi \
   --layout=reverse \
   --border=none
-  --color=bg+:#2d3f76 \
-  --color=bg:#1e2030 \
-  --color=border:#589ed7 \
-  --color=fg:#c8d3f5 \
-  --color=gutter:#1e2030 \
-  --color=header:#ff966c \
-  --color=hl+:#65bcff \
-  --color=hl:#65bcff \
-  --color=info:#545c7e \
-  --color=marker:#ff007c \
-  --color=pointer:#ff007c \
-  --color=prompt:#65bcff \
-  --color=query:#c8d3f5:regular \
-  --color=scrollbar:#589ed7 \
-  --color=separator:#ff966c \
-  --color=spinner:#ff007c \
+  --color=bg+:#2d2d42 \
+  --color=bg:#0d0d14 \
+  --color=border:#7b68ee \
+  --color=fg:#f0f0f8 \
+  --color=gutter:#0d0d14 \
+  --color=header:#f4c542 \
+  --color=hl+:#6bb6ff \
+  --color=hl:#6bb6ff \
+  --color=info:#d5d5e5 \
+  --color=marker:#7b68ee \
+  --color=pointer:#85c1e9 \
+  --color=prompt:#5cb3a0 \
+  --color=query:#f0f0f8:regular \
+  --color=scrollbar:#87ceeb \
+  --color=separator:#f4c542 \
+  --color=spinner:#7b68ee \
 "
