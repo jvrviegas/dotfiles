@@ -1,0 +1,47 @@
+# Hollow Knight Theme for Ghostty
+# Inspired by Team Cherry's Hollow Knight
+# Based on the hollow-knight.nvim color palette
+
+# Background colors - The Abyss
+background = 0d0d14
+foreground = f0f0f8
+
+# Cursor
+cursor-color = 85c1e9
+cursor-text = 0d0d14
+
+# Selection
+selection-background = 7b68ee
+selection-foreground = f0f0f8
+
+# Black
+palette = 0=0d0d14
+palette = 8=2d2d42
+
+# Red - Combat colors
+palette = 1=e74c3c
+palette = 9=c62828
+
+# Green - Greenpath colors
+palette = 2=5cb3a0
+palette = 10=8ae6d0
+
+# Yellow - City of Tears gold
+palette = 3=f4c542
+palette = 11=ffd700
+
+# Blue - Soul and Dreams
+palette = 4=6bb6ff
+palette = 12=85c1e9
+
+# Magenta - The Void
+palette = 5=7b68ee
+palette = 13=9b1c47
+
+# Cyan - Soul essence
+palette = 6=87ceeb
+palette = 14=7ac3ff
+
+# White - White Palace
+palette = 7=d5d5e5
+palette = 15=f0f0f8

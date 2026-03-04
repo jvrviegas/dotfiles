@@ -1,0 +1,123 @@
+(defcfg
+  process-unmapped-keys   yes
+  concurrent-tap-hold     yes
+  allow-hardware-repeat   no
+)
+
+;; Global key overrides for arrow key navigation
+(defoverrides
+  (lctl m) (lft)
+  (lctl n) (down)
+  (lctl e) (up)
+  (lctl i) (rght)
+)
+
+;; Combination keys (chords)
+;; Format: (keys) action timeout release-behaviour (disabled-layers)
+(defchordsv2
+  (q w)   tab   50 all-released ()
+  (o p)   del   50 all-released ()  ;; Y+; in Colemak-DH
+  (i o)   grv   50 all-released ()  ;; U+Y in Colemak-DH
+  (, .)   '     50 all-released ()
+)
+
+;; Physical source layout (matrix/ortho)
+(defsrc
+  esc     f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  grv     1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps    a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft    z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl    lmet lalt           spc            ralt rmet menu rctl
+)
+
+;; Colemak-DH layer with HRMs
+;; caps position outputs lctl; Enter position outputs caps
+;; Space: tap=space, hold=Lower layer; Right Cmd: tap=enter, hold=Raise layer
+;; Function keys output media functions by default
+(deflayer colemak-dh
+  esc     brdn brup @mctl @spot f5   f6   prev pp   next mute vold volu
+  @grav   1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab     q    w    f    p    b    j    l    u    y    ;    [    ]    \
+  lctl    @a-ctl @r-alt @s-sft @t-gui g    m    @n-gui @e-sft @i-alt @o-ctl '    caps
+  lsft    z    x    c    d    v    k    h    ,    .    /    rsft
+  lctl    lmet  lalt           spc            ralt @ret-rse menu rctl
+)
+
+;; Lower layer: numbers on top row, arrows on right home row, nav on bottom
+;; Activated by holding Space
+(deflayer lower
+  _       _    _    _    _    _    _    _    _    _    _    _    _
+  _       _    _    _    _    _    _    _    _    _    _    _    _    _
+  _       1    2    3    4    5    6    7    8    9    0    _    _    _
+  _       _    _    _    _    _    lft  down up   rght _    _    _
+  _       del  pgup caps pgdn @lprn @rprn 1    2    3    @star _
+  _       _    _              _              _    @ret-dev _    _
+)
+
+;; Raise layer: symbols matching ZMK Totem raise
+;; Activated by holding Right Cmd
+(deflayer raise
+  _       _    _    _    _    _    _    _    _    _    _    _    _
+  _       _    _    _    _    _    _    _    _    _    _    _    _    _
+  _       @excl @at @hash @dllr @prcnt @caret @amp @star @lprn @rprn _    _    _
+  _       _    _    _    _    _    _    =    [    ]    \    _    _
+  _       _    _    _    _    _    @undr @plus @lbrc @rbrc @pipe _
+  _       _    _              @spc-dev       _    _    _    _
+)
+
+;; Device layer: media controls + system keys
+;; Activated by holding both Space (Lower) and Right Cmd (Raise)
+(deflayer device
+  _       _    _    _    _    _    _    _    _    _    _    _    _
+  _       _    _    _    _    _    _    _    _    _    _    _    _    _
+  _       caps brdn brup _    _    _    _    _    _    esc  _    _    _
+  _       prev next vold volu pp   _    _    _    _    _    _    _
+  _       _    _    _    _    _    _    _    _    _    _    _
+  _       _    _              _              _    _    _    _
+)
+
+;; Aliases
+(defalias
+  ;; Home Row Mods: tap = letter, hold = modifier
+  a-ctl (tap-hold-release 220 220 a lmet)
+  r-alt (tap-hold-release 220 220 r lalt)
+  s-sft (tap-hold-release 220 220 s lctl)
+  t-gui (tap-hold-release 190 190 t lsft)
+
+  n-gui (tap-hold-release 190 190 n rsft)
+  e-sft (tap-hold-release 220 220 e lctl)
+  i-alt (tap-hold-release 220 220 i ralt)
+  o-ctl (tap-hold-release 220 220 o rmet)
+
+  ;; Layer activation: tap = key, hold = layer switch
+  spc-lwr (tap-hold-press 150 150 spc (layer-while-held lower))
+  ret-rse (tap-hold-press 150 150 ret (layer-while-held raise))
+  ret-dev (tap-hold-press 150 150 ret (layer-while-held device))
+  spc-dev (tap-hold-press 150 150 spc (layer-while-held device))
+
+  ;; Shifted symbols for Raise layer
+  excl  (multi lsft 1)
+  at    (multi lsft 2)
+  hash  (multi lsft 3)
+  dllr  (multi lsft 4)
+  prcnt (multi lsft 5)
+  caret (multi lsft 6)
+  amp   (multi lsft 7)
+  star  (multi lsft 8)
+  lprn  (multi lsft 9)
+  rprn  (multi lsft 0)
+  undr  (multi lsft -)
+  plus  (multi lsft =)
+  lbrc  (multi lsft [)
+  rbrc  (multi lsft ])
+  pipe  (multi lsft \)
+
+  ;; Grave/backtick key - passthrough to handle with US layout
+  grav grv
+
+  ;; macOS media keys (F3=Mission Control, F4=Spotlight via shortcuts)
+  mctl (macro lctl up)
+  spot (macro lmet spc)
+)
+

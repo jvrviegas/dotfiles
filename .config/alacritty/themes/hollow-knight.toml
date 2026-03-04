@@ -1,0 +1,44 @@
+# Hollow Knight Theme for Alacritty
+# Inspired by the dark, atmospheric palette of Hollow Knight
+
+[colors.primary]
+background = "#0f0f0f"       # Deep void black
+foreground = "#e6e6e6"       # Pale bone white
+
+[colors.cursor]
+text = "#0f0f0f"             # Background color for cursor text
+cursor = "#00d4ff"           # Bright soul blue
+
+[colors.selection]
+text = "#e6e6e6"             # White text on selection
+background = "#3a3a3a"       # Dark gray selection
+
+[colors.normal]
+black = "#1a1a1a"            # Void black
+red = "#ff6b6b"              # Crimson slash
+green = "#4ecdc4"            # Spirit glow
+yellow = "#ffe066"           # Geo yellow
+blue = "#00d4ff"             # Soul energy blue
+magenta = "#ff79c6"          # Dream pink
+cyan = "#8be9fd"             # Crystal cyan
+white = "#e6e6e6"            # Bone white
+
+[colors.bright]
+black = "#44475a"            # Shadow gray
+red = "#ff5555"              # Bright red damage
+green = "#50fa7b"            # Life seed green
+yellow = "#f1fa8c"           # Lumafly lantern
+blue = "#8be9fd"             # Bright soul blue
+magenta = "#bd93f9"          # Bright dream essence
+cyan = "#50fa7b"             # Bright crystal
+white = "#ffffff"            # Pure white
+
+[colors.dim]
+black = "#000000"            # Absolute darkness
+red = "#cc5555"              # Dimmed red
+green = "#3eb3ac"            # Dimmed green
+yellow = "#ccb353"           # Dimmed yellow
+blue = "#0099cc"             # Dimmed blue
+magenta = "#cc4499"          # Dimmed magenta
+cyan = "#66ccdd"             # Dimmed cyan
+white = "#bbbbbb"            # Dimmed white

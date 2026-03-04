@@ -1,0 +1,47 @@
+# The Mandalorian Theme for Ghostty
+# This is the Way
+# Inspired by the iconic Star Wars series
+
+# Background colors - Deep Space
+background = 0a0a0f
+foreground = e4e4ec
+
+# Cursor - Beskar Silver
+cursor-color = 5ec4e8
+cursor-text = 0a0a0f
+
+# Selection - Mudhorn Blue
+selection-background = 4eb4d8
+selection-foreground = e4e4ec
+
+# Black - Deep Space
+palette = 0=0a0a0f
+palette = 8=20202b
+
+# Red - Imperial Warning / Danger
+palette = 1=c84848
+palette = 9=e85858
+
+# Green - Grogu / The Child
+palette = 2=589858
+palette = 10=78c878
+
+# Yellow - Desert Sun / Blaster Fire
+palette = 3=c09848
+palette = 11=e8c070
+
+# Blue - Hyperspace / Hologram
+palette = 4=2d84a8
+palette = 12=5ec4e8
+
+# Magenta - Nevarro Lava / Neon Lights
+palette = 5=c07840
+palette = 13=e89858
+
+# Cyan - Ice Planet / Carbonite
+palette = 6=586888
+palette = 14=7888a8
+
+# White - Beskar Armor / Stormtrooper
+palette = 7=c8c8d6
+palette = 15=e4e4ec

@@ -6,7 +6,7 @@ TERM = "xterm-256color"
 size = 12.0
 
 [font.normal]
-family = "CommitMono Nerd Font"
+family = "JetBrainsMono Nerd Font"
 # style = "Regular"
 
 # [font.bold]
@@ -34,5 +34,5 @@ y = 30
 
 [general]
 import = [
-	"~/.config/alacritty/themes/tokyonight.toml"
+	"~/.config/alacritty/themes/hollow-knight.toml"
 ]
