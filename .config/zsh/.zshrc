@@ -1,6 +1,7 @@
 export PNPM_HOME="$HOME/Library/pnpm"
 
 export PATH="$PNPM_HOME:$HOME/.local/bin:$PATH"
+export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
 eval "$(starship init zsh)"
 
 # If you come from bash you might have to change your $PATH.
@@ -53,8 +54,7 @@ source $HOME/.zsh_profile
 
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
-# Change Starship config file path
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
+# Starship config path is set at the top of this file, before init
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
