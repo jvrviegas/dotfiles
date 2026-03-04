@@ -6,10 +6,12 @@ export DOTNET_ROOT="/opt/homebrew/Cellar/dotnet/10.0.102/libexec"
 export PATH="$PNPM_HOME:$BUN_INSTALL/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/homebrew/bin:/opt/homebrew/opt/libpq/bin:$HOME/.opencode/bin:$HOME/.antigravity/antigravity/bin:$PATH"
 export PATH="${PATH}:${HOME}/.cargo/env"
 
-export JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
+if command -v brew &> /dev/null && brew --prefix openjdk@17 &> /dev/null; then
+  export JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
+fi
 
 export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
-eval "$(starship init zsh)"
+command -v starship &> /dev/null && eval "$(starship init zsh)"
 
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
@@ -21,8 +23,8 @@ plug "zsh-users/zsh-syntax-highlighting"
 autoload -Uz compinit
 compinit
 
-# zsh
-source <(fzf --zsh)
+# fzf
+command -v fzf &> /dev/null && source <(fzf --zsh)
 
 # FNM setup - is a fast node manager (replacement over nvm)
 # eval "$(fnm env --use-on-cd --shell zsh)"
@@ -48,7 +50,7 @@ setopt hist_verify
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
 
-eval "$(zoxide init zsh)"
+command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
 
 source $HOME/.zsh_profile
 
@@ -56,4 +58,4 @@ source $HOME/.zsh_profile
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # Go binaries (asdf)
-export PATH="$PATH:$(go env GOBIN)"
+command -v go &> /dev/null && export PATH="$PATH:$(go env GOBIN)"
