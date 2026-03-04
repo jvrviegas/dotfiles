@@ -66,6 +66,15 @@ else
 fi
 echo ""
 
+echo "• Setting up TPM (Tmux Plugin Manager)"
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+  echo "  - TPM installed. Run 'prefix + I' inside tmux to install plugins"
+else
+  echo "  - TPM already installed"
+fi
+echo ""
+
 echo "• Installing Node LTS and PNPM"
 source node.sh
 echo ""
