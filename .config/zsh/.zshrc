@@ -57,7 +57,7 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
 # bun completions
-[ -s "/Users/joaoviegas/.bun/_bun" ] && source "/Users/joaoviegas/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"

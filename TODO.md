@@ -7,7 +7,7 @@
 ## High — Installation flow
 
 - [x] **install.sh is not idempotent** — Running twice appends duplicate NVM lines to `.zshrc`. Added guard check.
-- [ ] **Hardcoded username** in `.config/zsh/.zshrc` — `/Users/joaoviegas/.bun/_bun` should use `$HOME`.
+- [x] **Hardcoded username** in `.config/zsh/.zshrc` — `/Users/joaoviegas/.bun/_bun` now uses `$HOME`.
 - [ ] **Missing TPM bootstrap** — Tmux plugins won't load on fresh install. Add `git clone` for TPM to `install.sh`.
 - [ ] **Zap install runs unconditionally** — `zap_zsh.sh` should check if already installed before downloading.
 - [ ] **Starship config set AFTER init** — `STARSHIP_CONFIG` export must come before `eval "$(starship init zsh)"` in `.zshrc`.
