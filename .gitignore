@@ -22,3 +22,6 @@ screenlog*
 
 # Secrets
 .zsh_secrets
+
+# Project tracking
+TODO.md
