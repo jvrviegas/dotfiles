@@ -41,10 +41,15 @@ source brew/cask.sh
 echo ""
 
 echo "• NVM Setup"
-# Add NVM setup to .zshrc
-echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.config/zsh/.zshrc
-echo '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm' >> ~/.config/zsh/.zshrc
-echo '[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.config/zsh/.zshrc
+# Add NVM setup to .zshrc (only if not already present)
+if ! grep -q 'NVM_DIR' ~/.config/zsh/.zshrc 2>/dev/null; then
+  echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.config/zsh/.zshrc
+  echo '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm' >> ~/.config/zsh/.zshrc
+  echo '[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.config/zsh/.zshrc
+  echo "  - NVM setup added to .zshrc"
+else
+  echo "  - NVM setup already present in .zshrc"
+fi
 
 echo "• Setting up Neovim config symlink"
 # Backup existing nvim config if it exists and is not already a symlink
