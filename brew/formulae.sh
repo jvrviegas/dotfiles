@@ -4,42 +4,88 @@
 brew update
 brew upgrade
 
-# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
+# Core utilities
+# Don't forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 brew install coreutils
+brew install openssh
+brew install git
+brew install gh
 
-# Install more recent versions of some OS X tools.
+# Editors
 brew install vim --override-system-vi
 brew install nvim
-brew install openssh
 
-# Install everything else.
-brew install asdf
-brew install docker-compose
-brew install eza
-brew install fastlane
-brew install fd
-brew install ffmpeg
-brew install fmt
+# Shell & prompt
 brew install fzf
-brew install git
-brew install jq
+brew install eza
+brew install starship
+brew install tmux
+brew install zoxide
+
+# Search & navigation
+brew install fd
+brew install ripgrep
+
+# Lua
 brew install lua
 brew install lua-language-server
 brew install luajit
 brew install luarocks
+
+# Node.js & JavaScript
 brew install nvm
-brew install ripgrep
-brew install rustup
-brew install scrcpy
-brew install sqlite
-brew install starship
-brew install tmux
-brew install tree-sitter
-brew install watchman
+brew install oven-sh/bun/bun
 brew install yarn
-brew install zoxide
+
+# Languages & runtimes
+brew install asdf
+brew install dotnet
 brew install openjdk@17
+brew install rustup
+
+# Mobile development
+brew install cocoapods
+brew install fastlane
+brew install scrcpy
+brew install watchman
+brew install xcodegen
+
+# Containers
+brew install docker-compose
+
+# Data & databases
+brew install jq
+brew install sqlite
+
+# Media & documents
+brew install ffmpeg
+brew install fmt
+brew install fontforge
+brew install libsixel
+brew install mpv
+brew install ocrmypdf
+brew install pandoc
+brew install poppler
+brew install tesseract-lang
+brew install banh-canh/ytui/ytui
+
+# Neovim tooling
+brew install markdownlint-cli
+brew install tree-sitter
+
+# Networking & security
+brew install httpie
+brew install nmap
+brew install pgpdump
+brew install websocat
+
+# Keyboard & audio
+brew install kanata
+brew install kanata-tray
+brew install switchaudio-osx
+
+# System info
+brew install neofetch
 
 # Clean it up.
 brew cleanup
-
