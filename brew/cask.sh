@@ -12,29 +12,53 @@ installcask google-chrome
 installcask microsoft-edge
 installcask zen
 
-# Code
+# Terminals
+installcask alacritty
+installcask ghostty
+installcask kitty
+
+# Development
+installcask android-platform-tools
 installcask android-studio
 installcask dbeaver-community
-installcask docker
 installcask gcloud-cli
-installcask ghostty
 installcask mongodb-compass
-installcask orbstack
 installcask postman
 installcask visual-studio-code
 
-# Fonts
-installcask font-jetbrains-mono-nerd-font
-installcask font-hack-nerd-font
+# Containers
+installcask docker-desktop
+installcask orbstack
 
-# Others
+# Communication & productivity
 installcask akiflow
+installcask notion
+installcask slack
+installcask todoist-app
+
+# Fonts & typography
+installcask font-fantasque-sans-mono-nerd-font
+installcask font-hack-nerd-font
+installcask font-jetbrains-mono-nerd-font
+installcask font-maple-mono
+installcask font-maple-mono-nf
+installcask font-sf-mono
+installcask font-sf-pro
+installcask fontforge-app
+installcask sf-symbols
+
+# Documents & writing
+installcask basictex
+
+# Media
+installcask spotify
+installcask ytmdesktop-youtube-music
+
+# Utilities
 installcask android-file-transfer
 installcask ankerwork
 installcask karabiner-elements
-installcask notion
 installcask raycast
 installcask scroll-reverser
 installcask shottr
-installcask spotify
-installcask todoist-app
+installcask spaceman
