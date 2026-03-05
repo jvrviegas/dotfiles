@@ -24,7 +24,6 @@ return {
 	["Arduino"] = ":arduino:",
 	["Arduino IDE"] = ":arduino:",
 	["Atom"] = ":atom:",
-	["Akiflow"] = ":todoist:",
 	["Audacity"] = ":audacity:",
 	["Bambu Studio"] = ":bambu_studio:",
 	["MoneyMoney"] = ":bank:",
@@ -415,6 +414,7 @@ return {
 	["yazi"] = ":yazi:",
 	["YouTube"] = ":youtube:",
 	["YouTube Music"] = ":youtube_music:",
+	["Youtube Music"] = ":youtube_music:",
 	["Yuque"] = ":yuque:",
 	["语雀"] = ":yuque:",
 	["Zed"] = ":zed:",
@@ -425,3 +425,4 @@ return {
 	["Zotero"] = ":zotero:",
 	["Zulip"] = ":zulip:",
 }
+
