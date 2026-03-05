@@ -1,3 +1,3 @@
 #!/bin/zsh
 
-~/Android/Sdk/emulator/emulator -avd $1 &
+"${ANDROID_HOME:-$HOME/Library/Android/sdk}/emulator/emulator" -avd $1 &

@@ -52,7 +52,7 @@ bindkey "^[[B" history-search-forward
 
 command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
 
-source $HOME/.zsh_profile
+source $HOME/.config/zsh/.zsh_profile
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
