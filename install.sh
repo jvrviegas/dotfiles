@@ -5,6 +5,8 @@ echo "• Putting dotfiles in your home path: $HOME"
 files=(
   "./.gitconfig"
   "./.tmux.conf"
+  "./.tmux-cht-languages"
+  "./.tmux-cht-command"
   "./.zshenv"
   "./.local"
   "./.config"
