@@ -31,17 +31,32 @@
   lctl    lmet lalt           spc            ralt rmet menu rctl
 )
 
-;; Colemak-DH layer with HRMs
+;; macOS: Colemak-DH layer with HRMs
 ;; caps position outputs lctl; Enter position outputs caps
 ;; Space: tap=space, hold=Lower layer; Right Cmd: tap=enter, hold=Raise layer
 ;; Function keys output media functions by default
-(deflayer colemak-dh
-  esc     brdn brup @mctl @spot f5   f6   prev pp   next mute vold volu
-  @grav   1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  tab     q    w    f    p    b    j    l    u    y    ;    [    ]    \
-  lctl    @a-ctl @r-alt @s-sft @t-gui g    m    @n-gui @e-sft @i-alt @o-ctl '    caps
-  lsft    z    x    c    d    v    k    h    ,    .    /    rsft
-  lctl    lmet  lalt           spc            ralt @ret-rse menu rctl
+(platform (macos)
+  (deflayer colemak-dh
+    esc     brdn brup @mctl @spot f5   f6   prev pp   next mute vold volu
+    @grav   1    2    3    4    5    6    7    8    9    0    -    =    bspc
+    tab     q    w    f    p    b    j    l    u    y    ;    [    ]    \
+    lctl    @a-ctl @r-alt @s-sft @t-gui g    m    @n-gui @e-sft @i-alt @o-ctl '    caps
+    lsft    z    x    c    d    v    k    h    ,    .    /    rsft
+    lctl    lmet  lalt           spc            ralt @ret-rse menu rctl
+  )
+)
+
+;; Linux: QWERTY layer with HRMs
+;; AltGr acts as Enter since Right Super may not be available
+(platform (linux)
+  (deflayer colemak-dh
+    esc     brdn brup @mctl @spot f5   f6   prev pp   next mute vold volu
+    @grav   1    2    3    4    5    6    7    8    9    0    -    =    bspc
+    tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
+    lctl    @a-ctl @s-alt @d-sft @f-gui g    h    @j-gui @k-sft @l-alt @;-ctl '    caps
+    lsft    z    x    c    v    b    n    m    ,    .    /    rsft
+    lctl    lmet  lalt           spc            ret  @ret-rse menu rctl
+  )
 )
 
 ;; Lower layer: numbers on top row, arrows on right home row, nav on bottom
@@ -119,5 +134,19 @@
   ;; macOS media keys (F3=Mission Control, F4=Spotlight via shortcuts)
   mctl (macro lctl up)
   spot (macro lmet spc)
+)
+
+;; Linux-specific: QWERTY Home Row Mods
+(platform (linux)
+  (defalias
+    s-alt (tap-hold-release 220 220 s lalt)
+    d-sft (tap-hold-release 220 220 d lctl)
+    f-gui (tap-hold-release 190 190 f lsft)
+
+    j-gui (tap-hold-release 190 190 j rsft)
+    k-sft (tap-hold-release 220 220 k lctl)
+    l-alt (tap-hold-release 220 220 l ralt)
+    ;-ctl (tap-hold-release 220 220 ; rmet)
+  )
 )
 
