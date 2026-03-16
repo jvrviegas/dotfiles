@@ -1,0 +1,183 @@
+# AeroSpace tiling window manager configuration
+# Ported from yabai + skhd setup
+
+config-version = 2
+
+start-at-login = true
+
+# Flatten workspace tree on startup to ensure tiling works
+after-startup-command = ['flatten-workspace-tree']
+
+# Normalizations (keep flat tree structure like yabai BSP)
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Layout defaults (equivalent to yabai layout=bsp, split_ratio=0.50)
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+accordion-padding = 30
+
+# Mouse follows focus when focused monitor changes
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Notify sketchybar on workspace change
+exec-on-workspace-change = ['/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE'
+]
+
+# ===== Gaps =====
+# yabai: top/bottom/left/right_padding=4, window_gap=6, external_bar=all:42:0
+[gaps]
+    inner.horizontal = 6
+    inner.vertical = 6
+    outer.left = 4
+    outer.bottom = 4
+    outer.top = 4
+    outer.right = 4
+
+# ===== Key Mapping =====
+[key-mapping]
+    preset = 'qwerty'
+
+# ===== Main Bindings =====
+[mode.main.binding]
+
+    # --- Navigation (Kanata converts ctrl+m/n/e/i to arrows, stripping ctrl) ---
+    cmd-left = 'focus left'
+    cmd-down = 'focus down'
+    cmd-up = 'focus up'
+    cmd-right = 'focus right'
+
+    # --- Move/Warp windows (Colemak) ---
+    cmd-shift-m = 'move left'
+    cmd-shift-n = 'move down'
+    cmd-shift-e = 'move up'
+    cmd-shift-i = 'move right'
+
+    # --- Workspace focus ---
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+    alt-5 = 'workspace 5'
+    alt-6 = 'workspace 6'
+    alt-7 = 'workspace 7'
+    alt-8 = 'workspace 8'
+
+    # --- Send window to workspace ---
+    alt-shift-1 = 'move-node-to-workspace 1'
+    alt-shift-2 = 'move-node-to-workspace 2'
+    alt-shift-3 = 'move-node-to-workspace 3'
+    alt-shift-4 = 'move-node-to-workspace 4'
+    alt-shift-5 = 'move-node-to-workspace 5'
+    alt-shift-6 = 'move-node-to-workspace 6'
+    alt-shift-7 = 'move-node-to-workspace 7'
+    alt-shift-8 = 'move-node-to-workspace 8'
+    alt-shift-9 = 'move-node-to-workspace 9'
+
+    # --- Move window to workspace AND follow focus ---
+    cmd-ctrl-1 = ['move-node-to-workspace 1', 'workspace 1']
+    cmd-ctrl-2 = ['move-node-to-workspace 2', 'workspace 2']
+    cmd-ctrl-3 = ['move-node-to-workspace 3', 'workspace 3']
+    cmd-ctrl-4 = ['move-node-to-workspace 4', 'workspace 4']
+    cmd-ctrl-5 = ['move-node-to-workspace 5', 'workspace 5']
+    cmd-ctrl-6 = ['move-node-to-workspace 6', 'workspace 6']
+    cmd-ctrl-7 = ['move-node-to-workspace 7', 'workspace 7']
+    cmd-ctrl-8 = ['move-node-to-workspace 8', 'workspace 8']
+    cmd-ctrl-9 = ['move-node-to-workspace 9', 'workspace 9']
+
+    # --- Balance window sizes (shift+alt-e) ---
+    alt-shift-e = 'balance-sizes'
+
+    # --- Fullscreen toggle (alt-f) ---
+    alt-f = 'fullscreen'
+
+    # --- Float/Tile toggle (shift+alt-space) ---
+    alt-shift-space = 'layout floating tiling'
+
+    # --- Rotate / Mirror equivalents ---
+    # AeroSpace doesn't have direct rotate/mirror commands.
+    # These use layout orientation toggling as the closest equivalent.
+    alt-r = 'layout tiles horizontal vertical'
+    alt-shift-r = 'layout tiles vertical horizontal'
+    alt-shift-x = 'layout tiles horizontal vertical'
+    alt-shift-y = 'layout tiles vertical horizontal'
+
+    # --- Enter resize mode (hyper-r = cmd+alt+ctrl+shift+r) ---
+    cmd-alt-ctrl-shift-r = 'mode resize'
+
+    # --- Reload config (ctrl+alt-r) ---
+    ctrl-alt-r = 'reload-config'
+
+# ===== Resize Mode =====
+[mode.resize.binding]
+    left = 'resize width -50'
+    down = 'resize height +50'
+    up = 'resize height -50'
+    right = 'resize width +50'
+    minus = 'resize smart -50'
+    equal = 'resize smart +50'
+    enter = 'mode main'
+    esc = 'mode main'
+    cmd-alt-ctrl-shift-r = 'mode main'
+
+# ===== Window Rules (Float) =====
+# Equivalent to yabai manage=off rules
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.SystemPreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.calculator'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'System Information'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+if.window-title-regex-substring = '(Copy|Connect|Move|Info|Pref)'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.docker.docker'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'OrbStack'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Raycast'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.spotify.client'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Loom'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'FaceTime'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'WhatsApp'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Karabiner-Elements'
+run = 'layout floating'
