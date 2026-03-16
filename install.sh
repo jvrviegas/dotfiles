@@ -91,3 +91,42 @@ echo ""
 
 echo "• Installing zsh plugins"
 source .config/zsh/zap_zsh.sh
+
+echo ""
+echo "• Window Manager Setup"
+echo "  Choose your window manager:"
+echo "    1) AeroSpace (recommended — no SIP disable, single config)"
+echo "    2) yabai + skhd (requires SIP partially disabled)"
+echo "    3) Skip"
+read -rp "  Enter choice [1/2/3]: " wm_choice
+
+case "$wm_choice" in
+  1)
+    echo "  - Installing AeroSpace"
+    brew install --cask nikitabobko/tap/aerospace
+    brew tap FelixKratz/formulae
+    brew install sketchybar
+    # Stop yabai/skhd if running
+    yabai --stop-service 2>/dev/null
+    skhd --stop-service 2>/dev/null
+    killall yabai 2>/dev/null
+    killall skhd 2>/dev/null
+    # Start AeroSpace and sketchybar
+    open -a AeroSpace
+    brew services start sketchybar
+    echo "  - AeroSpace setup complete"
+    ;;
+  2)
+    echo "  - Installing yabai + skhd"
+    source brew/wm.sh
+    # Stop AeroSpace if running
+    killall AeroSpace 2>/dev/null
+    echo "  - yabai + skhd setup complete"
+    ;;
+  3)
+    echo "  - Skipping window manager setup"
+    ;;
+  *)
+    echo "  - Invalid choice, skipping window manager setup"
+    ;;
+esac
