@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+THEMES=("the-mandalorian" "monokai-pro" "hollow-knight")
+THEME_DIR="$HOME/.config/theme"
+WALLPAPER_DIR="$HOME/.config/wallpapers"
+TMUX_THEME_DIR="$HOME/.config/tmux/themes"
+NVIM_INIT="$HOME/.config/nvim/init.lua"
+GHOSTTY_CONFIG="$HOME/.config/ghostty/config"
+
+# Select theme via fzf or argument
+THEME="${1:-$(printf '%s\n' "${THEMES[@]}" | fzf --prompt='  Theme: ' --height=10 --reverse)}"
+
+if [[ -z "$THEME" ]]; then
+  exit 0
+fi
+
+# Validate theme name
+if ! printf '%s\n' "${THEMES[@]}" | grep -qx "$THEME"; then
+  echo "Unknown theme: $THEME"
+  echo "Available: ${THEMES[*]}"
+  exit 1
+fi
+
+# Persist selection
+mkdir -p "$THEME_DIR"
+echo "$THEME" > "$THEME_DIR/current"
+
+# --- Wallpaper ---
+for ext in jpg jpeg png; do
+  WALLPAPER="$WALLPAPER_DIR/${THEME}.${ext}"
+  if [[ -f "$WALLPAPER" ]]; then
+    osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$WALLPAPER\""
+    break
+  fi
+done
+
+# --- Ghostty ---
+if [[ -f "$GHOSTTY_CONFIG" ]]; then
+  sed -i '' "s/^theme = .*/theme = ${THEME}/" "$GHOSTTY_CONFIG"
+fi
+
+# --- Neovim (persistent) ---
+if [[ -f "$NVIM_INIT" ]]; then
+  sed -i '' "/^[[:space:]]*--/!s/vim\.cmd\.colorscheme '.*'/vim.cmd.colorscheme '${THEME}'/" "$NVIM_INIT"
+fi
+
+# --- Neovim (live - send to all running instances) ---
+for sock in /tmp/nvim.*/0 /var/folders/*/*/T/nvim.*/0; do
+  [[ -S "$sock" ]] && nvim --server "$sock" --remote-send "<Cmd>colorscheme ${THEME}<CR>" 2>/dev/null &
+done
+wait 2>/dev/null
+
+# --- Tmux ---
+if [[ -f "$TMUX_THEME_DIR/${THEME}.sh" ]]; then
+  cp "$TMUX_THEME_DIR/${THEME}.sh" "$TMUX_THEME_DIR/current.sh"
+  chmod +x "$TMUX_THEME_DIR/current.sh"
+  bash "$TMUX_THEME_DIR/current.sh" 2>/dev/null || true
+fi
+
+echo "Switched to: $THEME"
