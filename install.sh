@@ -68,14 +68,22 @@ else
 fi
 echo ""
 
-echo "• Setting up TPM (Tmux Plugin Manager)"
-if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-  git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
-  echo "  - TPM installed. Run 'prefix + I' inside tmux to install plugins"
-else
-  echo "  - TPM already installed"
+echo "• Setting up theme system"
+mkdir -p "$HOME/.config/theme"
+mkdir -p "$HOME/.config/tmux/themes"
+mkdir -p "$HOME/.config/wallpapers"
+cp "$(pwd)/.config/tmux/themes/"*.sh "$HOME/.config/tmux/themes/"
+chmod +x "$HOME/.config/tmux/themes/"*.sh
+if [ ! -f "$HOME/.config/theme/current" ]; then
+  echo "the-mandalorian" > "$HOME/.config/theme/current"
 fi
+CURRENT_THEME=$(cat "$HOME/.config/theme/current")
+if [ -f "$HOME/.config/tmux/themes/${CURRENT_THEME}.sh" ]; then
+  cp "$HOME/.config/tmux/themes/${CURRENT_THEME}.sh" "$HOME/.config/tmux/themes/current.sh"
+fi
+echo "  - Theme set to: $CURRENT_THEME"
 echo ""
+
 
 echo "• Installing Node LTS and PNPM"
 source node.sh
