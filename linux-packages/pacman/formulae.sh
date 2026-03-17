@@ -134,6 +134,9 @@ if command -v paru &>/dev/null; then
   paru -S --noconfirm --needed quickgui-bin 2>/dev/null || true
 fi
 
+# AI
+curl -fsSL https://claude.ai/install.sh | bash
+
 # System info
 sudo pacman -S --noconfirm --needed fastfetch
 

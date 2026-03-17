@@ -137,6 +137,9 @@ if ! command -v quickemu &>/dev/null; then
   sudo dnf install -y quickemu quickgui
 fi
 
+# AI
+curl -fsSL https://claude.ai/install.sh | bash
+
 # System info
 sudo dnf install -y fastfetch
 

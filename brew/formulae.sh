@@ -84,6 +84,9 @@ brew install kanata
 brew install kanata-tray
 brew install switchaudio-osx
 
+# AI
+curl -fsSL https://claude.ai/install.sh | bash
+
 # System info
 brew install neofetch
 
