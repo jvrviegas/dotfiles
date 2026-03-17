@@ -1,0 +1,10 @@
+singleton Theme Theme.qml
+Bar Bar.qml
+Workspaces Workspaces.qml
+ActiveWindow ActiveWindow.qml
+Clock Clock.qml
+Battery Battery.qml
+CpuGraph CpuGraph.qml
+Volume Volume.qml
+Network Network.qml
+MediaPlayer MediaPlayer.qml
