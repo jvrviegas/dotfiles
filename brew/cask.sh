@@ -32,7 +32,6 @@ installcask orbstack
 
 # Communication & productivity
 installcask akiflow
-installcask notion
 installcask slack
 installcask todoist-app
 
@@ -52,7 +51,6 @@ installcask basictex
 
 # Media
 installcask spotify
-installcask ytmdesktop-youtube-music
 
 # Utilities
 installcask android-file-transfer
