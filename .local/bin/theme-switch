@@ -25,28 +25,52 @@ fi
 mkdir -p "$THEME_DIR"
 echo "$THEME" > "$THEME_DIR/current"
 
+# Platform detection
+IS_MACOS=false
+[[ "$(uname)" == "Darwin" ]] && IS_MACOS=true
+
+# sed -i behaves differently on macOS vs Linux
+sedi() {
+  if $IS_MACOS; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
+
 # --- Wallpaper ---
 for ext in jpg jpeg png; do
   WALLPAPER="$WALLPAPER_DIR/${THEME}.${ext}"
   if [[ -f "$WALLPAPER" ]]; then
-    osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$WALLPAPER\""
+    if $IS_MACOS; then
+      osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$WALLPAPER\""
+    elif command -v hyprctl &>/dev/null; then
+      hyprctl hyprpaper preload "$WALLPAPER" 2>/dev/null
+      hyprctl hyprpaper wallpaper ",$WALLPAPER" 2>/dev/null
+    elif command -v swaybg &>/dev/null; then
+      killall swaybg 2>/dev/null; swaybg -i "$WALLPAPER" -m fill &
+    fi
     break
   fi
 done
 
 # --- Ghostty ---
 if [[ -f "$GHOSTTY_CONFIG" ]]; then
-  sed -i '' "s/^theme = .*/theme = ${THEME}/" "$GHOSTTY_CONFIG"
+  sedi "s/^theme = .*/theme = ${THEME}/" "$GHOSTTY_CONFIG"
 fi
 
 # --- Neovim (persistent) ---
 if [[ -f "$NVIM_INIT" ]]; then
-  sed -i '' "/^[[:space:]]*--/!s/vim\.cmd\.colorscheme '.*'/vim.cmd.colorscheme '${THEME}'/" "$NVIM_INIT"
+  sedi "/^[[:space:]]*--/!s/vim\.cmd\.colorscheme '.*'/vim.cmd.colorscheme '${THEME}'/" "$NVIM_INIT"
 fi
 
 # --- Neovim (live - send to all running instances) ---
-for sock in /tmp/nvim.*/0 /var/folders/*/*/T/nvim.*/0; do
-  [[ -S "$sock" ]] && nvim --server "$sock" --remote-send "<Cmd>colorscheme ${THEME}<CR>" 2>/dev/null &
+NVIM_SOCK_PATHS=("/tmp/nvim.*/0")
+$IS_MACOS && NVIM_SOCK_PATHS+=("/var/folders/*/*/T/nvim.*/0")
+for pattern in "${NVIM_SOCK_PATHS[@]}"; do
+  for sock in $pattern; do
+    [[ -S "$sock" ]] && nvim --server "$sock" --remote-send "<Cmd>colorscheme ${THEME}<CR>" 2>/dev/null &
+  done
 done
 wait 2>/dev/null
 
