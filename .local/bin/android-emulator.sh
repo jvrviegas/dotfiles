@@ -1,3 +1,9 @@
 #!/bin/zsh
 
-"${ANDROID_HOME:-$HOME/Library/Android/sdk}/emulator/emulator" -avd $1 &
+if [[ "$(uname)" == "Darwin" ]]; then
+  DEFAULT_SDK="$HOME/Library/Android/sdk"
+else
+  DEFAULT_SDK="$HOME/Android/Sdk"
+fi
+
+"${ANDROID_HOME:-$DEFAULT_SDK}/emulator/emulator" -avd $1 &
