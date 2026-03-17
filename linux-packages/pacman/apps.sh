@@ -14,9 +14,12 @@ function installflatpak() {
 }
 
 # Browsers
-sudo pacman -S --noconfirm --needed \
-  chromium \
-  zen-browser-bin 2>/dev/null || installflatpak app.zen_browser.zen
+sudo pacman -S --noconfirm --needed chromium
+if command -v paru &>/dev/null; then
+  paru -S --noconfirm --needed zen-browser-bin 2>/dev/null || installflatpak app.zen_browser.zen
+else
+  installflatpak app.zen_browser.zen
+fi
 
 # Terminals
 sudo pacman -S --noconfirm --needed \
@@ -69,10 +72,9 @@ sudo pacman -S --noconfirm --needed flameshot
 
 # Fonts — Nerd Fonts (available in CachyOS/Arch repos)
 echo "  - Installing Nerd Fonts"
-sudo pacman -S --noconfirm --needed \
-  ttf-jetbrains-mono-nerd \
-  ttf-hack-nerd \
-  ttf-fantasque-nerd 2>/dev/null
+sudo pacman -S --noconfirm --needed ttf-jetbrains-mono-nerd 2>/dev/null || true
+sudo pacman -S --noconfirm --needed ttf-hack-nerd 2>/dev/null || true
+sudo pacman -S --noconfirm --needed ttf-fantasque-nerd 2>/dev/null || true
 
 if command -v paru &>/dev/null; then
   paru -S --noconfirm --needed ttf-maple 2>/dev/null || true

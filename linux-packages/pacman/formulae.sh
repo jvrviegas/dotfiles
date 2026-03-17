@@ -109,6 +109,35 @@ else
   fi
 fi
 
+# Kanata setup: udev rule, input group, uinput module, systemd service
+if command -v kanata &>/dev/null; then
+  echo "  - Configuring kanata (udev, input group, systemd)"
+  sudo usermod -aG input "$USER" 2>/dev/null || true
+  echo 'KERNEL=="uinput", MODE="0660", GROUP="input", OPTIONS+="static_node=uinput"' | sudo tee /etc/udev/rules.d/99-input.rules > /dev/null
+  sudo udevadm control --reload-rules && sudo udevadm trigger
+  sudo modprobe uinput
+  echo "uinput" | sudo tee /etc/modules-load.d/uinput.conf > /dev/null
+
+  mkdir -p "$HOME/.config/systemd/user"
+  cat > "$HOME/.config/systemd/user/kanata.service" <<'UNIT'
+[Unit]
+Description=Kanata keyboard remapper
+Documentation=https://github.com/jtroo/kanata
+
+[Service]
+Environment=DISPLAY=:0
+Type=simple
+ExecStart=/usr/bin/kanata --cfg %h/.config/kanata/colemak_dhm.kbd
+Restart=no
+
+[Install]
+WantedBy=default.target
+UNIT
+  systemctl --user daemon-reload
+  systemctl --user enable kanata.service 2>/dev/null || true
+  echo "  - kanata systemd service enabled (will start on next login)"
+fi
+
 # Virtualization (QEMU/KVM)
 sudo pacman -S --noconfirm --needed \
   qemu-full \

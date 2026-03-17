@@ -12,7 +12,14 @@ alias ipod="cd ios && pod install && .."
 alias sozsh="exec zsh"
 alias za="zellij a"
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# ASDF version manager
+if [ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]; then
+  . /opt/homebrew/opt/asdf/libexec/asdf.sh
+elif [ -f /opt/asdf-vm/asdf.sh ]; then
+  . /opt/asdf-vm/asdf.sh
+elif [ -f "$HOME/.asdf/asdf.sh" ]; then
+  . "$HOME/.asdf/asdf.sh"
+fi
 
 # Source secrets (API keys, tokens) from a non-tracked file
 [ -f "$HOME/.zsh_secrets" ] && source "$HOME/.zsh_secrets"
