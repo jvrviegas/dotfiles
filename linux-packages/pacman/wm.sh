@@ -13,7 +13,8 @@ sudo pacman -S --noconfirm --needed \
   hyprpaper \
   hypridle \
   hyprlock \
-  xdg-desktop-portal-hyprland
+  xdg-desktop-portal-hyprland \
+  xdg-desktop-portal-gtk
 
 # Quickshell (bar/shell framework)
 if ! command -v quickshell &>/dev/null; then
