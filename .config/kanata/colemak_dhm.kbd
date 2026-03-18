@@ -55,7 +55,7 @@
     tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
     lctl    @a-ctl @s-alt @d-sft @f-gui g    h    @j-gui @k-sft @l-alt @;-ctl '    caps
     lsft    z    x    c    v    b    n    m    ,    .    /    rsft
-    lctl    lmet  lalt           spc            ret  @ret-rse menu ralt
+    lctl    lalt  lmet           spc            ret  @ret-rse menu lalt
   )
 )
 

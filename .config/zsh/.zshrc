@@ -1,3 +1,8 @@
+# sudo askpass helper (enables sudo in non-interactive contexts like IDE terminals)
+if [ -f /usr/bin/lxqt-openssh-askpass ]; then
+  export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
+fi
+
 # PATH setup
 export PNPM_HOME="$HOME/Library/pnpm"
 export BUN_INSTALL="$HOME/.bun"

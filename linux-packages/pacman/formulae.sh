@@ -11,7 +11,8 @@ sudo pacman -S --noconfirm --needed \
   coreutils \
   openssh \
   git \
-  github-cli
+  github-cli \
+  lxqt-openssh-askpass
 
 # Editors
 sudo pacman -S --noconfirm --needed \

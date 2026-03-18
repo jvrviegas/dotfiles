@@ -55,7 +55,26 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 2. Copy dotfiles to $HOME
+# 2. sudo askpass helper (must run before non-interactive installs)
+# ─────────────────────────────────────────────
+echo "• Setting up sudo askpass helper"
+case "$PKG_DIR" in
+  pacman) sudo pacman -S --noconfirm --needed lxqt-openssh-askpass ;;
+  dnf)    sudo dnf install -y openssh-askpass ;;
+  apt)    sudo apt install -y ssh-askpass ;;
+esac
+if [ -f /usr/bin/lxqt-openssh-askpass ]; then
+  export SUDO_ASKPASS=/usr/bin/lxqt-openssh-askpass
+elif [ -f /usr/libexec/openssh/ssh-askpass ]; then
+  export SUDO_ASKPASS=/usr/libexec/openssh/ssh-askpass
+elif [ -f /usr/bin/ssh-askpass ]; then
+  export SUDO_ASKPASS=/usr/bin/ssh-askpass
+fi
+echo "  - SUDO_ASKPASS=${SUDO_ASKPASS:-not set}"
+echo ""
+
+# ─────────────────────────────────────────────
+# 3. Copy dotfiles to $HOME
 # ─────────────────────────────────────────────
 echo "• Putting dotfiles in your home path: $HOME"
 
@@ -80,7 +99,7 @@ unset file files;
 echo ""
 
 # ─────────────────────────────────────────────
-# 3. Install zsh & set as default shell
+# 4. Install zsh & set as default shell
 # ─────────────────────────────────────────────
 echo "• Installing zsh"
 if command -v zsh &>/dev/null; then
@@ -104,7 +123,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 4. Packages (CLI tools, GUI apps, WM)
+# 5. Packages (CLI tools, GUI apps, WM)
 # ─────────────────────────────────────────────
 source "linux-packages/$PKG_DIR/formulae.sh"
 echo ""
@@ -121,7 +140,7 @@ if [[ -f "linux-packages/$PKG_DIR/wm.sh" ]]; then
 fi
 
 # ─────────────────────────────────────────────
-# 5. NVM setup
+# 6. NVM setup
 # ─────────────────────────────────────────────
 echo "• NVM Setup"
 if [ ! -d "$HOME/.nvm" ]; then
@@ -143,7 +162,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 6. Neovim config symlink
+# 7. Neovim config symlink
 # ─────────────────────────────────────────────
 echo "• Setting up Neovim config symlink"
 if [[ -d "$HOME/.config/nvim" ]] && [[ ! -L "$HOME/.config/nvim" ]]; then
@@ -159,7 +178,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 7. Theme system
+# 8. Theme system
 # ─────────────────────────────────────────────
 echo "• Setting up theme system"
 mkdir -p "$HOME/.config/theme"
@@ -178,7 +197,7 @@ echo "  - Theme set to: $CURRENT_THEME"
 echo ""
 
 # ─────────────────────────────────────────────
-# 8. TPM (Tmux Plugin Manager)
+# 9. TPM (Tmux Plugin Manager)
 # ─────────────────────────────────────────────
 echo "• Setting up TPM (Tmux Plugin Manager)"
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
@@ -190,7 +209,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 9. Node LTS & PNPM
+# 10. Node LTS & PNPM
 # ─────────────────────────────────────────────
 echo "• Installing Node LTS and PNPM"
 export NVM_DIR="$HOME/.nvm"
@@ -209,7 +228,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 10. Zap (zsh plugin manager)
+# 11. Zap (zsh plugin manager)
 # ─────────────────────────────────────────────
 echo "• Installing zsh plugins"
 source .config/zsh/zap_zsh.sh
