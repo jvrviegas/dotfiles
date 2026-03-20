@@ -1,7 +1,7 @@
 local settings = require("settings")
 local colors = require("colors")
 
--- Equivalent to the --default domain
+-- Material You defaults: pill shapes, soft colors, no harsh borders
 sbar.default({
 	updates = "when_shown",
 	icon = {
@@ -13,7 +13,7 @@ sbar.default({
 		color = colors.white,
 		padding_left = settings.paddings,
 		padding_right = settings.paddings,
-		background = { image = { corner_radius = 9 } },
+		background = { image = { corner_radius = 12 } },
 	},
 	label = {
 		font = {
@@ -26,27 +26,24 @@ sbar.default({
 		padding_right = settings.paddings,
 	},
 	background = {
-		height = 28,
-		corner_radius = 9,
-		border_width = 2,
-		border_color = colors.bg2,
+		height = 26,
+		corner_radius = 13,
+		border_width = 0,
+		color = colors.transparent,
 		image = {
-			corner_radius = 9,
-			border_color = colors.grey,
-			border_width = 1,
+			corner_radius = 12,
 		},
 	},
 	popup = {
 		background = {
-			border_width = 2,
-			corner_radius = 9,
-			border_color = colors.popup.border,
+			border_width = 0,
+			corner_radius = 14,
 			color = colors.popup.bg,
 			shadow = { drawing = true },
 		},
-		blur_radius = 50,
+		blur_radius = 30,
 	},
-	padding_left = 5,
-	padding_right = 5,
+	padding_left = 4,
+	padding_right = 4,
 	scroll_texts = true,
 })
