@@ -132,7 +132,7 @@ zmk_battery:subscribe("mouse.clicked", function(env)
 end)
 
 sbar.add("bracket", "widgets.zmk_battery.bracket", { zmk_battery.name }, {
-  background = { color = colors.bg1 },
+  background = { color = colors.bg1, corner_radius = 13 },
 })
 
 sbar.add("item", "widgets.zmk_battery.padding", {
