@@ -26,7 +26,7 @@ local wifi_up = sbar.add("item", "widgets.wifi1", {
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
-    color = colors.red,
+    color = colors.tertiary,
     string = "??? Bps",
   },
   y_offset = 4,
@@ -66,7 +66,10 @@ local wifi_bracket = sbar.add("bracket", "widgets.wifi.bracket", {
   wifi_up.name,
   wifi_down.name
 }, {
-  background = { color = colors.bg1 },
+  background = {
+    color = colors.bg1,
+    corner_radius = 13,
+  },
   popup = { align = "center", height = 30 }
 })
 
@@ -155,7 +158,7 @@ local router = sbar.add("item", {
 sbar.add("item", { position = "right", width = settings.group_paddings })
 
 wifi_up:subscribe("network_update", function(env)
-  local up_color = (env.upload == "000 Bps") and colors.grey or colors.red
+  local up_color = (env.upload == "000 Bps") and colors.grey or colors.tertiary
   local down_color = (env.download == "000 Bps") and colors.grey or colors.blue
   wifi_up:set({
     icon = { color = up_color },
