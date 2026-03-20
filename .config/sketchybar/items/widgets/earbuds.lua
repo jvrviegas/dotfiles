@@ -145,7 +145,7 @@ earbuds:subscribe("mouse.clicked", function()
 end)
 
 sbar.add("bracket", "widgets.earbuds.bracket", { earbuds.name }, {
-  background = { color = colors.bg1 },
+  background = { color = colors.bg1, corner_radius = 13 },
 })
 
 sbar.add("item", "widgets.earbuds.padding", {
