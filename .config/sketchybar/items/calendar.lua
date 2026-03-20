@@ -16,7 +16,7 @@ local cal = sbar.add("item", {
   label = {
     color = colors.white,
     padding_right = 10,
-    width = 68,
+    width = 78,
     align = "right",
     font = { family = settings.font.numbers },
   },
