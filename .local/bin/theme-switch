@@ -81,4 +81,9 @@ if [[ -f "$TMUX_THEME_DIR/${THEME}.sh" ]]; then
   bash "$TMUX_THEME_DIR/current.sh" 2>/dev/null || true
 fi
 
+# --- Sketchybar ---
+if $IS_MACOS; then
+  sketchybar --reload 2>/dev/null &
+fi
+
 echo "Switched to: $THEME"
