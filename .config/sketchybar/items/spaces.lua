@@ -12,37 +12,27 @@ for i = 1, WORKSPACE_COUNT, 1 do
 			string = i,
 			padding_left = 10,
 			padding_right = 8,
-			color = colors.white,
-			highlight_color = colors.red,
+			color = colors.grey,
+			highlight_color = colors.primary,
 		},
 		label = {
 			padding_right = 12,
 			color = colors.grey,
-			highlight_color = colors.white,
+			highlight_color = colors.primary,
 			font = "sketchybar-app-font:Regular:16.0",
 			y_offset = -1,
 		},
 		padding_right = 1,
 		padding_left = 1,
 		background = {
-			color = colors.bg1,
-			border_width = 1,
+			color = colors.transparent,
+			corner_radius = 13,
+			border_width = 0,
 			height = 26,
-			border_color = colors.bg2,
 		},
 	})
 
 	spaces[i] = space
-
-	-- Single item bracket for space items to achieve double border on highlight
-	local space_bracket = sbar.add("bracket", "space.bracket." .. i, { space.name }, {
-		background = {
-			color = colors.transparent,
-			border_color = colors.bg2,
-			height = 28,
-			border_width = 2,
-		},
-	})
 
 	-- Padding item
 	sbar.add("item", "space.padding." .. i, {
@@ -59,10 +49,9 @@ for i = 1, WORKSPACE_COUNT, 1 do
 		space:set({
 			icon = { highlight = focused },
 			label = { highlight = focused },
-			background = { border_color = focused and colors.black or colors.bg2 },
-		})
-		space_bracket:set({
-			background = { border_color = focused and colors.grey or colors.bg2 },
+			background = {
+				color = focused and colors.primary_container or colors.transparent,
+			},
 		})
 	end)
 end
