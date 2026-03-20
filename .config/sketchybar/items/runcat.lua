@@ -8,7 +8,7 @@ local runcat = sbar.add("item", "runcat", {
 	label = {
 		text = frames[frame_index],
 		font = "Hack Nerd Font:Bold:12.0",
-		color = 0xfff5c2e7,
+		color = 0xffefb8c8,
 		padding_right = 10,
 	},
 	click_script = "open -a 'Activity Monitor'",
