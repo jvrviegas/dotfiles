@@ -25,20 +25,20 @@ for _, item in ipairs(items) do
 		icon = {
 			string = item.icon,
 			font = { family = settings.font.numbers, style = settings.font.style_map["Bold"], size = 14.0 },
-			color = colors.pink,
+			color = colors.tertiary,
 			padding_right = 0,
 			padding_left = 10,
 		},
 		label = {
 			font = { family = settings.font.text, style = settings.font.style_map["Bold"], size = 14.0 },
-			color = colors.pink,
+			color = colors.tertiary,
 			padding_right = 10,
 		},
 		background = {
 			color = colors.bg1,
-			border_width = 1,
-			height = 28,
-			border_color = colors.black,
+			border_width = 0,
+			height = 26,
+			corner_radius = 13,
 		},
 	})
 
@@ -53,7 +53,7 @@ for _, item in ipairs(items) do
 end
 
 local stats = sbar.add("bracket", "stats", item_names, {
-	background = { color = colors.surface0, border_color = colors.pink, height = 24, corner_radius = 10 },
+	background = { color = colors.bg1, border_color = colors.tertiary, height = 24, corner_radius = 13 },
 })
 
 local function on_mouse_entered()
