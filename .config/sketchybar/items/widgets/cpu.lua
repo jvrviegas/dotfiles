@@ -8,7 +8,7 @@ sbar.exec("killall cpu_load >/dev/null; $CONFIG_DIR/helpers/event_providers/cpu_
 
 local cpu = sbar.add("graph", "widgets.cpu" , 42, {
   position = "right",
-  graph = { color = colors.blue },
+  graph = { color = colors.primary },
   background = {
     height = 22,
     color = { alpha = 0 },
@@ -36,7 +36,7 @@ cpu:subscribe("cpu_update", function(env)
   local load = tonumber(env.total_load)
   cpu:push({ load / 100. })
 
-  local color = colors.blue
+  local color = colors.primary
   if load > 30 then
     if load < 60 then
       color = colors.yellow
@@ -59,10 +59,13 @@ end)
 
 -- Background around the cpu item
 sbar.add("bracket", "widgets.cpu.bracket", { cpu.name }, {
-  background = { color = colors.bg1 }
+  background = {
+    color = colors.bg1,
+    corner_radius = 13,
+  }
 })
 
--- Background around the cpu item
+-- Padding
 sbar.add("item", "widgets.cpu.padding", {
   position = "right",
   width = settings.group_paddings
