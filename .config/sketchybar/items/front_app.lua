@@ -6,9 +6,10 @@ local front_app = sbar.add("item", "front_app", {
   icon = { drawing = false },
   label = {
     font = {
-      style = settings.font.style_map["Black"],
+      style = settings.font.style_map["Bold"],
       size = 12.0,
     },
+    color = colors.secondary,
   },
   updates = true,
 })
