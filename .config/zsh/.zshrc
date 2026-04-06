@@ -4,15 +4,24 @@ if [ -f /usr/bin/lxqt-openssh-askpass ]; then
 fi
 
 # PATH setup
-export PNPM_HOME="$HOME/Library/pnpm"
 export BUN_INSTALL="$HOME/.bun"
-export ANDROID_HOME="$HOME/Library/Android/sdk"
-export DOTNET_ROOT="/opt/homebrew/Cellar/dotnet/10.0.102/libexec"
-export PATH="$PNPM_HOME:$BUN_INSTALL/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/homebrew/bin:/opt/homebrew/opt/libpq/bin:$HOME/.opencode/bin:$HOME/.antigravity/antigravity/bin:$PATH"
-export PATH="${PATH}:${HOME}/.cargo/env"
+export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$BUN_INSTALL/bin:$PATH"
+export PATH="${PATH}:${HOME}/.cargo/bin"
 
-if command -v brew &> /dev/null && brew --prefix openjdk@17 &> /dev/null; then
-  export JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
+if [[ "$(uname)" == "Darwin" ]]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+  export ANDROID_HOME="$HOME/Library/Android/sdk"
+  export DOTNET_ROOT="/opt/homebrew/Cellar/dotnet/10.0.102/libexec"
+  export PATH="$PNPM_HOME:$HOME/homebrew/bin:/opt/homebrew/opt/libpq/bin:$HOME/.opencode/bin:$HOME/.antigravity/antigravity/bin:$PATH"
+  if command -v brew &> /dev/null && brew --prefix openjdk@17 &> /dev/null; then
+    export JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
+  fi
+else
+  export PNPM_HOME="$HOME/.local/share/pnpm"
+  export ANDROID_HOME="$HOME/Android/Sdk"
+  [ -d "/usr/lib64/dotnet" ] && export DOTNET_ROOT="/usr/lib64/dotnet"
+  export PATH="$PNPM_HOME:$PATH"
+  [ -d "/usr/lib/jvm/java-17-openjdk" ] && export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 fi
 
 export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"

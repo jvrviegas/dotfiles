@@ -24,8 +24,8 @@ fi
 # Source secrets (API keys, tokens) from a non-tracked file
 [ -f "$HOME/.zsh_secrets" ] && source "$HOME/.zsh_secrets"
 
-#Intel Platform
-alias intel="arch -x86_64"
+# Intel Platform (macOS only)
+[[ "$(uname)" == "Darwin" ]] && alias intel="arch -x86_64"
 
 # Where should I put you?
 bindkey -s ^f "tmux-sessionizer\n"
