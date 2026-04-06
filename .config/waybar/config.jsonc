@@ -2,20 +2,20 @@
   "layer": "top",
   "position": "top",
   "height": 40,
-  "spacing": 5,
+  "spacing": 0,
 
-  // ===== Left =====
+  // ===== Left (apple → spaces → front_app) =====
   "modules-left": [
     "hyprland/workspaces",
     "hyprland/window"
   ],
 
-  // ===== Center =====
+  // ===== Center (media) =====
   "modules-center": [
     "mpris"
   ],
 
-  // ===== Right =====
+  // ===== Right (stats → network → volume → battery → clock) =====
   "modules-right": [
     "tray",
     "cpu",
@@ -37,7 +37,7 @@
     }
   },
 
-  // ── Active window title ──
+  // ── Active window title (front_app style) ──
   "hyprland/window": {
     "format": "{}",
     "max-length": 50,
@@ -50,7 +50,7 @@
     "format-paused": "{player_icon} {status_icon} {artist} - {title}",
     "player-icons": {
       "spotify": "",
-      "default": "🎵"
+      "default": ""
     },
     "status-icons": {
       "paused": ""
@@ -64,10 +64,10 @@
     "spacing": 8
   },
 
-  // ── CPU ──
+  // ── CPU (matching sketchybar widgets.cpu) ──
   "cpu": {
-    "format": " {usage}%",
-    "interval": 5,
+    "format": "󰻠 {usage}%",
+    "interval": 2,
     "tooltip": true
   },
 
@@ -77,7 +77,7 @@
     "interval": 5
   },
 
-  // ── Disk ──
+  // ── Disk (matching sketchybar stats disk_usage) ──
   "disk": {
     "format": "󰋊 {percentage_used}%",
     "path": "/",
@@ -86,7 +86,7 @@
 
   // ── Network ──
   "network": {
-    "format-wifi": "  {essid}",
+    "format-wifi": "󰤨 {essid}",
     "format-ethernet": "󰈀 {ifname}",
     "format-disconnected": "󰖪 Disconnected",
     "tooltip-format": "{ifname}: {ipaddr}/{cidr}\n↑ {bandwidthUpBits} ↓ {bandwidthDownBits}",
@@ -97,7 +97,7 @@
   "wireplumber": {
     "format": "{icon} {volume}%",
     "format-muted": "󰝟 Muted",
-    "format-icons": ["", "", ""],
+    "format-icons": ["󰕿", "󰖀", "󰕾"],
     "on-click": "pavucontrol"
   },
 
@@ -114,9 +114,9 @@
     "interval": 30
   },
 
-  // ── Clock (matching macOS: "Mon. 18 Mar. 14:30") ──
+  // ── Clock (matching sketchybar calendar: "Mon. 18 Mar. 14:30") ──
   "clock": {
-    "format": " {:%a. %d %b. %H:%M}",
+    "format": "󰃭 {:%a. %d %b. %H:%M}",
     "tooltip-format": "<tt>{calendar}</tt>",
     "calendar": {
       "mode": "month",

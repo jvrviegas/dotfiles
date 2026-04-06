@@ -1,4 +1,7 @@
-/* Monokai Pro inspired theme — matching macOS sketchybar colors */
+/* Monokai Pro inspired theme — matching macOS sketchybar style */
+/* Colors: bar=#1a1c26, bg1=#363944, bg2=#414550, black=#181819, border=#2c2e34 */
+/* white=#e2e2e3, red=#fc5d7c, green=#9ed072, blue=#76cce0, yellow=#e7c664 */
+/* orange=#f39660, magenta=#b39df3, grey=#7f8490 */
 
 * {
     font-family: "JetBrainsMono Nerd Font", "Material Symbols Rounded", monospace;
@@ -7,12 +10,23 @@
 }
 
 window#waybar {
-    background-color: rgba(26, 28, 38, 0.85);
+    background-color: rgba(26, 28, 38, 0.67);
     color: #e2e2e3;
     border-bottom: 1px solid #2c2e34;
 }
 
-/* ── Shared module styling ── */
+tooltip {
+    background-color: rgba(44, 46, 52, 0.75);
+    border: 2px solid #7f8490;
+    border-radius: 9px;
+    color: #e2e2e3;
+}
+
+tooltip label {
+    color: #e2e2e3;
+}
+
+/* ── Pill-shaped module base (matching sketchybar brackets: bg1, h28, r9) ── */
 #workspaces,
 #window,
 #mpris,
@@ -22,50 +36,56 @@ window#waybar {
 #disk,
 #network,
 #wireplumber,
+#battery,
 #clock {
     padding: 0 10px;
-    margin: 4px 2px;
-    border-radius: 6px;
-}
-
-/* ── Workspaces ── */
-#workspaces {
+    margin: 6px 3px;
+    border-radius: 9px;
     background-color: #363944;
     border: 1px solid #414550;
+}
+
+/* ── Workspaces (double-border pill, matching sketchybar bracket style) ── */
+#workspaces {
     padding: 0 2px;
+    border: 2px solid #414550;
+    box-shadow: 0 0 0 1px #363944;
 }
 
 #workspaces button {
     padding: 0 6px;
     margin: 2px 1px;
-    color: #e2e2e3;
-    border-radius: 4px;
+    color: #7f8490;
+    border-radius: 6px;
     background: transparent;
     border: none;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 #workspaces button.active {
     color: #fc5d7c;
     background-color: #414550;
+    border: 1px solid #181819;
 }
 
 #workspaces button:hover {
     background-color: #414550;
+    color: #e2e2e3;
 }
 
-#workspaces button.empty {
-    color: #7f8490;
-}
-
-/* ── Active window ── */
+/* ── Active window (front_app style: Black weight, 12px) ── */
 #window {
     font-weight: 900;
     font-size: 12px;
+    background-color: transparent;
+    border: none;
 }
 
 /* ── Media ── */
 #mpris {
     color: #9ed072;
+    background-color: transparent;
+    border: none;
 }
 
 #mpris.paused {
@@ -82,19 +102,36 @@ window#waybar {
     -gtk-icon-effect: dim;
 }
 
-/* ── Stats (CPU, Memory, Disk) ── */
-#cpu,
-#memory,
-#disk {
-    background-color: #363944;
-    border: 1px solid #414550;
+/* ── Stats group (CPU, Memory, Disk — merged into one pill) ── */
+#cpu {
+    color: #76cce0;
+    border-right: none;
+    border-radius: 9px 0 0 9px;
+    margin-right: 0;
+    padding-right: 6px;
+}
+
+#memory {
     color: #b39df3;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    margin-left: -1px;
+    margin-right: 0;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+#disk {
+    color: #b39df3;
+    border-left: none;
+    border-radius: 0 9px 9px 0;
+    margin-left: -1px;
+    padding-left: 6px;
 }
 
 /* ── Network ── */
 #network {
-    background-color: #363944;
-    border: 1px solid #414550;
     color: #76cce0;
 }
 
@@ -104,8 +141,6 @@ window#waybar {
 
 /* ── Volume ── */
 #wireplumber {
-    background-color: #363944;
-    border: 1px solid #414550;
     color: #e7c664;
 }
 
@@ -115,8 +150,6 @@ window#waybar {
 
 /* ── Battery ── */
 #battery {
-    background-color: #363944;
-    border: 1px solid #414550;
     color: #9ed072;
 }
 
@@ -132,10 +165,11 @@ window#waybar {
     color: #fc5d7c;
 }
 
-/* ── Clock ── */
+/* ── Clock (double-border pill, matching sketchybar calendar bracket) ── */
 #clock {
     background-color: #414550;
-    border: 1px solid #2c2e34;
+    border: 1px solid #181819;
+    box-shadow: 0 0 0 1px #7f8490;
     color: #e2e2e3;
     font-weight: bold;
 }
