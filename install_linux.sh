@@ -130,14 +130,33 @@ echo ""
 source "linux-packages/$PKG_DIR/apps.sh"
 echo ""
 
-# Window manager (optional)
-if [[ -f "linux-packages/$PKG_DIR/wm.sh" ]]; then
-  read -p "• Install Hyprland + Quickshell + Vicinae window management stack? [y/N] " wm_choice
-  if [[ "$wm_choice" =~ ^[Yy]$ ]]; then
-    source "linux-packages/$PKG_DIR/wm.sh"
-  fi
-  echo ""
-fi
+# Window manager / desktop environment config (optional)
+echo "• Desktop environment / window manager setup:"
+echo "    1) GNOME (Forge tiling extension + desktop preferences)"
+echo "    2) Hyprland + Quickshell + Vicinae"
+echo "    3) Skip"
+read -rp "  Enter choice [1/2/3]: " wm_choice
+
+case "$wm_choice" in
+  1)
+    echo "  - Applying Fedora GNOME preferences"
+    source fedora.sh
+    ;;
+  2)
+    if [[ -f "linux-packages/$PKG_DIR/wm.sh" ]]; then
+      source "linux-packages/$PKG_DIR/wm.sh"
+    else
+      echo "  ✗ No wm.sh found for $PKG_DIR"
+    fi
+    ;;
+  3)
+    echo "  - Skipping desktop/WM setup"
+    ;;
+  *)
+    echo "  - Invalid choice, skipping"
+    ;;
+esac
+echo ""
 
 # ─────────────────────────────────────────────
 # 6. NVM setup

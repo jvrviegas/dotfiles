@@ -44,6 +44,10 @@ for ext in jpg jpeg png; do
   if [[ -f "$WALLPAPER" ]]; then
     if $IS_MACOS; then
       osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$WALLPAPER\""
+    elif gsettings get org.gnome.desktop.background picture-uri &>/dev/null; then
+      gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER"
+      gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER"
+      gsettings set org.gnome.desktop.background picture-options 'zoom'
     elif command -v hyprctl &>/dev/null; then
       hyprctl hyprpaper preload "$WALLPAPER" 2>/dev/null
       hyprctl hyprpaper wallpaper ",$WALLPAPER" 2>/dev/null
