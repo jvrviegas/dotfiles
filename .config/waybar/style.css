@@ -1,0 +1,141 @@
+/* Monokai Pro inspired theme — matching macOS sketchybar colors */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Material Symbols Rounded", monospace;
+    font-size: 13px;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: rgba(26, 28, 38, 0.85);
+    color: #e2e2e3;
+    border-bottom: 1px solid #2c2e34;
+}
+
+/* ── Shared module styling ── */
+#workspaces,
+#window,
+#mpris,
+#tray,
+#cpu,
+#memory,
+#disk,
+#network,
+#wireplumber,
+#clock {
+    padding: 0 10px;
+    margin: 4px 2px;
+    border-radius: 6px;
+}
+
+/* ── Workspaces ── */
+#workspaces {
+    background-color: #363944;
+    border: 1px solid #414550;
+    padding: 0 2px;
+}
+
+#workspaces button {
+    padding: 0 6px;
+    margin: 2px 1px;
+    color: #e2e2e3;
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+}
+
+#workspaces button.active {
+    color: #fc5d7c;
+    background-color: #414550;
+}
+
+#workspaces button:hover {
+    background-color: #414550;
+}
+
+#workspaces button.empty {
+    color: #7f8490;
+}
+
+/* ── Active window ── */
+#window {
+    font-weight: 900;
+    font-size: 12px;
+}
+
+/* ── Media ── */
+#mpris {
+    color: #9ed072;
+}
+
+#mpris.paused {
+    color: #7f8490;
+}
+
+/* ── System tray ── */
+#tray {
+    background-color: #363944;
+    border: 1px solid #414550;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+/* ── Stats (CPU, Memory, Disk) ── */
+#cpu,
+#memory,
+#disk {
+    background-color: #363944;
+    border: 1px solid #414550;
+    color: #b39df3;
+}
+
+/* ── Network ── */
+#network {
+    background-color: #363944;
+    border: 1px solid #414550;
+    color: #76cce0;
+}
+
+#network.disconnected {
+    color: #fc5d7c;
+}
+
+/* ── Volume ── */
+#wireplumber {
+    background-color: #363944;
+    border: 1px solid #414550;
+    color: #e7c664;
+}
+
+#wireplumber.muted {
+    color: #7f8490;
+}
+
+/* ── Battery ── */
+#battery {
+    background-color: #363944;
+    border: 1px solid #414550;
+    color: #9ed072;
+}
+
+#battery.charging {
+    color: #9ed072;
+}
+
+#battery.warning:not(.charging) {
+    color: #e7c664;
+}
+
+#battery.critical:not(.charging) {
+    color: #fc5d7c;
+}
+
+/* ── Clock ── */
+#clock {
+    background-color: #414550;
+    border: 1px solid #2c2e34;
+    color: #e2e2e3;
+    font-weight: bold;
+}

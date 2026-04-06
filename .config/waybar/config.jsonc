@@ -1,0 +1,132 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 40,
+  "spacing": 5,
+
+  // ===== Left =====
+  "modules-left": [
+    "hyprland/workspaces",
+    "hyprland/window"
+  ],
+
+  // ===== Center =====
+  "modules-center": [
+    "mpris"
+  ],
+
+  // ===== Right =====
+  "modules-right": [
+    "tray",
+    "cpu",
+    "memory",
+    "disk",
+    "network",
+    "wireplumber",
+    "battery",
+    "clock"
+  ],
+
+  // ── Workspaces (8, matching macOS AeroSpace) ──
+  "hyprland/workspaces": {
+    "format": "{id}",
+    "on-click": "activate",
+    "all-outputs": true,
+    "persistent-workspaces": {
+      "*": 8
+    }
+  },
+
+  // ── Active window title ──
+  "hyprland/window": {
+    "format": "{}",
+    "max-length": 50,
+    "separate-outputs": true
+  },
+
+  // ── Media (Spotify/MPRIS) ──
+  "mpris": {
+    "format": "{player_icon} {artist} - {title}",
+    "format-paused": "{player_icon} {status_icon} {artist} - {title}",
+    "player-icons": {
+      "spotify": "",
+      "default": "🎵"
+    },
+    "status-icons": {
+      "paused": ""
+    },
+    "max-length": 40
+  },
+
+  // ── System tray ──
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  },
+
+  // ── CPU ──
+  "cpu": {
+    "format": " {usage}%",
+    "interval": 5,
+    "tooltip": true
+  },
+
+  // ── Memory ──
+  "memory": {
+    "format": "󰍛 {percentage}%",
+    "interval": 5
+  },
+
+  // ── Disk ──
+  "disk": {
+    "format": "󰋊 {percentage_used}%",
+    "path": "/",
+    "interval": 30
+  },
+
+  // ── Network ──
+  "network": {
+    "format-wifi": "  {essid}",
+    "format-ethernet": "󰈀 {ifname}",
+    "format-disconnected": "󰖪 Disconnected",
+    "tooltip-format": "{ifname}: {ipaddr}/{cidr}\n↑ {bandwidthUpBits} ↓ {bandwidthDownBits}",
+    "max-length": 20
+  },
+
+  // ── Volume (WirePlumber) ──
+  "wireplumber": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 Muted",
+    "format-icons": ["", "", ""],
+    "on-click": "pavucontrol"
+  },
+
+  // ── Battery ──
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "states": {
+      "warning": 20,
+      "critical": 10
+    },
+    "interval": 30
+  },
+
+  // ── Clock (matching macOS: "Mon. 18 Mar. 14:30") ──
+  "clock": {
+    "format": " {:%a. %d %b. %H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "weeks-pos": "left",
+      "format": {
+        "months": "<span color='#e2e2e3'><b>{}</b></span>",
+        "weeks": "<span color='#7f8490'><b>W{}</b></span>",
+        "weekdays": "<span color='#e7c664'><b>{}</b></span>",
+        "today": "<span color='#fc5d7c'><b><u>{}</u></b></span>"
+      }
+    }
+  }
+}

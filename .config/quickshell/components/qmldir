@@ -1,0 +1,9 @@
+MaterialIcon MaterialIcon.qml
+Pill Pill.qml
+Workspaces Workspaces.qml
+ActiveWindow ActiveWindow.qml
+MediaPlayer MediaPlayer.qml
+SysTray SysTray.qml
+StatsGroup StatsGroup.qml
+StatusGroup StatusGroup.qml
+Clock Clock.qml

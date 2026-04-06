@@ -1,68 +1,52 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import "components"
 
-Rectangle {
-    id: bar
-    color: Theme.barBg
+Item {
+    id: root
+    required property ShellScreen screen
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 2
-        anchors.rightMargin: 2
-        spacing: 0
+        anchors.leftMargin: 8
+        anchors.rightMargin: 8
+        spacing: Theme.groupSpacing
 
-        // ===== LEFT SIDE =====
-
-        // Workspaces
+        // ===== LEFT =====
         Workspaces {
-            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+            Layout.alignment: Qt.AlignVCenter
+            screen: root.screen
         }
 
-        // Active window title
         ActiveWindow {
-            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-            Layout.leftMargin: Theme.groupPadding
+            Layout.alignment: Qt.AlignVCenter
         }
 
-        // Spacer
         Item { Layout.fillWidth: true }
 
-        // ===== RIGHT SIDE =====
-
-        // Media (Spotify/MPRIS)
+        // ===== CENTER =====
         MediaPlayer {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.rightMargin: Theme.groupPadding
+            Layout.alignment: Qt.AlignVCenter
         }
 
-        // Calendar & Time
+        Item { Layout.fillWidth: true }
+
+        // ===== RIGHT =====
+        SysTray {
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        StatsGroup {
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        StatusGroup {
+            Layout.alignment: Qt.AlignVCenter
+        }
+
         Clock {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.rightMargin: Theme.groupPadding
-        }
-
-        // Network (WiFi)
-        Network {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.rightMargin: Theme.groupPadding
-        }
-
-        // CPU
-        CpuGraph {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.rightMargin: Theme.groupPadding
-        }
-
-        // Volume
-        Volume {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.rightMargin: Theme.groupPadding
-        }
-
-        // Battery
-        Battery {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-            Layout.rightMargin: Theme.groupPadding
+            Layout.alignment: Qt.AlignVCenter
         }
     }
 }

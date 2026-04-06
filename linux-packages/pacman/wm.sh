@@ -14,16 +14,25 @@ sudo pacman -S --noconfirm --needed \
   hypridle \
   hyprlock \
   xdg-desktop-portal-hyprland \
-  xdg-desktop-portal-gtk
+  xdg-desktop-portal-gtk \
+  waybar
 
-# Quickshell (bar/shell framework)
-if ! command -v quickshell &>/dev/null; then
-  if command -v paru &>/dev/null; then
-    echo "  - Installing Quickshell via AUR"
-    paru -S --noconfirm --needed quickshell-git
-  else
-    echo "  - Quickshell: install from https://quickshell.outfoxxed.me/docs/guide/installation"
-  fi
+# Quickshell + Caelestia shell (bar, launcher, dashboard, notifications, lock screen)
+if command -v paru &>/dev/null; then
+  echo "  - Installing Quickshell + Caelestia via AUR"
+  paru -S --noconfirm --needed quickshell-git caelestia-shell caelestia-cli
+else
+  echo "  - Quickshell/Caelestia: install from AUR (paru required)"
+fi
+
+# Caelestia dependencies
+sudo pacman -S --noconfirm --needed \
+  fish \
+  lm_sensors \
+  ddcutil \
+  ttf-material-symbols-variable-git 2>/dev/null || true
+if command -v paru &>/dev/null; then
+  paru -S --noconfirm --needed cava-git 2>/dev/null || true
 fi
 
 # Vicinae (Raycast-like launcher)

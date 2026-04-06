@@ -1,9 +1,9 @@
 pragma Singleton
+
 import QtQuick
 
-// Monokai Pro color scheme matching sketchybar colors.lua
 QtObject {
-    // Core colors
+    // Monokai Pro palette
     readonly property color black: "#181819"
     readonly property color white: "#e2e2e3"
     readonly property color red: "#fc5d7c"
@@ -14,41 +14,43 @@ QtObject {
     readonly property color magenta: "#b39df3"
     readonly property color grey: "#7f8490"
 
-    // Background colors
-    readonly property color barBg: "#aa1a1c26"          // Semi-transparent
-    readonly property color barBorder: "#2c2e34"
-    readonly property color popupBg: "#c02c2e34"
-    readonly property color popupBorder: "#7f8490"
-    readonly property color bg1: "#363944"
-    readonly property color bg2: "#414550"
+    // M3 surface colors (matching Caelestia)
+    readonly property color surface: "#0d0f18"
+    readonly property color surfaceContainer: Qt.rgba(1, 1, 1, 0.08)
+    readonly property color surfaceContainerHigh: Qt.rgba(1, 1, 1, 0.12)
+    readonly property color surfaceBorder: Qt.rgba(1, 1, 1, 0.04)
+
+    // Semantic M3 roles
+    readonly property color primary: "#f5a0b0"
+    readonly property color primaryText: "#1a1c26"
+    readonly property color secondary: "#9a9aa8"
+    readonly property color tertiary: "#b39df3"
+    readonly property color error: "#fc5d7c"
+    readonly property color textColor: "#ccc"
 
     // Fonts
     readonly property string fontFamily: "JetBrainsMono Nerd Font"
-    readonly property string numberFont: "JetBrainsMono Nerd Font"
-    readonly property int fontSizeSmall: 9
-    readonly property int fontSizeNormal: 12
-    readonly property int fontSizeLarge: 14
+    readonly property string materialFont: "Material Symbols Rounded"
+    readonly property int fontSizeSmall: 11
+    readonly property int fontSizeNormal: 13
+    readonly property int materialIconSize: 19
 
-    // Dimensions
-    readonly property int barHeight: 40
-    readonly property int itemHeight: 28
-    readonly property int borderRadius: 9
-    readonly property int padding: 3
-    readonly property int groupPadding: 5
+    // Layout
+    readonly property int barHeight: 46
+    readonly property int pillHeight: 34
+    readonly property int roundingFull: 1000
+    readonly property int roundingNormal: 14
+    readonly property int pillPadding: 10
+    readonly property int groupSpacing: 6
 
-    // Helper: CPU color based on load
-    function cpuColor(load) {
-        if (load > 80) return red;
-        if (load > 60) return orange;
-        if (load > 30) return yellow;
-        return blue;
-    }
+    // Animation
+    readonly property int animDuration: 250
+    readonly property int animDurationFast: 150
 
-    // Helper: Battery color based on charge
     function batteryColor(charge, charging) {
         if (charging) return green;
-        if (charge > 80) return green;
-        if (charge > 20) return orange;
-        return red;
+        if (charge > 20) return secondary;
+        if (charge > 10) return yellow;
+        return error;
     }
 }

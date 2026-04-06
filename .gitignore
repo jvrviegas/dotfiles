@@ -25,3 +25,10 @@ screenlog*
 
 # Project tracking
 TODO.md
+
+# VMs
+windows-11/
+windows-11.conf
+
+# Claude Code
+.claude/
