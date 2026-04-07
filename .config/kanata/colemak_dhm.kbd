@@ -5,11 +5,12 @@
 )
 
 ;; Global key overrides for arrow key navigation
+;; Uses physical QWERTY positions: XKB Colemak-DH maps h→m, j→n, k→e, l→i
 (defoverrides
-  (lctl m) (lft)
-  (lctl n) (down)
-  (lctl e) (up)
-  (lctl i) (rght)
+  (lctl h) (lft)
+  (lctl j) (down)
+  (lctl k) (up)
+  (lctl l) (rght)
 )
 
 ;; Combination keys (chords)
