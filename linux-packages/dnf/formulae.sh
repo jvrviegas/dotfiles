@@ -59,10 +59,11 @@ fi
 # Languages & runtimes
 sudo dnf install -y \
   dotnet-sdk-8.0 \
-  java-17-openjdk-devel \
+  java-21-openjdk-devel \
   rustup
 
 rustup-init -y --no-modify-path 2>/dev/null || true
+source "$HOME/.cargo/env" 2>/dev/null || true
 
 # ASDF (git clone install)
 if [ ! -d "$HOME/.asdf" ]; then
@@ -75,9 +76,14 @@ fi
 
 # Mobile development
 sudo dnf install -y \
-  scrcpy \
   android-tools \
   yarn
+
+# scrcpy (not in default repos)
+if ! command -v scrcpy &>/dev/null; then
+  sudo dnf copr enable -y zeno/scrcpy 2>/dev/null && sudo dnf install -y scrcpy || \
+    echo "  ⚠ scrcpy: install manually from https://github.com/Genymobile/scrcpy"
+fi
 
 # Containers
 sudo dnf install -y docker-compose
@@ -104,6 +110,9 @@ sudo dnf install -y \
   httpie \
   nmap \
   pgpdump
+
+# Build dependencies for cargo crates
+sudo dnf install -y openssl-devel pkg-config
 
 # websocat (install via cargo)
 if ! command -v websocat &>/dev/null; then
@@ -133,8 +142,9 @@ sudo usermod -aG libvirt "$USER" 2>/dev/null || true
 #   quickget list                 # shows all available OSes
 #   quickgui                      # GUI frontend
 if ! command -v quickemu &>/dev/null; then
-  sudo dnf copr enable -y quickemu/quickemu
-  sudo dnf install -y quickemu quickgui
+  sudo dnf copr enable -y quickemu/quickemu 2>/dev/null && \
+    sudo dnf install -y quickemu quickgui 2>/dev/null || \
+    echo "  ⚠ quickemu: COPR not available for this Fedora version, install manually"
 fi
 
 # AI

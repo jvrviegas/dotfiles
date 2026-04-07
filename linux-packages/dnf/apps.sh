@@ -19,8 +19,14 @@ installflatpak app.zen_browser.zen
 # Terminals
 sudo dnf install -y \
   alacritty \
-  kitty \
-  wezterm
+  kitty
+
+# Wezterm (COPR)
+if ! command -v wezterm &>/dev/null; then
+  sudo dnf copr enable -y wezfurlong/wezterm-nightly 2>/dev/null && \
+    sudo dnf install -y wezterm 2>/dev/null || \
+    echo "  ⚠ wezterm: COPR not available, install manually from https://wezfurlong.org/wezterm/"
+fi
 if ! command -v ghostty &>/dev/null; then
   echo "  - Ghostty: install manually from https://ghostty.org/download or COPR"
 fi
