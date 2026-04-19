@@ -2,15 +2,16 @@
   process-unmapped-keys   yes
   concurrent-tap-hold     yes
   allow-hardware-repeat   no
+  linux-dev               /dev/input/by-path/platform-i8042-serio-0-event-kbd
 )
 
 ;; Global key overrides for arrow key navigation
-;; Uses physical QWERTY positions: XKB Colemak-DH maps h→m, j→n, k→e, l→i
+;; Ctrl+m/n/e/i (Colemak-DH output on QWERTY h/j/k/l positions) → arrow keys
 (defoverrides
-  (lctl h) (lft)
-  (lctl j) (down)
-  (lctl k) (up)
-  (lctl l) (rght)
+  (lctl m) (lft)
+  (lctl n) (down)
+  (lctl e) (up)
+  (lctl i) (rght)
 )
 
 ;; Combination keys (chords)
@@ -47,15 +48,15 @@
   )
 )
 
-;; Linux: QWERTY layer with HRMs
+;; Linux: Colemak-DH layer with HRMs (kanata handles layout conversion)
 ;; AltGr acts as Enter since Right Super may not be available
 (platform (linux)
   (deflayer colemak-dh
     esc     brdn brup @mctl @spot f5   f6   prev pp   next mute vold volu
     @grav   1    2    3    4    5    6    7    8    9    0    -    =    bspc
-    tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
-    lctl    @a-ctl @s-alt @d-sft @f-gui g    h    @j-gui @k-sft @l-alt @;-ctl '    caps
-    lsft    z    x    c    v    b    n    m    ,    .    /    rsft
+    tab     q    w    f    p    b    j    l    u    y    ;    [    ]    \
+    lctl    @a-ctl @r-alt @s-sft @t-gui g    m    @n-gui @e-sft @i-alt @o-ctl '    caps
+    lsft    z    x    c    d    v    k    h    ,    .    /    rsft
     lctl    lalt  lmet           spc            ret  @ret-rse menu lalt
   )
 )
@@ -135,19 +136,5 @@
   ;; macOS media keys (F3=Mission Control, F4=Spotlight via shortcuts)
   mctl (macro lctl up)
   spot (macro lmet spc)
-)
-
-;; Linux-specific: QWERTY Home Row Mods
-(platform (linux)
-  (defalias
-    s-alt (tap-hold-release 220 220 s lalt)
-    d-sft (tap-hold-release 220 220 d lctl)
-    f-gui (tap-hold-release 190 190 f lsft)
-
-    j-gui (tap-hold-release 190 190 j rsft)
-    k-sft (tap-hold-release 220 220 k lctl)
-    l-alt (tap-hold-release 220 220 l ralt)
-    ;-ctl (tap-hold-release 220 220 ; rmet)
-  )
 )
 
