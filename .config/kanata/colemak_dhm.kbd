@@ -3,6 +3,7 @@
   concurrent-tap-hold     yes
   allow-hardware-repeat   no
   linux-dev               /dev/input/by-path/platform-i8042-serio-0-event-kbd
+  macos-dev-names-include ("Apple Internal Keyboard / Trackpad")
 )
 
 ;; Global key overrides for arrow key navigation
