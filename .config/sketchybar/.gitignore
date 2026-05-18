@@ -1,0 +1,5 @@
+# Local AI usage plugin config/secrets
+ai_usage.env
+
+# Runtime cache if XDG paths are redirected here
+.cache/

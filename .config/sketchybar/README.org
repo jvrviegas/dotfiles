@@ -11,3 +11,14 @@ It is minimal and close to the default while still being pretty and functional.
 - Spaces
 - Window title
 - Native look using SF Symbols and the SF Mono font.
+
+** AI usage item
+
+The AI usage item is loaded from ~items/ai_usage.lua~ and uses provider scripts in ~plugins/ai_usage_providers/~.
+
+- Compact label: ~C:<claude> G:<gpt>~
+- Popup: click the item to show Claude/GPT 5-hour and weekly rows
+- Local config: ~${HOME}/.config/sketchybar/ai_usage.env~
+- Full setup/troubleshooting docs: [[file:docs/ai_usage.md][docs/ai_usage.md]]
+
+Important: Claude percentages use real local ~ccusage~ usage divided by locally configured limits. GPT Plus is manual because no stable public/local quota API is wired in.

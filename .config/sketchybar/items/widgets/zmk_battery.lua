@@ -37,6 +37,34 @@ local function get_battery_color(charge)
   else return colors.orange end
 end
 
+local function min_level(levels)
+  local min = levels[1]
+  for _, level in ipairs(levels) do
+    if level < min then min = level end
+  end
+  return min
+end
+
+local function format_bar_levels(levels)
+  if #levels >= 2 then
+    return "L" .. levels[1] .. "% R" .. levels[2] .. "%"
+  elseif #levels == 1 then
+    return levels[1] .. "%"
+  else
+    return "—"
+  end
+end
+
+local function format_popup_levels(levels)
+  if #levels >= 2 then
+    return "Left: " .. levels[1] .. "%  Right: " .. levels[2] .. "%"
+  elseif #levels == 1 then
+    return "Battery: " .. levels[1] .. "%"
+  else
+    return "Disconnected"
+  end
+end
+
 local zmk_device_name = "Keyboard"
 
 local function find_zmk_name(callback)
@@ -85,14 +113,10 @@ local function update_battery()
   local connected, levels = read_battery_state()
 
   if connected and #levels > 0 then
-    local min_level = levels[1]
-    for _, l in ipairs(levels) do
-      if l < min_level then min_level = l end
-    end
-    local color = get_battery_color(min_level)
+    local color = get_battery_color(min_level(levels))
     zmk_battery:set({
       icon = { string = "󰌌", color = colors.white },
-      label = { string = min_level .. "%", color = color },
+      label = { string = format_bar_levels(levels), color = color },
     })
   else
     zmk_battery:set({
@@ -112,13 +136,9 @@ zmk_battery:subscribe("mouse.clicked", function(env)
   if not popup_is_open then
     local connected, levels = read_battery_state()
     if connected and #levels > 0 then
-      local parts = {}
-      for _, level in ipairs(levels) do
-        table.insert(parts, level .. "%")
-      end
       popup_info:set({
         icon = { string = zmk_device_name .. ":" },
-        label = { string = table.concat(parts, "  ") },
+        label = { string = format_popup_levels(levels) },
       })
     else
       popup_info:set({

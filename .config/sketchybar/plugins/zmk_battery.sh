@@ -19,8 +19,10 @@ try:
     else:
         connected = 'true' if d.get('connected', False) else 'false'
         levels = d.get('levels', [])
+        labels = d.get('labels', [])
         print(f'CONNECTED={connected}')
         print('LEVELS=' + ','.join(str(l) for l in levels))
+        print('LABELS=' + ','.join(str(l) for l in labels))
 except Exception:
     print('CONNECTED=false')
     print('LEVELS=')
