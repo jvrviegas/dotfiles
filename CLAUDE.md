@@ -22,7 +22,7 @@ There is also `install-script-company/install.sh` for company-specific installat
 
 ### Deployment Model
 
-**Critical distinction:** Most configs (`.gitconfig`, `.tmux.conf`, `.zshenv`, `.local/`, `.config/`) are **copied** to `$HOME` during installation. However, `.config/nvim/` is **symlinked** (`$HOME/.config/nvim` → `$(pwd)/.config/nvim`), so Neovim config changes are tracked directly in this repo. All other config changes must be made in this repo and re-copied.
+**Critical distinction:** Most configs (`.gitconfig`, `.tmux.conf`, `.zshenv`, `.local/`, `.config/`) are **copied** to `$HOME` during installation. However, `.config/nvim/` and `.config/kanata/` are **symlinked** (e.g. `$HOME/.config/nvim` → `$(pwd)/.config/nvim`), so changes to those are tracked directly in this repo. All other config changes must be made in this repo and re-copied.
 
 ### Configuration Structure
 
