@@ -68,6 +68,21 @@ else
 fi
 echo ""
 
+echo "• Setting up Kanata config symlink"
+# Backup existing kanata config if it exists and is not already a symlink
+if [[ -d "$HOME/.config/kanata" ]] && [[ ! -L "$HOME/.config/kanata" ]]; then
+    mv "$HOME/.config/kanata" "$HOME/.config/kanata-old"
+    echo "  - Backed up existing kanata config to $HOME/.config/kanata-old"
+fi
+# Create symlink to kanata config in dotfiles repo
+if [[ ! -e "$HOME/.config/kanata" ]]; then
+    ln -s "$(pwd)/.config/kanata" "$HOME/.config/kanata"
+    echo "  - Created symlink from $HOME/.config/kanata to $(pwd)/.config/kanata"
+else
+    echo "  - Symlink already exists"
+fi
+echo ""
+
 echo "• Setting up theme system"
 mkdir -p "$HOME/.config/theme"
 mkdir -p "$HOME/.config/tmux/themes"
