@@ -5,7 +5,13 @@
   linux-dev-names-include (
     "AT Translated Set 2 keyboard"
   )
-  macos-dev-names-include ("Apple Internal Keyboard / Trackpad")
+  macos-dev-names-include (
+    "Apple Internal Keyboard / Trackpad"  ;; Built-in keyboard
+    "Open use"                           ;; Magic Keyboard (Bluetooth)
+    "Magic Keyboard"                     ;; Magic Keyboard (USB)
+    "0x5EB39A83D89DAF29"                 ;; Magic Keyboard (USB hash)
+    "0x8F031650F12B76D7"                 ;; Magic Keyboard (Bluetooth hash)
+  )
 )
 
 ;; Global key overrides for arrow key navigation
