@@ -1,38 +1,48 @@
 local colors = require("colors")
 local settings = require("settings")
 
-local ai_usage = sbar.add("item", "ai_usage", {
-	position = "right",
-	update_freq = 300,
-	popup = {
-		align = "center",
-		background = {
-			color = colors.popup.bg,
-			border_color = colors.popup.border,
-			border_width = 1,
-			corner_radius = 8,
+local function provider_item(name, icon, label, has_popup)
+	local item = {
+		position = "right",
+		update_freq = 300,
+		icon = {
+			string = icon,
+			font = "sketchybar-app-font:Regular:16.0",
+			color = colors.white,
+			padding_left = 4,
+			padding_right = 2,
 		},
-	},
-	icon = {
-		string = "󰚩",
-		font = { family = settings.font.numbers, style = settings.font.style_map["Bold"], size = 14.0 },
-		color = colors.secondary,
-		padding_left = 10,
-		padding_right = 4,
-	},
-	label = {
-		string = "C:? G:?",
-		font = { family = settings.font.text, style = settings.font.style_map["Bold"], size = 12.0 },
-		color = colors.grey,
-		padding_right = 10,
-	},
-	background = {
-		color = colors.bg1,
-		border_width = 0,
-		height = 26,
-		corner_radius = 13,
-	},
-})
+		label = {
+			string = label,
+			font = { family = settings.font.text, style = settings.font.style_map["Bold"], size = 12.0 },
+			color = colors.grey,
+			padding_right = 8,
+		},
+		background = {
+			color = colors.bg1,
+			border_width = 0,
+			height = 26,
+			corner_radius = 13,
+		},
+	}
+
+	if has_popup then
+		item.popup = {
+			align = "center",
+			background = {
+				color = colors.popup.bg,
+				border_color = colors.popup.border,
+				border_width = 1,
+				corner_radius = 8,
+			},
+		}
+	end
+
+	return sbar.add("item", name, item)
+end
+
+local gpt_usage = provider_item("ai_usage.gpt", ":openai:", "?", false)
+local claude_usage = provider_item("ai_usage.claude", ":claude:", "?", true)
 
 local color_map = {
 	green = colors.green,
@@ -54,7 +64,7 @@ end
 
 local function popup_row(name, icon, label, icon_color)
 	return sbar.add("item", name, {
-		position = "popup." .. ai_usage.name,
+		position = "popup." .. claude_usage.name,
 		icon = {
 			string = icon,
 			width = 92,
@@ -84,13 +94,21 @@ local refresh = popup_row("ai_usage.popup.refresh", "↻", "Refresh now", colors
 local function update_bar(command)
 	sbar.exec(command or "$CONFIG_DIR/plugins/ai_usage.sh render", function(output)
 		local payload = parse_payload(output or "")
-		local label = payload.LABEL or "C:? G:?"
-		local color = color_map[payload.COLOR or "grey"] or colors.grey
+		local claude_label = payload.CLAUDE_LABEL or "?"
+		local gpt_label = payload.GPT_LABEL or "?"
+		local claude_color = color_map[payload.CLAUDE_COLOR or "grey"] or colors.grey
+		local gpt_color = color_map[payload.GPT_COLOR or "grey"] or colors.grey
 
-		ai_usage:set({
+		claude_usage:set({
 			label = {
-				string = label,
-				color = color,
+				string = claude_label,
+				color = claude_color,
+			},
+		})
+		gpt_usage:set({
+			label = {
+				string = gpt_label,
+				color = gpt_color,
 			},
 		})
 	end)
@@ -107,18 +125,26 @@ local function update_popup(command)
 	end)
 end
 
-ai_usage:subscribe({ "forced", "routine", "system_woke" }, function()
+claude_usage:subscribe({ "forced", "routine", "system_woke" }, function()
 	update_bar()
 	update_popup()
 end)
 
-ai_usage:subscribe("mouse.clicked", function()
-	local drawing = ai_usage:query().popup.drawing
-	ai_usage:set({ popup = { drawing = "toggle" } })
+gpt_usage:subscribe({ "forced", "system_woke" }, function()
+	update_bar()
+	update_popup()
+end)
+
+local function toggle_popup()
+	local drawing = claude_usage:query().popup.drawing
+	claude_usage:set({ popup = { drawing = "toggle" } })
 	if drawing == "off" then
 		update_popup()
 	end
-end)
+end
+
+claude_usage:subscribe("mouse.clicked", toggle_popup)
+gpt_usage:subscribe("mouse.clicked", toggle_popup)
 
 refresh:subscribe("mouse.clicked", function()
 	refresh:set({

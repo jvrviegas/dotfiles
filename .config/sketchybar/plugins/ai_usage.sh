@@ -139,10 +139,43 @@ provider_display() {
   esac
 }
 
+provider_color() {
+  local data="$1" key="$2" stale="$3" remaining status
+  if [[ "$stale" == true ]]; then
+    echo "grey"
+    return
+  fi
+
+  status="$(jq -r ".providers.$key.status // \"unknown\"" <<<"$data" 2>/dev/null || echo 'unknown')"
+  remaining="$(jq -r ".providers.$key.remaining_percent // empty" <<<"$data" 2>/dev/null || true)"
+
+  case "$status" in
+    error)
+      echo "red"
+      ;;
+    ok)
+      if [[ "$remaining" =~ ^[0-9]+$ ]]; then
+        if (( remaining < 20 )); then
+          echo "red"
+        elif (( remaining <= 50 )); then
+          echo "yellow"
+        else
+          echo "green"
+        fi
+      else
+        echo "grey"
+      fi
+      ;;
+    *)
+      echo "grey"
+      ;;
+  esac
+}
+
 render() {
   ensure_cache
 
-  local data age stale claude_display gpt_display label details min_remaining color has_error
+  local data age stale claude_display gpt_display label details min_remaining color has_error claude_color gpt_color
   data="$(cat "$CACHE_FILE" 2>/dev/null || echo '{}')"
   age="$(cache_age)"
   stale=false
@@ -153,6 +186,8 @@ render() {
   claude_display="$(provider_display "$data" claude)"
   gpt_display="$(provider_display "$data" gpt)"
   label="C:${claude_display} G:${gpt_display}"
+  claude_color="$(provider_color "$data" claude "$stale")"
+  gpt_color="$(provider_color "$data" gpt "$stale")"
 
   details="Claude: $(jq -r '.providers.claude.message // "unknown"' <<<"$data" 2>/dev/null || echo 'unknown') · GPT: $(jq -r '.providers.gpt.message // "unknown"' <<<"$data" 2>/dev/null || echo 'unknown')"
   if [[ "$stale" == true ]]; then
@@ -178,7 +213,8 @@ render() {
     fi
   fi
 
-  printf 'LABEL=%s\nCOLOR=%s\nDETAILS=%s\nSTATUS=%s\n' "$label" "$color" "$details" "$([[ "$stale" == true ]] && echo stale || echo ok)"
+  printf 'LABEL=%s\nCOLOR=%s\nCLAUDE_LABEL=%s\nCLAUDE_COLOR=%s\nGPT_LABEL=%s\nGPT_COLOR=%s\nDETAILS=%s\nSTATUS=%s\n' \
+    "$label" "$color" "$claude_display" "$claude_color" "$gpt_display" "$gpt_color" "$details" "$([[ "$stale" == true ]] && echo stale || echo ok)"
 }
 
 format_time() {

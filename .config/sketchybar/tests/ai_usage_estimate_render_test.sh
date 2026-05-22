@@ -40,6 +40,10 @@ JSON
 
 render_output="$(CONFIG_DIR="$TMP_DIR/missing" XDG_CACHE_HOME="$TMP_DIR" AI_USAGE_TTL_SECONDS=9999999999 "$ROOT_DIR/plugins/ai_usage.sh" render)"
 grep -q '^LABEL=C:≈70% G:≈40%' <<<"$render_output"
+grep -q '^CLAUDE_LABEL=≈70%' <<<"$render_output"
+grep -q '^CLAUDE_COLOR=green$' <<<"$render_output"
+grep -q '^GPT_LABEL=≈40%' <<<"$render_output"
+grep -q '^GPT_COLOR=yellow$' <<<"$render_output"
 
 popup_output="$(CONFIG_DIR="$TMP_DIR/missing" XDG_CACHE_HOME="$TMP_DIR" AI_USAGE_TTL_SECONDS=9999999999 "$ROOT_DIR/plugins/ai_usage.sh" popup)"
 grep -q '^CLAUDE_5H=≈70% left$' <<<"$popup_output"
