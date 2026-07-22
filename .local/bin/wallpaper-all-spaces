@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""
+Set the given wallpaper on all Mission Control spaces.
+
+Writes the image into every Desktop node of the wallpaper store
+(Spaces/*/Default, Spaces/*/Displays/*, Displays/*, SystemDefault),
+then restarts WallpaperAgent and Dock so neither pushes stale
+in-memory state back over the file.
+
+Usage: wallpaper-all-spaces /path/to/image.jpg
+"""
+import os
+import pathlib
+import plistlib
+import subprocess
+import sys
+from datetime import datetime, timezone
+
+PLIST_PATH = os.path.expanduser(
+    "~/Library/Application Support/com.apple.wallpaper/Store/Index.plist"
+)
+
+
+def main():
+    if len(sys.argv) != 2 or not os.path.isfile(sys.argv[1]):
+        print(f"Usage: {os.path.basename(sys.argv[0])} /path/to/image", file=sys.stderr)
+        sys.exit(1)
+
+    config = plistlib.dumps({
+        "type": "imageFile",
+        "url": {"relative": pathlib.Path(sys.argv[1]).resolve().as_uri()},
+    })
+
+    with open(PLIST_PATH, "rb") as f:
+        data = plistlib.load(f)
+
+    # plistlib treats naive datetimes as UTC — datetime.now() would stamp
+    # LastSet an hour in the future and confuse the agent's own writes.
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    updated = 0
+
+    def set_desktop(desktop):
+        nonlocal updated
+        content = desktop.setdefault("Content", {})
+        choices = content.get("Choices")
+        if choices:
+            choices[0]["Configuration"] = config
+        else:
+            content["Choices"] = [{
+                "Configuration": config,
+                "Files": [],
+                "Provider": "com.apple.wallpaper.choice.image",
+            }]
+        desktop["LastSet"] = now
+        updated += 1
+
+    def walk(node):
+        if not isinstance(node, dict):
+            return
+        for key, value in node.items():
+            if key == "Desktop" and isinstance(value, dict):
+                set_desktop(value)
+            else:
+                walk(value)
+
+    walk(data)
+
+    with open(PLIST_PATH, "wb") as f:
+        plistlib.dump(data, f, fmt=plistlib.FMT_BINARY)
+
+    # SIGKILL so the agent can't flush its stale in-memory state over our
+    # write on exit; its respawn loads the edited plist.
+    subprocess.run(["killall", "-9", "WallpaperAgent"], capture_output=True)
+
+    # Dock holds per-space wallpaper assertions and re-pushes the old state
+    # to the fresh agent unless it is restarted too.
+    subprocess.run(["killall", "Dock"], capture_output=True)
+
+    print(f"Updated {updated} desktop nodes")
+
+
+if __name__ == "__main__":
+    main()

@@ -43,7 +43,7 @@ for ext in jpg jpeg png; do
   WALLPAPER="$WALLPAPER_DIR/${THEME}.${ext}"
   if [[ -f "$WALLPAPER" ]]; then
     if $IS_MACOS; then
-      osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$WALLPAPER\""
+      wallpaper-all-spaces "$WALLPAPER"
     elif gsettings get org.gnome.desktop.background picture-uri &>/dev/null; then
       gsettings set org.gnome.desktop.background picture-uri "file://$WALLPAPER"
       gsettings set org.gnome.desktop.background picture-uri-dark "file://$WALLPAPER"
