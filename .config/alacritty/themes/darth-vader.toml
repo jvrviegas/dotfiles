@@ -1,0 +1,44 @@
+# Darth Vader Theme for Alacritty
+# Inspired by the Dark Lord of the Sith
+
+[colors.primary]
+background = "#08080a"       # Meditation chamber black
+foreground = "#d8d8dc"       # Imperial white
+
+[colors.cursor]
+text = "#08080a"
+cursor = "#ef4f4f"           # Ignited saber
+
+[colors.selection]
+text = "#d8d8dc"
+background = "#4a1516"       # Cooling ember
+
+[colors.normal]
+black = "#08080a"            # The void
+red = "#d43a3a"              # Lightsaber
+green = "#5faa6a"            # Targeting computer
+yellow = "#c9a145"           # Control panel amber
+blue = "#5b7fa6"             # Hyperspace steel
+magenta = "#8a5f8f"          # Imperial dusk
+cyan = "#3f9e9e"             # Helmet rim light
+white = "#b4b4bc"            # Stormtrooper shell
+
+[colors.bright]
+black = "#26262e"            # Durasteel edge
+red = "#ef4f4f"              # Ignited blade
+green = "#79c987"            # Targeting bright
+yellow = "#e0bc63"           # Panel amber bright
+blue = "#7fa3cc"             # Hyperspace bright
+magenta = "#a87bab"          # Dusk bright
+cyan = "#7ee6e6"             # Rim light bright
+white = "#d8d8dc"            # Imperial white
+
+[colors.dim]
+black = "#040405"
+red = "#8f2424"
+green = "#3a6b42"
+yellow = "#6f5828"
+blue = "#3a5570"
+magenta = "#5c3f60"
+cyan = "#2f7a7a"
+white = "#6a6a74"

@@ -1,0 +1,47 @@
+# Darth Vader Theme for Ghostty
+# Inspired by the Dark Lord of the Sith
+# Meditation chamber black, lightsaber red, helmet rim-light cyan, imperial steel
+
+# Background colors - meditation chamber
+background = 08080a
+foreground = d8d8dc
+
+# Cursor - ignited saber
+cursor-color = ef4f4f
+cursor-text = 08080a
+
+# Selection - cooling ember
+selection-background = 4a1516
+selection-foreground = d8d8dc
+
+# Black - the void
+palette = 0=08080a
+palette = 8=26262e
+
+# Red - lightsaber
+palette = 1=d43a3a
+palette = 9=ef4f4f
+
+# Green - targeting computer
+palette = 2=5faa6a
+palette = 10=79c987
+
+# Yellow - control panel amber
+palette = 3=c9a145
+palette = 11=e0bc63
+
+# Blue - hyperspace steel
+palette = 4=5b7fa6
+palette = 12=7fa3cc
+
+# Magenta - imperial dusk
+palette = 5=8a5f8f
+palette = 13=a87bab
+
+# Cyan - helmet rim light
+palette = 6=3f9e9e
+palette = 14=7ee6e6
+
+# White - imperial white
+palette = 7=b4b4bc
+palette = 15=d8d8dc
