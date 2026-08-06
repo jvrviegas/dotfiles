@@ -9,6 +9,28 @@ PROVIDER_DIR="$CONFIG_DIR/plugins/ai_usage_providers"
 TTL_SECONDS="${AI_USAGE_TTL_SECONDS:-300}"
 STALE_AFTER_SECONDS="${AI_USAGE_STALE_AFTER_SECONDS:-$((TTL_SECONDS * 3))}"
 
+prepend_path_dir() {
+  local dir="$1"
+  if [[ -d "$dir" && ":$PATH:" != *":$dir:"* ]]; then
+    PATH="$dir:$PATH"
+  fi
+}
+
+bootstrap_path() {
+  local dir
+  prepend_path_dir "$HOME/.local/bin"
+  prepend_path_dir "/opt/homebrew/bin"
+  prepend_path_dir "/usr/local/bin"
+
+  if [[ -d "$HOME/.nvm/versions/node" ]]; then
+    while IFS= read -r dir; do
+      prepend_path_dir "$dir"
+    done < <(find "$HOME/.nvm/versions/node" -maxdepth 2 -type d -name bin 2>/dev/null | sort)
+  fi
+
+  export PATH
+}
+
 if [[ -f "$ENV_FILE" ]]; then
   set -a
   # shellcheck disable=SC1090
@@ -16,12 +38,15 @@ if [[ -f "$ENV_FILE" ]]; then
   set +a
 fi
 
+bootstrap_path
+
 mkdir -p "$CACHE_DIR"
 
 provider_prefix() {
   case "$1" in
     claude_code) echo "CLAUDE" ;;
     gpt_plus) echo "GPT" ;;
+    deepseek) echo "DEEPSEEK" ;;
     *) echo "" ;;
   esac
 }
@@ -67,9 +92,10 @@ provider_json() {
 }
 
 refresh_cache() {
-  local claude gpt now old_claude_source new_claude_source
+  local claude gpt deepseek now old_claude_source new_claude_source
   claude="$(provider_json claude_code)"
   gpt="$(provider_json gpt_plus)"
+  deepseek="$(provider_json deepseek)"
   now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
   # Avoid visible cycling between official Claude usage and ccusage fallback when
@@ -79,7 +105,7 @@ refresh_cache() {
     old_claude_source="$(jq -r '.providers.claude.source // empty' "$CACHE_FILE" 2>/dev/null || true)"
     new_claude_source="$(jq -r '.source // empty' <<<"$claude" 2>/dev/null || true)"
     if [[ "$old_claude_source" == "claude_oauth_usage_api" && "$new_claude_source" != "claude_oauth_usage_api" && "${AI_USAGE_CLAUDE_ALLOW_FALLBACK_OVER_OFFICIAL:-false}" != "true" ]]; then
-      claude="$(jq -c '.providers.claude + {message: ((.providers.claude.message // "") + " · using cached official value")}' "$CACHE_FILE")"
+      claude="$(jq -c '.providers.claude + {message: (((.providers.claude.message // "") | gsub(" · using cached official value"; "")) + " · using cached official value")}' "$CACHE_FILE")"
     fi
   fi
 
@@ -87,7 +113,8 @@ refresh_cache() {
     --arg updated_at "$now" \
     --argjson claude "$claude" \
     --argjson gpt "$gpt" \
-    '{providers: {claude: ($claude + {label: "C"}), gpt: ($gpt + {label: "G"})}, updated_at: $updated_at}' \
+    --argjson deepseek "$deepseek" \
+    '{providers: {claude: ($claude + {label: "C"}), gpt: ($gpt + {label: "G"}), deepseek: ($deepseek + {label: "DS"})}, updated_at: $updated_at}' \
     > "$CACHE_FILE.tmp"
   mv "$CACHE_FILE.tmp" "$CACHE_FILE"
 }
@@ -117,10 +144,11 @@ ensure_cache() {
 }
 
 provider_display() {
-  local data="$1" key="$2" remaining status estimate prefix
+  local data="$1" key="$2" remaining status estimate prefix display_label
   remaining="$(jq -r ".providers.$key.remaining_percent // \"?\"" <<<"$data" 2>/dev/null || echo '?')"
   status="$(jq -r ".providers.$key.status // \"unknown\"" <<<"$data" 2>/dev/null || echo 'unknown')"
   estimate="$(jq -r ".providers.$key.is_estimate // false" <<<"$data" 2>/dev/null || echo false)"
+  display_label="$(jq -r ".providers.$key.display_label // empty" <<<"$data" 2>/dev/null || true)"
   prefix=""
   if [[ "$estimate" == "true" ]]; then
     prefix="≈"
@@ -130,7 +158,9 @@ provider_display() {
     disabled) echo "off" ;;
     error) echo "!" ;;
     *)
-      if [[ "$remaining" == "?" ]]; then
+      if [[ -n "$display_label" ]]; then
+        echo "$display_label"
+      elif [[ "$remaining" == "?" ]]; then
         echo "?"
       else
         echo "${prefix}${remaining}%"
@@ -140,7 +170,7 @@ provider_display() {
 }
 
 provider_color() {
-  local data="$1" key="$2" stale="$3" remaining status
+  local data="$1" key="$2" stale="$3" remaining status display_color
   if [[ "$stale" == true ]]; then
     echo "grey"
     return
@@ -148,13 +178,16 @@ provider_color() {
 
   status="$(jq -r ".providers.$key.status // \"unknown\"" <<<"$data" 2>/dev/null || echo 'unknown')"
   remaining="$(jq -r ".providers.$key.remaining_percent // empty" <<<"$data" 2>/dev/null || true)"
+  display_color="$(jq -r ".providers.$key.display_color // empty" <<<"$data" 2>/dev/null || true)"
 
   case "$status" in
     error)
       echo "red"
       ;;
     ok)
-      if [[ "$remaining" =~ ^[0-9]+$ ]]; then
+      if [[ -n "$display_color" ]]; then
+        echo "$display_color"
+      elif [[ "$remaining" =~ ^[0-9]+$ ]]; then
         if (( remaining < 20 )); then
           echo "red"
         elif (( remaining <= 50 )); then
@@ -175,7 +208,7 @@ provider_color() {
 render() {
   ensure_cache
 
-  local data age stale claude_display gpt_display label details min_remaining color has_error claude_color gpt_color
+  local data age stale claude_display gpt_display deepseek_display label details min_remaining color has_error claude_color gpt_color deepseek_color claude_weekly_remaining claude_fable_remaining
   data="$(cat "$CACHE_FILE" 2>/dev/null || echo '{}')"
   age="$(cache_age)"
   stale=false
@@ -184,12 +217,22 @@ render() {
   fi
 
   claude_display="$(provider_display "$data" claude)"
+  claude_weekly_remaining="$(jq -r '.providers.claude.windows.weekly.remaining_percent // empty' <<<"$data" 2>/dev/null || true)"
+  claude_fable_remaining="$(jq -r '.providers.claude.windows.weekly_fable.remaining_percent // empty' <<<"$data" 2>/dev/null || true)"
+  if [[ "$claude_weekly_remaining" =~ ^[0-9]+$ ]]; then
+    claude_display="${claude_display} W:${claude_weekly_remaining}%"
+  fi
+  if [[ "$claude_fable_remaining" =~ ^[0-9]+$ ]]; then
+    claude_display="${claude_display} F:${claude_fable_remaining}%"
+  fi
   gpt_display="$(provider_display "$data" gpt)"
-  label="C:${claude_display} G:${gpt_display}"
+  deepseek_display="$(provider_display "$data" deepseek)"
+  label="C:${claude_display} G:${gpt_display} DS:${deepseek_display}"
   claude_color="$(provider_color "$data" claude "$stale")"
   gpt_color="$(provider_color "$data" gpt "$stale")"
+  deepseek_color="$(provider_color "$data" deepseek "$stale")"
 
-  details="Claude: $(jq -r '.providers.claude.message // "unknown"' <<<"$data" 2>/dev/null || echo 'unknown') · GPT: $(jq -r '.providers.gpt.message // "unknown"' <<<"$data" 2>/dev/null || echo 'unknown')"
+  details="Claude: $(jq -r '.providers.claude.message // "unknown"' <<<"$data" 2>/dev/null || echo 'unknown') · GPT: $(jq -r '.providers.gpt.message // "unknown"' <<<"$data" 2>/dev/null || echo 'unknown') · DeepSeek: $(jq -r '.providers.deepseek.message // "unknown"' <<<"$data" 2>/dev/null || echo 'unknown')"
   if [[ "$stale" == true ]]; then
     label="~ ${label}"
     details="stale cache · ${details}"
@@ -213,8 +256,8 @@ render() {
     fi
   fi
 
-  printf 'LABEL=%s\nCOLOR=%s\nCLAUDE_LABEL=%s\nCLAUDE_COLOR=%s\nGPT_LABEL=%s\nGPT_COLOR=%s\nDETAILS=%s\nSTATUS=%s\n' \
-    "$label" "$color" "$claude_display" "$claude_color" "$gpt_display" "$gpt_color" "$details" "$([[ "$stale" == true ]] && echo stale || echo ok)"
+  printf 'LABEL=%s\nCOLOR=%s\nCLAUDE_LABEL=%s\nCLAUDE_COLOR=%s\nGPT_LABEL=%s\nGPT_COLOR=%s\nDEEPSEEK_LABEL=%s\nDEEPSEEK_COLOR=%s\nDETAILS=%s\nSTATUS=%s\n' \
+    "$label" "$color" "$claude_display" "$claude_color" "$gpt_display" "$gpt_color" "$deepseek_display" "$deepseek_color" "$details" "$([[ "$stale" == true ]] && echo stale || echo ok)"
 }
 
 format_time() {
@@ -279,16 +322,19 @@ PY
 }
 
 window_display() {
-  local data="$1" provider="$2" window="$3" status remaining reset message estimate value reset_label
+  local data="$1" provider="$2" window="$3" status remaining reset message estimate value reset_label display_label
   status="$(jq -r ".providers.$provider.windows[\"$window\"].status // .providers.$provider.status // \"unknown\"" <<<"$data" 2>/dev/null || echo unknown)"
   remaining="$(jq -r ".providers.$provider.windows[\"$window\"].remaining_percent // \"?\"" <<<"$data" 2>/dev/null || echo '?')"
   reset="$(jq -r ".providers.$provider.windows[\"$window\"].reset_at // empty" <<<"$data" 2>/dev/null || true)"
   message="$(jq -r ".providers.$provider.windows[\"$window\"].message // .providers.$provider.message // \"unknown\"" <<<"$data" 2>/dev/null || echo unknown)"
   estimate="$(jq -r ".providers.$provider.windows[\"$window\"].is_estimate // .providers.$provider.is_estimate // false" <<<"$data" 2>/dev/null || echo false)"
+  display_label="$(jq -r ".providers.$provider.windows[\"$window\"].display_label // empty" <<<"$data" 2>/dev/null || true)"
 
   case "$status" in
     ok)
-      if [[ "$estimate" == "true" ]]; then
+      if [[ -n "$display_label" ]]; then
+        value="$display_label"
+      elif [[ "$estimate" == "true" ]]; then
         value="≈${remaining}% left"
       else
         value="${remaining}% left"
@@ -339,16 +385,42 @@ popup() {
 
   printf 'CLAUDE_5H=%s\n' "$(window_display "$data" claude 5h)"
   printf 'CLAUDE_WEEKLY=%s\n' "$(window_display "$data" claude weekly)"
+  local claude_fable_display="n/a"
+  if jq -e '.providers.claude.windows.weekly_fable' >/dev/null 2>&1 <<<"$data"; then
+    claude_fable_display="$(window_display "$data" claude weekly_fable)"
+  fi
+  printf 'CLAUDE_FABLE=%s\n' "$claude_fable_display"
   printf 'GPT_5H=%s\n' "$(window_display "$data" gpt 5h)"
   printf 'GPT_WEEKLY=%s\n' "$(window_display "$data" gpt weekly)"
+  printf 'GPT_CREDITS=%s\n' "$(window_display "$data" gpt credits)"
+
+  local deepseek_status deepseek_message deepseek_balance deepseek_currency deepseek_display
+  deepseek_status="$(jq -r '.providers.deepseek.status // "unknown"' <<<"$data" 2>/dev/null || echo unknown)"
+  deepseek_message="$(jq -r '.providers.deepseek.message // "unknown"' <<<"$data" 2>/dev/null || echo unknown)"
+  deepseek_balance="$(jq -r '.providers.deepseek.balance.total // empty' <<<"$data" 2>/dev/null || true)"
+  deepseek_currency="$(jq -r '.providers.deepseek.balance.currency // "USD"' <<<"$data" 2>/dev/null || echo USD)"
+  case "$deepseek_currency" in
+    USD) deepseek_currency="$" ;;
+    CNY) deepseek_currency="¥" ;;
+  esac
+  if [[ "$deepseek_status" == "disabled" ]]; then
+    deepseek_display="off"
+  elif [[ "$deepseek_status" == "error" ]]; then
+    deepseek_display="! ${deepseek_message}"
+  elif [[ -n "$deepseek_balance" ]]; then
+    deepseek_display="${deepseek_currency}${deepseek_balance}"
+  else
+    deepseek_display="${deepseek_message}"
+  fi
+  printf 'DEEPSEEK_BALANCE=%s\n' "$deepseek_display"
   printf 'UPDATED_AT=%s\n' "$updated_at"
 }
 
 case "${1:-render}" in
   render) render ;;
   popup) popup ;;
-  refresh) refresh_cache && render ;;
-  refresh-popup) refresh_cache && popup ;;
+  refresh) export AI_USAGE_CLAUDE_API_FORCE=1; refresh_cache && render ;;
+  refresh-popup) export AI_USAGE_CLAUDE_API_FORCE=1; refresh_cache && popup ;;
   doctor) doctor ;;
   cache) ensure_cache; cat "$CACHE_FILE" ;;
   *) echo "usage: $0 [render|popup|refresh|refresh-popup|doctor|cache]" >&2; exit 2 ;;

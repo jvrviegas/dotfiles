@@ -15,7 +15,8 @@ cat > "$TMP_DIR/sketchybar/ai_usage.json" <<'JSON'
       "message": "70% left",
       "windows": {
         "5h": { "status": "ok", "remaining_percent": 70, "reset_at": "2026-05-12T18:00:00Z", "message": "70% left" },
-        "weekly": { "status": "ok", "remaining_percent": 80, "reset_at": "2026-05-17T00:00:00Z", "message": "80% left" }
+        "weekly": { "status": "ok", "remaining_percent": 80, "reset_at": "2026-05-17T00:00:00Z", "message": "80% left" },
+        "weekly_fable": { "status": "ok", "remaining_percent": 75, "reset_at": "2026-05-17T00:00:00Z", "message": "75% left" }
       }
     },
     "gpt": {
@@ -36,6 +37,7 @@ output="$(CONFIG_DIR="$TMP_DIR/missing" XDG_CACHE_HOME="$TMP_DIR" AI_USAGE_TTL_S
 
 grep -q '^CLAUDE_5H=70% left · resets ' <<<"$output"
 grep -q '^CLAUDE_WEEKLY=80% left · resets ' <<<"$output"
+grep -q '^CLAUDE_FABLE=75% left · resets ' <<<"$output"
 grep -q '^GPT_5H=? configure GPT 5h manual remaining$' <<<"$output"
 grep -q '^GPT_WEEKLY=85% left · resets ' <<<"$output"
 grep -q '^UPDATED_AT=' <<<"$output"

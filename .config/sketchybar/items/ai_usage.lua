@@ -41,8 +41,11 @@ local function provider_item(name, icon, label, has_popup)
 	return sbar.add("item", name, item)
 end
 
-local gpt_usage = provider_item("ai_usage.gpt", ":openai:", "?", false)
+local gpt_usage = provider_item("ai_usage.gpt", ":openai:", "?", false) -- temporarily disabled
 local claude_usage = provider_item("ai_usage.claude", ":claude:", "?", true)
+local deepseek_usage = provider_item("ai_usage.deepseek", ":deepseek:", "?", false)
+
+gpt_usage:set({ drawing = false })
 
 local color_map = {
 	green = colors.green,
@@ -85,9 +88,13 @@ end
 local claude_header = popup_row("ai_usage.popup.claude_header", "Claude", "", colors.secondary)
 local claude_5h = popup_row("ai_usage.popup.claude_5h", "5h", "?")
 local claude_weekly = popup_row("ai_usage.popup.claude_weekly", "Weekly", "?")
-local gpt_header = popup_row("ai_usage.popup.gpt_header", "GPT Plus", "", colors.green)
+local claude_fable = popup_row("ai_usage.popup.claude_fable", "Fable wk", "?")
+local gpt_header = popup_row("ai_usage.popup.gpt_header", "GPT/Codex", "", colors.green)
 local gpt_5h = popup_row("ai_usage.popup.gpt_5h", "5h", "?")
 local gpt_weekly = popup_row("ai_usage.popup.gpt_weekly", "Weekly", "?")
+local gpt_credits = popup_row("ai_usage.popup.gpt_credits", "Credits", "?")
+local deepseek_header = popup_row("ai_usage.popup.deepseek_header", "DeepSeek", "", colors.blue)
+local deepseek_balance = popup_row("ai_usage.popup.deepseek_balance", "Balance", "?")
 local updated = popup_row("ai_usage.popup.updated", "Updated", "unknown", colors.grey)
 local refresh = popup_row("ai_usage.popup.refresh", "↻", "Refresh now", colors.yellow)
 
@@ -96,8 +103,10 @@ local function update_bar(command)
 		local payload = parse_payload(output or "")
 		local claude_label = payload.CLAUDE_LABEL or "?"
 		local gpt_label = payload.GPT_LABEL or "?"
+		local deepseek_label = payload.DEEPSEEK_LABEL or "?"
 		local claude_color = color_map[payload.CLAUDE_COLOR or "grey"] or colors.grey
 		local gpt_color = color_map[payload.GPT_COLOR or "grey"] or colors.grey
+		local deepseek_color = color_map[payload.DEEPSEEK_COLOR or "grey"] or colors.grey
 
 		claude_usage:set({
 			label = {
@@ -105,10 +114,16 @@ local function update_bar(command)
 				color = claude_color,
 			},
 		})
-		gpt_usage:set({
+		-- gpt_usage:set({
+		-- 	label = {
+		-- 		string = gpt_label,
+		-- 		color = gpt_color,
+		-- 	},
+		-- })
+		deepseek_usage:set({
 			label = {
-				string = gpt_label,
-				color = gpt_color,
+				string = deepseek_label,
+				color = deepseek_color,
 			},
 		})
 	end)
@@ -119,8 +134,11 @@ local function update_popup(command)
 		local payload = parse_payload(output or "")
 		claude_5h:set({ label = { string = payload.CLAUDE_5H or "?" } })
 		claude_weekly:set({ label = { string = payload.CLAUDE_WEEKLY or "?" } })
+		claude_fable:set({ label = { string = payload.CLAUDE_FABLE or "?" } })
 		gpt_5h:set({ label = { string = payload.GPT_5H or "?" } })
 		gpt_weekly:set({ label = { string = payload.GPT_WEEKLY or "?" } })
+		gpt_credits:set({ label = { string = payload.GPT_CREDITS or "?" } })
+		deepseek_balance:set({ label = { string = payload.DEEPSEEK_BALANCE or "?" } })
 		updated:set({ label = { string = payload.UPDATED_AT or "unknown" } })
 	end)
 end
@@ -130,7 +148,12 @@ claude_usage:subscribe({ "forced", "routine", "system_woke" }, function()
 	update_popup()
 end)
 
-gpt_usage:subscribe({ "forced", "system_woke" }, function()
+-- gpt_usage:subscribe({ "forced", "system_woke" }, function()
+-- 	update_bar()
+-- 	update_popup()
+-- end)
+
+deepseek_usage:subscribe({ "forced", "routine", "system_woke" }, function()
 	update_bar()
 	update_popup()
 end)
@@ -144,7 +167,8 @@ local function toggle_popup()
 end
 
 claude_usage:subscribe("mouse.clicked", toggle_popup)
-gpt_usage:subscribe("mouse.clicked", toggle_popup)
+-- gpt_usage:subscribe("mouse.clicked", toggle_popup)
+deepseek_usage:subscribe("mouse.clicked", toggle_popup)
 
 refresh:subscribe("mouse.clicked", function()
 	refresh:set({

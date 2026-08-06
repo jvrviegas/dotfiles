@@ -31,8 +31,28 @@ jq -e '
   .status == "unknown" and
   .remaining_percent == null and
   .windows["5h"].status == "unknown" and
-  .windows.weekly.status == "unknown"
+  .windows.weekly.status == "unknown" and
+  .windows.credits.status == "unknown"
 ' <<<"$unknown_output" >/dev/null
+
+credits_output="$(
+  AI_USAGE_GPT_API_ENABLED=false \
+  AI_USAGE_GPT_CREDITS_BALANCE=25.5 \
+  "$ROOT_DIR/plugins/ai_usage_providers/gpt_plus.sh"
+)"
+jq -e '
+  .source == "manual" and
+  .status == "ok" and
+  .remaining_percent == null and
+  .display_label == "≈25.5cr" and
+  .display_color == "green" and
+  .is_estimate == true and
+  .basis == "manual user-provided GPT credits balance" and
+  .credits.balance == "25.5" and
+  .windows.credits.status == "ok" and
+  .windows.credits.display_label == "≈25.5 credits" and
+  .windows["5h"].status == "unknown"
+' <<<"$credits_output" >/dev/null
 
 disabled_output="$(AI_USAGE_GPT_ENABLED=false "$ROOT_DIR/plugins/ai_usage_providers/gpt_plus.sh")"
 jq -e '

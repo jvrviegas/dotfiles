@@ -3,7 +3,7 @@
 This item displays AI subscription usage in SketchyBar.
 
 - Compact bar label: `C:<claude> G:<gpt>`
-- Popup: Claude and GPT Plus 5-hour and weekly windows
+- Popup: Claude/GPT 5-hour and weekly windows, plus GPT/Codex credits when available
 - Cache: `~/.cache/sketchybar/ai_usage.json`
 - Local config: `~/.config/sketchybar/ai_usage.env`
 
@@ -30,15 +30,15 @@ remaining % = 100 - used / configured_limit * 100
 
 Fallback estimated values are prefixed with `≈` in the bar/popup and include a `basis` field in the cache.
 
-### GPT Plus
+### GPT/Codex
 
-GPT Plus/Codex usage is read automatically from Codex's ChatGPT plan usage endpoint when `codex login` is configured:
+GPT/Codex usage is read automatically from Codex's ChatGPT plan usage endpoint when `codex login` is configured:
 
 ```text
 https://chatgpt.com/backend-api/wham/usage
 ```
 
-The provider reads `~/.codex/auth.json` and uses the Codex access token. This endpoint returns real primary (5-hour) and secondary (weekly) plan-limit usage for the signed-in ChatGPT/Codex account. Manual GPT values remain available as fallback and are shown as estimates with `≈`.
+The provider reads `~/.codex/auth.json` and uses the Codex access token. This endpoint returns real primary (5-hour) and secondary (weekly) plan-limit usage for the signed-in ChatGPT/Codex account. Credit/usage-based Codex accounts may return `rate_limit: null` plus `credits.has_credits: true`; when no percentage window is available, the compact bar shows credits such as `G:82cr`, `G:∞cr`, or `G:cr` when the API confirms credits but does not expose a numeric balance. If the official API returns `balance: null`, `AI_USAGE_GPT_CREDITS_BALANCE` can fill a manual estimated amount such as `G:≈82cr`. The popup shows a `Credits` row. Manual GPT values remain available as fallback and are shown as estimates with `≈`.
 
 ## Setup
 
@@ -56,6 +56,12 @@ To force fallback mode for debugging:
 
 ```sh
 AI_USAGE_CLAUDE_API_ENABLED=false
+```
+
+If the Claude OAuth usage endpoint returns `429`, the provider backs off before trying it again (default: 1 hour) and uses fallback data in the meantime:
+
+```sh
+AI_USAGE_CLAUDE_API_BACKOFF_SECONDS=3600
 ```
 
 ### Claude manual UI fallback config
@@ -109,13 +115,20 @@ AI_USAGE_GPT_5H_REMAINING_PERCENT=40
 AI_USAGE_GPT_5H_RESET_AT="2026-05-12T18:00:00Z"
 AI_USAGE_GPT_WEEKLY_REMAINING_PERCENT=85
 AI_USAGE_GPT_WEEKLY_RESET_AT="2026-05-17T00:00:00Z"
+
+# Credit-based fallback, if your Codex account exposes credits instead of windows:
+AI_USAGE_GPT_CREDITS_BALANCE=82.4
+AI_USAGE_GPT_CREDITS_UNLIMITED=false
+# Optional; normally inferred when balance/unlimited is set:
+AI_USAGE_GPT_CREDITS_HAS_CREDITS=true
 ```
 
 ## Behavior
 
 - Click the bar item to toggle the popup.
 - Click the popup refresh row to force-refresh provider data.
-- Automatic refresh interval defaults to 300 seconds / 5 minutes.
+- Automatic cache refresh interval defaults to 1800 seconds / 30 minutes.
+- The refresh script bootstraps common user binary paths (`~/.nvm/versions/node/*/bin`, `~/.local/bin`, Homebrew) because SketchyBar click handlers run with a minimal shell `PATH`.
 - Stale cache is displayed with a `~` prefix.
 - Errors display as `!`.
 - Disabled providers display as `off`.
@@ -180,6 +193,8 @@ Then inspect the provider:
 ~/.config/sketchybar/plugins/ai_usage_providers/claude_code.sh | jq .
 ```
 
+If diagnostics mention `Claude OAuth usage API rate limited`, the official endpoint returned `429`; the provider will temporarily use fallback data and retry after `AI_USAGE_CLAUDE_API_BACKOFF_SECONDS`.
+
 If the provider says `ccusage unavailable`, the OAuth usage API was unavailable and the fallback could not run. Ensure Claude Code is logged in (`claude auth status`) and `npx` is available or install `ccusage`.
 
 ### GPT shows `G:?`
@@ -196,7 +211,7 @@ Then inspect the provider:
 ~/.config/sketchybar/plugins/ai_usage_providers/gpt_plus.sh | jq .
 ```
 
-If the Codex usage API is unavailable, add manual fallback values such as `AI_USAGE_GPT_REMAINING_PERCENT` or `AI_USAGE_GPT_5H_REMAINING_PERCENT` to `ai_usage.env`.
+If the Codex usage API is unavailable, add manual fallback values such as `AI_USAGE_GPT_REMAINING_PERCENT` / `AI_USAGE_GPT_5H_REMAINING_PERCENT`, or `AI_USAGE_GPT_CREDITS_BALANCE` for credit-based accounts, to `ai_usage.env`. If the provider recently stopped working, run `codex logout && codex login`; a revoked Codex OAuth token makes the usage endpoint return `401 token_revoked`.
 
 ### Popup values are old
 

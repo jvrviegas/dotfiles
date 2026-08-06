@@ -132,8 +132,8 @@ Normalized provider output:
   - Acceptance: official Claude OAuth usage API (`https://api.anthropic.com/api/oauth/usage`) provides `five_hour` and `seven_day` utilization/resets. `ccusage`/`npx ccusage` remains as fallback for local usage estimates.
 - [x] Identify whether GPT Plus usage can be obtained from an official or stable source.
   - Acceptance: Codex/ChatGPT plan usage is available via `https://chatgpt.com/backend-api/wham/usage` using `~/.codex/auth.json` access token from `codex login`. Browser cookie scraping is not needed.
-- [ ] Decide cache TTL and update frequency.
-  - Acceptance: values recorded in this plan or future README section.
+- [x] Decide cache TTL and update frequency.
+  - Acceptance: default cache/background refresh is 1800 seconds / 30 minutes; manual popup refresh remains available.
 - [ ] Decide credential/session handling.
   - Acceptance: no secrets committed; all sensitive setup lives outside the repo.
 

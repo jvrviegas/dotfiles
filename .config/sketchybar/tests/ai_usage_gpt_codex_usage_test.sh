@@ -25,7 +25,13 @@ cat <<'JSON'
       "limit_window_seconds": 604800,
       "reset_at": 1779135357
     }
-  }
+  },
+  "credits": {
+    "has_credits": true,
+    "unlimited": false,
+    "balance": "150.75"
+  },
+  "spend_control": { "reached": false }
 }
 JSON
 MOCK
@@ -47,7 +53,12 @@ jq -e '
   .windows["5h"].reset_at == 1778604374 and
   .windows.weekly.remaining_percent == 72 and
   .windows.weekly.used_percent == 28 and
-  .windows.weekly.reset_at == 1779135357
+  .windows.weekly.reset_at == 1779135357 and
+  .credits.has_credits == true and
+  .credits.balance == "150.75" and
+  .credits.display_label == "150 credits" and
+  .windows.credits.status == "ok" and
+  .windows.credits.display_label == "150 credits"
 ' <<<"$output" >/dev/null
 
 cat > "$TMP_DIR/bin/curl" <<'MOCK'
@@ -84,5 +95,121 @@ jq -e '
   .windows.weekly.used_percent == 15 and
   .windows.weekly.reset_at == 1779465951
 ' <<<"$free_output" >/dev/null
+
+cat > "$TMP_DIR/bin/curl" <<'MOCK'
+#!/usr/bin/env bash
+cat <<'JSON'
+{
+  "plan_type": "pro",
+  "rate_limit": {
+    "allowed": true,
+    "limit_reached": false,
+    "primary_window": null,
+    "secondary_window": null
+  },
+  "credits": {
+    "has_credits": true,
+    "unlimited": false,
+    "balance": "82.4"
+  },
+  "spend_control": { "reached": false }
+}
+JSON
+MOCK
+chmod +x "$TMP_DIR/bin/curl"
+
+credits_output="$(HOME="$TMP_DIR/home" PATH="$TMP_DIR/bin:/usr/bin:/bin" "$ROOT_DIR/plugins/ai_usage_providers/gpt_plus.sh")"
+
+jq -e '
+  .source == "codex_wham_usage_api" and
+  .plan_type == "pro" and
+  .status == "ok" and
+  .remaining_percent == null and
+  .display_label == "82.4cr" and
+  .display_color == "green" and
+  .message == "82.4 credits (official Codex/ChatGPT credits balance)" and
+  .credits.has_credits == true and
+  .credits.balance == "82.4" and
+  .windows.credits.status == "ok" and
+  .windows.credits.display_label == "82.4 credits"
+' <<<"$credits_output" >/dev/null
+
+cat > "$TMP_DIR/bin/curl" <<'MOCK'
+#!/usr/bin/env bash
+cat <<'JSON'
+{
+  "plan_type": "self_serve_business_usage_based",
+  "rate_limit": null,
+  "credits": {
+    "has_credits": true,
+    "unlimited": false,
+    "overage_limit_reached": false,
+    "balance": null
+  },
+  "spend_control": { "reached": false }
+}
+JSON
+MOCK
+chmod +x "$TMP_DIR/bin/curl"
+
+usage_based_output="$(HOME="$TMP_DIR/home" PATH="$TMP_DIR/bin:/usr/bin:/bin" "$ROOT_DIR/plugins/ai_usage_providers/gpt_plus.sh")"
+
+jq -e '
+  .source == "codex_wham_usage_api" and
+  .plan_type == "self_serve_business_usage_based" and
+  .status == "ok" and
+  .remaining_percent == null and
+  .display_label == "cr" and
+  .display_color == "green" and
+  .credits.has_credits == true and
+  .credits.balance == null and
+  .windows.credits.status == "ok" and
+  .windows.credits.display_label == "Credit usage active"
+' <<<"$usage_based_output" >/dev/null
+
+usage_based_manual_balance_output="$(
+  HOME="$TMP_DIR/home" \
+  PATH="$TMP_DIR/bin:/usr/bin:/bin" \
+  AI_USAGE_GPT_CREDITS_BALANCE=82.4 \
+  "$ROOT_DIR/plugins/ai_usage_providers/gpt_plus.sh"
+)"
+
+jq -e '
+  .source == "codex_wham_usage_api" and
+  .plan_type == "self_serve_business_usage_based" and
+  .status == "ok" and
+  .remaining_percent == null and
+  .display_label == "≈82.4cr" and
+  .is_estimate == true and
+  .basis == "manual GPT credits balance; official API confirms Codex account" and
+  .credits.balance == "82.4" and
+  .windows.credits.display_label == "≈82.4 credits"
+' <<<"$usage_based_manual_balance_output" >/dev/null
+
+cat > "$TMP_DIR/bin/curl" <<'MOCK'
+#!/usr/bin/env bash
+cat <<'JSON'
+{
+  "plan_type": "pro",
+  "credits": {
+    "has_credits": true,
+    "unlimited": true,
+    "balance": null
+  }
+}
+JSON
+MOCK
+chmod +x "$TMP_DIR/bin/curl"
+
+unlimited_output="$(HOME="$TMP_DIR/home" PATH="$TMP_DIR/bin:/usr/bin:/bin" "$ROOT_DIR/plugins/ai_usage_providers/gpt_plus.sh")"
+
+jq -e '
+  .source == "codex_wham_usage_api" and
+  .status == "ok" and
+  .remaining_percent == null and
+  .display_label == "∞cr" and
+  .credits.unlimited == true and
+  .windows.credits.display_label == "Unlimited credits"
+' <<<"$unlimited_output" >/dev/null
 
 echo "ai_usage_gpt_codex_usage_test: ok"
