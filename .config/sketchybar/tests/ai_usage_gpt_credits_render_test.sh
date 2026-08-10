@@ -39,7 +39,7 @@ cat > "$TMP_DIR/sketchybar/ai_usage.json" <<'JSON'
 JSON
 
 render_output="$(CONFIG_DIR="$TMP_DIR/missing" XDG_CACHE_HOME="$TMP_DIR" AI_USAGE_TTL_SECONDS=9999999999 "$ROOT_DIR/plugins/ai_usage.sh" render)"
-grep -q '^LABEL=C:70% W:80% G:82.4cr' <<<"$render_output"
+grep -q '^LABEL=C:70% G:82.4cr' <<<"$render_output"
 grep -q '^GPT_LABEL=82.4cr$' <<<"$render_output"
 grep -q '^GPT_COLOR=green$' <<<"$render_output"
 

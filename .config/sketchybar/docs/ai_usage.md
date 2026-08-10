@@ -2,7 +2,7 @@
 
 This item displays AI subscription usage in SketchyBar.
 
-- Compact bar label: `C:<claude> G:<gpt>`
+- Compact bar label: `C:<claude-session> G:<gpt>`; Claude weekly and Fable-week limits appear only in the popup.
 - Popup: Claude/GPT 5-hour and weekly windows, plus GPT/Codex credits when available
 - Cache: `~/.cache/sketchybar/ai_usage.json`
 - Local config: `~/.config/sketchybar/ai_usage.env`

@@ -208,7 +208,7 @@ provider_color() {
 render() {
   ensure_cache
 
-  local data age stale claude_display gpt_display deepseek_display label details min_remaining color has_error claude_color gpt_color deepseek_color claude_weekly_remaining claude_fable_remaining
+  local data age stale claude_display gpt_display deepseek_display label details min_remaining color has_error claude_color gpt_color deepseek_color
   data="$(cat "$CACHE_FILE" 2>/dev/null || echo '{}')"
   age="$(cache_age)"
   stale=false
@@ -217,14 +217,6 @@ render() {
   fi
 
   claude_display="$(provider_display "$data" claude)"
-  claude_weekly_remaining="$(jq -r '.providers.claude.windows.weekly.remaining_percent // empty' <<<"$data" 2>/dev/null || true)"
-  claude_fable_remaining="$(jq -r '.providers.claude.windows.weekly_fable.remaining_percent // empty' <<<"$data" 2>/dev/null || true)"
-  if [[ "$claude_weekly_remaining" =~ ^[0-9]+$ ]]; then
-    claude_display="${claude_display} W:${claude_weekly_remaining}%"
-  fi
-  if [[ "$claude_fable_remaining" =~ ^[0-9]+$ ]]; then
-    claude_display="${claude_display} F:${claude_fable_remaining}%"
-  fi
   gpt_display="$(provider_display "$data" gpt)"
   deepseek_display="$(provider_display "$data" deepseek)"
   label="C:${claude_display} G:${gpt_display} DS:${deepseek_display}"
