@@ -1,4 +1,5 @@
 local colors = require("colors")
+local icons = require("icons")
 local settings = require("settings")
 
 local function provider_item(name, icon, label, has_popup)
@@ -41,11 +42,37 @@ local function provider_item(name, icon, label, has_popup)
 	return sbar.add("item", name, item)
 end
 
-local gpt_usage = provider_item("ai_usage.gpt", ":openai:", "?", false) -- temporarily disabled
+local ai_settings = sbar.add("item", "ai_usage.settings", {
+	position = "right",
+	drawing = true,
+	icon = {
+		string = icons.gear,
+		font = { family = settings.font.text, style = settings.font.style_map["Bold"], size = 16.0 },
+		color = colors.secondary,
+		padding_left = 6,
+		padding_right = 6,
+	},
+	label = { drawing = false },
+	background = {
+		color = colors.bg1,
+		border_width = 0,
+		height = 26,
+		corner_radius = 13,
+	},
+	popup = {
+		align = "center",
+		background = {
+			color = colors.popup.bg,
+			border_color = colors.popup.border,
+			border_width = 1,
+			corner_radius = 8,
+		},
+	},
+})
+
+local gpt_usage = provider_item("ai_usage.gpt", ":openai:", "?", true)
 local claude_usage = provider_item("ai_usage.claude", ":claude:", "?", true)
 local deepseek_usage = provider_item("ai_usage.deepseek", ":deepseek:", "?", false)
-
-gpt_usage:set({ drawing = false })
 
 local color_map = {
 	green = colors.green,
@@ -65,9 +92,10 @@ local function parse_payload(output)
 	return payload
 end
 
-local function popup_row(name, icon, label, icon_color)
+local function popup_row(name, icon, label, icon_color, parent)
+	parent = parent or claude_usage
 	return sbar.add("item", name, {
-		position = "popup." .. claude_usage.name,
+		position = "popup." .. parent.name,
 		icon = {
 			string = icon,
 			width = 92,
@@ -98,6 +126,28 @@ local deepseek_balance = popup_row("ai_usage.popup.deepseek_balance", "Balance",
 local updated = popup_row("ai_usage.popup.updated", "Updated", "unknown", colors.grey)
 local refresh = popup_row("ai_usage.popup.refresh", "↻", "Refresh now", colors.yellow)
 
+local claude_visibility = popup_row("ai_usage.settings.claude", "Claude", "Visible", colors.secondary, ai_settings)
+local gpt_visibility = popup_row("ai_usage.settings.gpt", "GPT/Codex", "Visible", colors.green, ai_settings)
+local deepseek_visibility = popup_row("ai_usage.settings.deepseek", "DeepSeek", "Visible", colors.blue, ai_settings)
+
+local provider_items = {
+	claude = claude_usage,
+	gpt = gpt_usage,
+	deepseek = deepseek_usage,
+}
+
+local visibility_rows = {
+	claude = claude_visibility,
+	gpt = gpt_visibility,
+	deepseek = deepseek_visibility,
+}
+
+local visibility_prefixes = {
+	claude = "CLAUDE",
+	gpt = "GPT",
+	deepseek = "DEEPSEEK",
+}
+
 local function update_bar(command)
 	sbar.exec(command or "$CONFIG_DIR/plugins/ai_usage.sh render", function(output)
 		local payload = parse_payload(output or "")
@@ -114,12 +164,12 @@ local function update_bar(command)
 				color = claude_color,
 			},
 		})
-		-- gpt_usage:set({
-		-- 	label = {
-		-- 		string = gpt_label,
-		-- 		color = gpt_color,
-		-- 	},
-		-- })
+		gpt_usage:set({
+			label = {
+				string = gpt_label,
+				color = gpt_color,
+			},
+		})
 		deepseek_usage:set({
 			label = {
 				string = deepseek_label,
@@ -143,32 +193,85 @@ local function update_popup(command)
 	end)
 end
 
+local function set_visibility(provider, visible)
+	provider_items[provider]:set({ drawing = visible })
+	visibility_rows[provider]:set({
+		label = {
+			string = visible and "Visible" or "Hidden",
+			color = visible and colors.green or colors.grey,
+		},
+	})
+end
+
+local function apply_visibility(output, only_provider)
+	local payload = parse_payload(output or "")
+	if only_provider then
+		local prefix = visibility_prefixes[only_provider]
+		local value = payload[prefix .. "_VISIBLE"]
+		if value then
+			-- The helper normalizes invalid values to true; do the same if it fails.
+			set_visibility(only_provider, value ~= "false")
+		end
+		return
+	end
+
+	for provider, prefix in pairs(visibility_prefixes) do
+		-- The helper normalizes invalid values to true; do the same if it fails.
+		set_visibility(provider, payload[prefix .. "_VISIBLE"] ~= "false")
+	end
+end
+
+local function update_visibility(command)
+	sbar.exec(command or "$CONFIG_DIR/plugins/ai_usage_visibility.sh get", function(output)
+		apply_visibility(output)
+	end)
+end
+
+local function toggle_visibility(provider)
+	sbar.exec("$CONFIG_DIR/plugins/ai_usage_visibility.sh toggle " .. provider, function(output)
+		apply_visibility(output, provider)
+	end)
+end
+
 claude_usage:subscribe({ "forced", "routine", "system_woke" }, function()
 	update_bar()
 	update_popup()
 end)
 
--- gpt_usage:subscribe({ "forced", "system_woke" }, function()
--- 	update_bar()
--- 	update_popup()
--- end)
+gpt_usage:subscribe({ "forced", "routine", "system_woke" }, function()
+	update_bar()
+	update_popup()
+end)
 
 deepseek_usage:subscribe({ "forced", "routine", "system_woke" }, function()
 	update_bar()
 	update_popup()
 end)
 
-local function toggle_popup()
-	local drawing = claude_usage:query().popup.drawing
-	claude_usage:set({ popup = { drawing = "toggle" } })
+local function toggle_popup(item)
+	local drawing = item:query().popup.drawing
+	item:set({ popup = { drawing = "toggle" } })
 	if drawing == "off" then
 		update_popup()
 	end
 end
 
-claude_usage:subscribe("mouse.clicked", toggle_popup)
--- gpt_usage:subscribe("mouse.clicked", toggle_popup)
-deepseek_usage:subscribe("mouse.clicked", toggle_popup)
+local function toggle_settings_popup()
+	local drawing = ai_settings:query().popup.drawing
+	ai_settings:set({ popup = { drawing = "toggle" } })
+	if drawing == "off" then
+		update_visibility()
+	end
+end
+
+claude_visibility:subscribe("mouse.clicked", function() toggle_visibility("claude") end)
+gpt_visibility:subscribe("mouse.clicked", function() toggle_visibility("gpt") end)
+deepseek_visibility:subscribe("mouse.clicked", function() toggle_visibility("deepseek") end)
+ai_settings:subscribe("mouse.clicked", toggle_settings_popup)
+
+claude_usage:subscribe("mouse.clicked", function() toggle_popup(claude_usage) end)
+gpt_usage:subscribe("mouse.clicked", function() toggle_popup(gpt_usage) end)
+deepseek_usage:subscribe("mouse.clicked", function() toggle_popup(deepseek_usage) end)
 
 refresh:subscribe("mouse.clicked", function()
 	refresh:set({
@@ -199,6 +302,8 @@ refresh:subscribe("mouse.clicked", function()
 		})
 	end)
 end)
+
+update_visibility()
 
 sbar.add("item", "ai_usage.padding", {
 	position = "right",

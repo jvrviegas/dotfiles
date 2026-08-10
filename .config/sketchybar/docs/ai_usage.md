@@ -134,6 +134,26 @@ AI_USAGE_GPT_CREDITS_HAS_CREDITS=true
 - Disabled providers display as `off`.
 - Unknown values display as `?`.
 
+### Provider visibility controls
+
+Click the gear control next to the AI usage indicators to open the visibility popup. It contains independent `Visible`/`Hidden` controls for Claude, GPT/Codex, and DeepSeek. Clicking a control immediately changes only that provider's status item.
+
+Visibility is a local presentation preference, separate from provider/API enablement. The settings control remains visible even when all provider indicators are hidden, so they can be restored from the popup.
+
+The preferences are stored in `~/.config/sketchybar/ai_usage.env` using:
+
+```sh
+AI_USAGE_CLAUDE_VISIBLE=true|false
+AI_USAGE_GPT_VISIBLE=true|false
+AI_USAGE_DEEPSEEK_VISIBLE=true|false
+```
+
+Missing or invalid values default to `true`. The visibility helper updates only the selected key and preserves comments and other `ai_usage.env` settings. You can edit or remove these keys manually, then reload SketchyBar:
+
+```sh
+sketchybar --reload
+```
+
 ## Manual commands
 
 Refresh:

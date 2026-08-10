@@ -15,6 +15,8 @@
 - Bar display: `items/ai_usage.lua` uses separate `ai_usage.claude` (`:claude:` icon) and `ai_usage.gpt` (`:openai:` icon) items so each provider label has an independent color. The standalone robot/root icon was removed; the shared popup is anchored on the Claude provider item.
 - Popup phase: `items/ai_usage.lua` defines popup child rows for Claude/GPT 5-hour and weekly windows plus GPT credits. Values come from `plugins/ai_usage.sh popup`, which reads the same normalized cache as the compact label.
 - Popup refresh row runs `plugins/ai_usage.sh refresh`, then updates compact and popup labels.
+- `plugins/ai_usage_visibility.sh` owns local presentation preferences in `ai_usage.env`: `get` normalizes missing/invalid values to visible, and `toggle <provider>` atomically updates only the selected `AI_USAGE_<PROVIDER>_VISIBLE` key while preserving unrelated lines.
+- `items/ai_usage.lua` keeps `ai_usage.settings` drawn independently of provider items; its popup rows update only the selected provider's `drawing` state after persistence.
 - Default AI usage cache/background refresh is 1800s (30 minutes) to avoid hammering provider usage endpoints; users can override with `AI_USAGE_TTL_SECONDS`.
 - SketchyBar click handlers may run with a minimal `PATH`; `plugins/ai_usage.sh` bootstraps `~/.nvm/versions/node/*/bin`, `~/.local/bin`, Homebrew paths, and prefers the newest lexicographic NVM bin so `npx ccusage` does not fall back to an old Node (e.g. v12) or disappear on refresh.
 - Phase 7 estimate transparency: providers emit `is_estimate` and `basis`. `plugins/ai_usage.sh render/popup` prefixes estimated values with `≈`; `plugins/ai_usage.sh doctor` explains source and basis.
