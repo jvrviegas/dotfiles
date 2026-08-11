@@ -179,9 +179,18 @@ local function update_bar(command)
 	end)
 end
 
+local function popup_header_label(provider, plan)
+	if plan and plan ~= "" then
+		return provider .. " · " .. plan
+	end
+	return provider
+end
+
 local function update_popup(command)
 	sbar.exec(command or "$CONFIG_DIR/plugins/ai_usage.sh popup", function(output)
 		local payload = parse_payload(output or "")
+		claude_header:set({ label = { string = popup_header_label("Claude", payload.CLAUDE_PLAN) } })
+		gpt_header:set({ label = { string = popup_header_label("GPT/Codex", payload.GPT_PLAN) } })
 		claude_5h:set({ label = { string = payload.CLAUDE_5H or "?" } })
 		claude_weekly:set({ label = { string = payload.CLAUDE_WEEKLY or "?" } })
 		claude_fable:set({ label = { string = payload.CLAUDE_FABLE or "?" } })
@@ -248,9 +257,12 @@ deepseek_usage:subscribe({ "forced", "routine", "system_woke" }, function()
 	update_popup()
 end)
 
-local function toggle_popup(item)
-	local drawing = item:query().popup.drawing
-	item:set({ popup = { drawing = "toggle" } })
+-- The detail rows are shared and are children of Claude's popup.  Other
+-- provider items must therefore toggle that populated popup rather than their
+-- own (empty or absent) popup containers.
+local function toggle_popup()
+	local drawing = claude_usage:query().popup.drawing
+	claude_usage:set({ popup = { drawing = "toggle" } })
 	if drawing == "off" then
 		update_popup()
 	end
@@ -269,9 +281,9 @@ gpt_visibility:subscribe("mouse.clicked", function() toggle_visibility("gpt") en
 deepseek_visibility:subscribe("mouse.clicked", function() toggle_visibility("deepseek") end)
 ai_settings:subscribe("mouse.clicked", toggle_settings_popup)
 
-claude_usage:subscribe("mouse.clicked", function() toggle_popup(claude_usage) end)
-gpt_usage:subscribe("mouse.clicked", function() toggle_popup(gpt_usage) end)
-deepseek_usage:subscribe("mouse.clicked", function() toggle_popup(deepseek_usage) end)
+claude_usage:subscribe("mouse.clicked", toggle_popup)
+gpt_usage:subscribe("mouse.clicked", toggle_popup)
+deepseek_usage:subscribe("mouse.clicked", toggle_popup)
 
 refresh:subscribe("mouse.clicked", function()
 	refresh:set({

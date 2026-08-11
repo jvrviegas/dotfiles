@@ -313,6 +313,11 @@ PY
   printf '%s' "$value"
 }
 
+plan_display() {
+  local data="$1" provider="$2"
+  jq -r ".providers.$provider.plan_type // empty | gsub(\"_\"; \" \") | split(\" \") | map((.[0:1] | ascii_upcase) + .[1:]) | join(\" \")" <<<"$data" 2>/dev/null || true
+}
+
 window_display() {
   local data="$1" provider="$2" window="$3" status remaining reset message estimate value reset_label display_label
   status="$(jq -r ".providers.$provider.windows[\"$window\"].status // .providers.$provider.status // \"unknown\"" <<<"$data" 2>/dev/null || echo unknown)"
@@ -375,6 +380,7 @@ popup() {
     updated_at="$(format_time "$updated_at")"
   fi
 
+  printf 'CLAUDE_PLAN=%s\n' "$(plan_display "$data" claude)"
   printf 'CLAUDE_5H=%s\n' "$(window_display "$data" claude 5h)"
   printf 'CLAUDE_WEEKLY=%s\n' "$(window_display "$data" claude weekly)"
   local claude_fable_display="n/a"
@@ -382,6 +388,7 @@ popup() {
     claude_fable_display="$(window_display "$data" claude weekly_fable)"
   fi
   printf 'CLAUDE_FABLE=%s\n' "$claude_fable_display"
+  printf 'GPT_PLAN=%s\n' "$(plan_display "$data" gpt)"
   printf 'GPT_5H=%s\n' "$(window_display "$data" gpt 5h)"
   printf 'GPT_WEEKLY=%s\n' "$(window_display "$data" gpt weekly)"
   printf 'GPT_CREDITS=%s\n' "$(window_display "$data" gpt credits)"

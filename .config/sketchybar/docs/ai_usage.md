@@ -3,7 +3,7 @@
 This item displays AI subscription usage in SketchyBar.
 
 - Compact bar label: `C:<claude-session> G:<gpt>`; Claude weekly and Fable-week limits appear only in the popup.
-- Popup: Claude/GPT 5-hour and weekly windows, plus GPT/Codex credits when available
+- Popup: provider headers include the current plan when available, alongside Claude/GPT 5-hour and weekly windows and GPT/Codex credits
 - Cache: `~/.cache/sketchybar/ai_usage.json`
 - Local config: `~/.config/sketchybar/ai_usage.env`
 
@@ -17,7 +17,7 @@ Claude Code usage is read automatically from the official Claude OAuth usage API
 https://api.anthropic.com/api/oauth/usage
 ```
 
-The provider obtains the Claude Code OAuth access token from macOS Keychain entry `Claude Code-credentials` and calls the API locally. The API returns official plan-limit utilization for:
+The provider obtains the Claude Code OAuth credential from macOS Keychain entry `Claude Code-credentials` and calls the API locally. Its locally stored `subscriptionType` is shown beside the Claude popup title when present. The API returns official plan-limit utilization for:
 
 - `five_hour`
 - `seven_day`
@@ -38,7 +38,7 @@ GPT/Codex usage is read automatically from Codex's ChatGPT plan usage endpoint w
 https://chatgpt.com/backend-api/wham/usage
 ```
 
-The provider reads `~/.codex/auth.json` and uses the Codex access token. This endpoint returns real primary (5-hour) and secondary (weekly) plan-limit usage for the signed-in ChatGPT/Codex account. Credit/usage-based Codex accounts may return `rate_limit: null` plus `credits.has_credits: true`; when no percentage window is available, the compact bar shows credits such as `G:82cr`, `G:∞cr`, or `G:cr` when the API confirms credits but does not expose a numeric balance. If the official API returns `balance: null`, `AI_USAGE_GPT_CREDITS_BALANCE` can fill a manual estimated amount such as `G:≈82cr`. The popup shows a `Credits` row. Manual GPT values remain available as fallback and are shown as estimates with `≈`.
+The provider reads `~/.codex/auth.json` and uses the Codex access token. Its `plan_type` is shown beside the GPT/Codex popup title when present. This endpoint returns real primary (5-hour) and secondary (weekly) plan-limit usage for the signed-in ChatGPT/Codex account. Credit/usage-based Codex accounts may return `rate_limit: null` plus `credits.has_credits: true`; when no percentage window is available, the compact bar shows credits such as `G:82cr`, `G:∞cr`, or `G:cr` when the API confirms credits but does not expose a numeric balance. If the official API returns `balance: null`, `AI_USAGE_GPT_CREDITS_BALANCE` can fill a manual estimated amount such as `G:≈82cr`. The popup shows a `Credits` row. Manual GPT values remain available as fallback and are shown as estimates with `≈`.
 
 ## Setup
 

@@ -9,7 +9,7 @@ mkdir -p "$TMP_DIR/bin"
 cat > "$TMP_DIR/bin/security" <<'MOCK'
 #!/usr/bin/env bash
 cat <<'JSON'
-{"claudeAiOauth":{"accessToken":"test-token"}}
+{"claudeAiOauth":{"accessToken":"test-token","subscriptionType":"team"}}
 JSON
 MOCK
 cat > "$TMP_DIR/bin/curl" <<'MOCK'
@@ -48,6 +48,7 @@ jq -e '
   .is_estimate == false and
   .remaining_percent == 86 and
   .basis == "official Claude OAuth usage API utilization" and
+  .plan_type == "team" and
   .windows["5h"].remaining_percent == 86 and
   .windows["5h"].used_percent == 14 and
   .windows["5h"].is_estimate == false and

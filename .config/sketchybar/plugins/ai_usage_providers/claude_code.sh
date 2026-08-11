@@ -72,11 +72,19 @@ run_ccusage() {
   fi
 }
 
-get_claude_oauth_token() {
+get_claude_oauth_credential() {
   if ! command -v security >/dev/null 2>&1; then
     return 1
   fi
-  security find-generic-password -s 'Claude Code-credentials' -w 2>/dev/null | jq -r '.claudeAiOauth.accessToken // empty' 2>/dev/null
+  security find-generic-password -s 'Claude Code-credentials' -w 2>/dev/null
+}
+
+get_claude_oauth_token() {
+  jq -r '.claudeAiOauth.accessToken // empty' <<<"$1" 2>/dev/null
+}
+
+get_claude_plan_type() {
+  jq -r '.claudeAiOauth.subscriptionType // empty' <<<"$1" 2>/dev/null
 }
 
 oauth_state_message() {
@@ -169,7 +177,7 @@ remaining_from_used_percent() {
 }
 
 emit_oauth_usage() {
-  local usage_json="$1" fiveh_used weekly_used fiveh_remaining weekly_remaining fiveh_reset_at weekly_reset_at fable_used fable_remaining fable_reset_at
+  local usage_json="$1" plan_type="$2" fiveh_used weekly_used fiveh_remaining weekly_remaining fiveh_reset_at weekly_reset_at fable_used fable_remaining fable_reset_at
   fiveh_used="$(jq -r '.five_hour.utilization // empty' <<<"$usage_json")"
   weekly_used="$(jq -r '.seven_day.utilization // empty' <<<"$usage_json")"
   fiveh_reset_at="$(jq -r '.five_hour.resets_at // empty' <<<"$usage_json")"
@@ -208,6 +216,7 @@ emit_oauth_usage() {
     --argjson fable_remaining "$fable_remaining" \
     --arg fable_reset_at "${fable_reset_at:-}" \
     --argjson fable_used "$fable_used" \
+    --arg plan_type "$plan_type" \
     '{
       enabled: true,
       remaining_percent: $remaining,
@@ -215,6 +224,7 @@ emit_oauth_usage() {
       status: (if $remaining == null then "unknown" else "ok" end),
       message: (if $remaining == null then "Claude OAuth usage API missing five_hour utilization" else (($remaining | tostring) + "% left (official Claude usage API)") end),
       source: "claude_oauth_usage_api",
+      plan_type: (if $plan_type == "" then null else $plan_type end),
       is_estimate: false,
       basis: "official Claude OAuth usage API utilization",
       windows: ({
@@ -290,14 +300,18 @@ if [[ "$api_enabled" != "0" && "$api_enabled" != "false" && "$api_enabled" != "n
   if oauth_backoff_active && [[ "${AI_USAGE_CLAUDE_API_FORCE:-0}" != "1" ]]; then
     oauth_fallback_reason="$(oauth_state_message)"
   else
-    oauth_token="$(get_claude_oauth_token || true)"
+    claude_credentials="$(get_claude_oauth_credential || true)"
+    oauth_token="$(get_claude_oauth_token "$claude_credentials" || true)"
+    claude_plan_type="$(get_claude_plan_type "$claude_credentials" || true)"
     oauth_usage="$(fetch_oauth_usage "$oauth_token" || true)"
     if ! jq -e . >/dev/null 2>&1 <<<"$oauth_usage" && [[ -z "$(oauth_state_message)" ]] && command -v claude >/dev/null 2>&1; then
       claude auth status >/dev/null 2>&1 || true
-      oauth_token="$(get_claude_oauth_token || true)"
+      claude_credentials="$(get_claude_oauth_credential || true)"
+      oauth_token="$(get_claude_oauth_token "$claude_credentials" || true)"
+      claude_plan_type="$(get_claude_plan_type "$claude_credentials" || true)"
       oauth_usage="$(fetch_oauth_usage "$oauth_token" || true)"
     fi
-    if jq -e . >/dev/null 2>&1 <<<"$oauth_usage" && emit_oauth_usage "$oauth_usage"; then
+    if jq -e . >/dev/null 2>&1 <<<"$oauth_usage" && emit_oauth_usage "$oauth_usage" "$claude_plan_type"; then
       exit 0
     fi
     oauth_fallback_reason="$(oauth_state_message)"

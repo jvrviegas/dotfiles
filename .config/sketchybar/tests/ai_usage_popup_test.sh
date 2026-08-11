@@ -10,6 +10,7 @@ cat > "$TMP_DIR/sketchybar/ai_usage.json" <<'JSON'
 {
   "providers": {
     "claude": {
+      "plan_type": "team",
       "status": "ok",
       "remaining_percent": 70,
       "message": "70% left",
@@ -20,6 +21,7 @@ cat > "$TMP_DIR/sketchybar/ai_usage.json" <<'JSON'
       }
     },
     "gpt": {
+      "plan_type": "plus",
       "status": "unknown",
       "remaining_percent": null,
       "message": "manual setup required",
@@ -38,6 +40,8 @@ output="$(CONFIG_DIR="$TMP_DIR/missing" XDG_CACHE_HOME="$TMP_DIR" AI_USAGE_TTL_S
 grep -q '^CLAUDE_5H=70% left · resets ' <<<"$output"
 grep -q '^CLAUDE_WEEKLY=80% left · resets ' <<<"$output"
 grep -q '^CLAUDE_FABLE=75% left · resets ' <<<"$output"
+grep -q '^GPT_PLAN=Plus$' <<<"$output"
+grep -q '^CLAUDE_PLAN=Team$' <<<"$output"
 grep -q '^GPT_5H=? configure GPT 5h manual remaining$' <<<"$output"
 grep -q '^GPT_WEEKLY=85% left · resets ' <<<"$output"
 grep -q '^UPDATED_AT=' <<<"$output"
