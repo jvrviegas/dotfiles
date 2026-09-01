@@ -50,6 +50,88 @@ gitwip() {
     git add . && git commit -m "WIP"
 }
 
+# Cross-machine WIP snapshot: park the dirty tree on origin/wip/<host>/<branch>,
+# pick it up on the other machine. Gitignored files (.env etc.) are NOT carried.
+wip() {
+    git rev-parse --git-dir >/dev/null 2>&1 || { echo "wip: not a git repo"; return 1; }
+    local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    [ "$branch" != HEAD ] || { echo "wip: detached HEAD, checkout a branch first"; return 1; }
+    local ref="refs/heads/wip/$(hostname -s)/$branch" committed=0
+    git add -A || return 1
+    if git diff --cached --quiet; then
+        echo "wip: nothing new to snapshot"
+    else
+        git commit -q --no-verify -m "wip($(hostname -s)): $(date '+%F %H:%M')" || return 1
+        committed=1
+    fi
+    git push -qf origin "HEAD:$ref" && echo "wip: pushed ${ref#refs/heads/}" || {
+        [ "$committed" = 1 ] && git reset -q --soft HEAD~1 && git reset -q
+        return 1
+    }
+    # unwind locally so this machine keeps its dirty tree, not a junk commit
+    [ "$committed" = 1 ] && git reset -q --soft HEAD~1 && git reset -q
+    return 0
+}
+
+unwip() {
+    git rev-parse --git-dir >/dev/null 2>&1 || { echo "unwip: not a git repo"; return 1; }
+    git diff --quiet && git diff --cached --quiet || { echo "unwip: working tree is dirty, commit or stash first"; return 1; }
+    git fetch -qp origin "+refs/heads/wip/*:refs/remotes/origin/wip/*" || return 1
+
+    local branch="$(git rev-parse --abbrev-ref HEAD)" ref
+    if [ -n "$1" ]; then
+        ref="origin/wip/$1/$branch"
+    else
+        ref=$(git for-each-ref --sort=-committerdate --format='%(refname:short)' 'refs/remotes/origin/wip/' \
+              | grep -v "^origin/wip/$(hostname -s)/" | grep "/$branch\$" | head -1)
+    fi
+    [ -n "$ref" ] && git rev-parse -q --verify "$ref^{commit}" >/dev/null || {
+        echo "unwip: no snapshot for branch '$branch'"; return 1; }
+
+    git merge-base --is-ancestor HEAD "$ref" || {
+        echo "unwip: $ref is not on top of $branch -- resolve manually"; return 1; }
+
+    git reset -q --hard "$ref" && git reset -q --soft HEAD~1 && git reset -q && echo "unwip: restored $ref"
+}
+
+# Snapshot the repos you actually worked on recently. wipall [days] [root]
+# Recency is judged by the mtime of the changed files, not directory mtimes.
+wipall() {
+    local days="${1:-1}" root="${2:-$HOME/Projects}"
+    local gitpath repo st line f m newest now reply
+    local -a candidates
+    now=$(date +%s)
+    echo "wipall: scanning $root for repos with changes newer than $days day(s)..."
+    for gitpath in "${(@f)$(find "$root" \( -name node_modules -o -name .venv -o -name venv -o -name target \) -prune \
+                            -o -name .git -print 2>/dev/null)}"; do
+        [ -n "$gitpath" ] || continue
+        repo="${gitpath:h}"
+        st=$(git -C "$repo" status --porcelain 2>/dev/null)
+        [ -n "$st" ] || continue
+        git -C "$repo" remote get-url origin >/dev/null 2>&1 || continue
+        newest=0
+        while IFS= read -r line; do
+            f="${line[4,-1]}"; f="${f##* -> }"; f="${f%\"}"; f="${f#\"}"
+            case "$f" in *.DS_Store) continue;; esac
+            [ -e "$repo/$f" ] || continue
+            m=$(stat -f %m "$repo/$f" 2>/dev/null || stat -c %Y "$repo/$f" 2>/dev/null) || continue
+            [ "$m" -gt "$newest" ] && newest=$m
+        done <<< "$st"
+        [ "$newest" -gt 0 ] && [ $(( (now - newest) / 86400 )) -lt "$days" ] && candidates+=("$repo")
+    done
+    (( ${#candidates} )) || { echo "wipall: nothing worked on in the last $days day(s)"; return 0; }
+    echo "wipall: ${#candidates} repo(s) to snapshot:"
+    for repo in $candidates; do
+        printf "    %-56s [%s]\n" "${repo/#$HOME/~}" "$(git -C "$repo" rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    done
+    printf "push these snapshots? [y/N] "; read -r reply
+    [[ "$reply" == [yY]* ]] || { echo "wipall: aborted, nothing pushed"; return 1; }
+    for repo in $candidates; do
+        if (cd "$repo" && wip >/dev/null 2>&1); then echo "    ok      ${repo/#$HOME/~}"
+        else echo "    FAILED  ${repo/#$HOME/~}"; fi
+    done
+}
+
 gcb () {
     branch=$( (git branch --format='%(refname:short)'; git branch -r --format='%(refname:short)') | grep -v 'HEAD' | sort -u | fzf)
 

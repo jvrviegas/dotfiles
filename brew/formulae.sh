@@ -67,7 +67,6 @@ brew install ocrmypdf
 brew install pandoc
 brew install poppler
 brew install tesseract-lang
-brew install banh-canh/ytui/ytui
 
 # Neovim tooling
 brew install markdownlint-cli
