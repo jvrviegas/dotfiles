@@ -1,0 +1,38 @@
+# Shadows /usr/local/share/applications/vicinae.desktop, whose Exec is
+# `vicinae server --replace`. Launching that from the app grid SIGKILLs the
+# vicinae.service daemon and takes over as a bare gnome-shell scope, which shows
+# up in the journal as:
+#
+#   vicinae.desktop[N]: Killing existing vicinae server (pid M)...
+#   systemd: vicinae.service: Main process exited, code=killed, status=9/KILL
+#   systemd: vicinae.service: Failed with result 'signal'
+#
+# systemd then waits out RestartSec=60 and --replaces the manual instance back.
+# Toggling instead talks to the already-running daemon, which is what clicking
+# the icon should do. The daemon itself is started by vicinae.service.
+
+[Desktop Entry]
+Type=Application
+Name=Vicinae
+GenericName=Vicinae
+Comment=A focused launcher for your desktop
+Exec=vicinae toggle
+Terminal=false
+Icon=vicinae
+Categories=Utility;Accessibility;
+NoDisplay=false
+Actions=open;close;toggle
+StartupWMClass=vicinae
+StartupNotify=false
+
+[Desktop Action open]
+Name=Open Vicinae Window
+Exec=vicinae open
+
+[Desktop Action close]
+Name=Close Vicinae Window
+Exec=vicinae close
+
+[Desktop Action toggle]
+Name=Toggle Vicinae Window
+Exec=vicinae toggle

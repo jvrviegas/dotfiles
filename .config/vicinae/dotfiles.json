@@ -1,0 +1,60 @@
+// Hand-maintained Vicinae configuration, tracked in the dotfiles repo.
+//
+// This file is pulled in via the "imports" array of settings.json. The split is the
+// pattern the docs recommend: Vicinae rewrites settings.json whenever a setting is
+// changed through the GUI (dropping comments and formatting), but it never touches
+// imported files. So the durable config lives here, and GUI tweaks land in
+// settings.json — where they take precedence, since the main config always wins
+// over imported files.
+//
+// Only values that differ from the shipped defaults are listed. Run
+// `vicinae config default` for the fully documented default config.
+// Docs: https://docs.vicinae.com/config
+
+{
+	"$schema": "https://vicinae.com/schemas/config.json",
+
+	// Don't phone home at startup. The default sends desktop environment,
+	// Vicinae/Qt version, kernel, screen geometry and locale to api.vicinae.com
+	// once every 24h. See https://docs.vicinae.com/telemetry
+	"telemetry": {
+		"system_info": false
+	},
+
+	"global_shortcuts": {
+		// Handled in-process by vicinae-input-server (evdev), which replaces the
+		// old GNOME custom keybinding that shelled out to `vicinae toggle` on every
+		// keypress. Linux default would be "super+control+space".
+		"toggle": "alt+space",
+
+		// Release all global shortcuts while these apps are focused, so the
+		// guest OS receives Alt+Space itself. Values are desktop file IDs.
+		"inhibit_apps": [
+			"org.gnome.Boxes.desktop"
+		]
+	},
+
+	// Standard launcher behaviour: dismiss when focus goes elsewhere.
+	// Requires layer_shell.keyboard_interactivity to be "on_demand" (below);
+	// it is ignored under "exclusive".
+	"close_on_focus_loss": true,
+
+	"launcher_window": {
+		// Left enabled so this same config works on both desktops the repo installs:
+		// under Hyprland the wlr-layer-shell protocol is used for real, while GNOME's
+		// mutter doesn't implement it and Vicinae falls back to a normal floating
+		// window (the vicinae@dagimg-dot shell extension emulates the useful parts —
+		// auto-centering, stay-on-top, close-on-click-away).
+		"layer_shell": {
+			"enabled": true,
+
+			// "exclusive" (the default) grabs the keyboard, which disables
+			// close_on_focus_loss and is documented to break mouse interaction on
+			// popups such as the action panel under Hyprland.
+			"keyboard_interactivity": "on_demand",
+
+			// "top" rather than "overlay" so IME popovers can still draw above us.
+			"layer": "top"
+		}
+	}
+}

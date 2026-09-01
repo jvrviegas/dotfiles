@@ -216,18 +216,18 @@ gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
 # Custom keybindings
 CUSTOM_KB_BASE="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
 CUSTOM_KB_0="${CUSTOM_KB_BASE}/custom0/"
-CUSTOM_KB_1="${CUSTOM_KB_BASE}/custom1/"
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['${CUSTOM_KB_0}', '${CUSTOM_KB_1}']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['${CUSTOM_KB_0}']"
 
 # Launch terminal: Super+Return
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} name "Launch Terminal"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} command "ghostty"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} binding "'<Super>Return'"
 
-# Vicinae launcher: Alt+Space
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} name "Vicinae Toggle"
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} command "vicinae toggle"
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} binding "'<Alt>space'"
+# Vicinae's Alt+Space is no longer a GNOME custom keybinding — it is declared in
+# .config/vicinae/dotfiles.json ("global_shortcuts.toggle") and grabbed directly by
+# vicinae-input-server, so it costs no process spawn per keypress. Clear the stale
+# custom1 entry left behind by earlier runs of this script.
+dconf reset -f "${CUSTOM_KB_BASE}/custom1/" 2>/dev/null || true
 
 # Switch workspaces: Alt+1..8
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Alt>1']"
@@ -279,6 +279,68 @@ if gsettings list-schemas | grep -q "$FORGE_KB"; then
   gsettings set $FORGE_KB window-swap-right "['<Super><Shift>i']"
 
   echo "  - Forge keybindings configured (focus/swap: Super+MNEI)"
+fi
+
+###############################################################################
+# Vicinae launcher                                                            #
+###############################################################################
+
+VICINAE_EXT_UUID="vicinae@dagimg-dot"
+
+if command -v vicinae &>/dev/null; then
+  # The daemon is managed by the packaged systemd user unit, whose ExecStart is
+  # `vicinae server --replace`. The shipped vicinae.desktop has the *same* Exec, so
+  # launching Vicinae from the app grid SIGKILLs the service's process and takes over
+  # outside systemd. .local/share/applications/vicinae.desktop shadows it with
+  # `vicinae toggle`; install_linux.sh copies it, this just refreshes the cache.
+  if [ -f "$HOME/.local/share/applications/vicinae.desktop" ]; then
+    update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+  fi
+
+  systemctl --user enable --now vicinae.service 2>/dev/null || true
+
+  # GNOME shell extension — mutter implements no wlr-layer-shell, so without this
+  # Vicinae has no clipboard history (it falls back to a dummy clipboard server), no
+  # window-management D-Bus API, and no layer-shell-like launcher positioning.
+  if ! gnome-extensions list 2>/dev/null | grep -q "$VICINAE_EXT_UUID"; then
+    echo "• Installing Vicinae GNOME extension"
+    VICINAE_EXT_TAG=$(curl -sSL \
+      https://api.github.com/repos/vicinaehq/gnome-extension/releases/latest \
+      | grep -m1 '"tag_name"' | cut -d'"' -f4)
+
+    if [ -n "$VICINAE_EXT_TAG" ]; then
+      VICINAE_EXT_ZIP=$(mktemp --suffix=.zip)
+      if curl -sSLf -o "$VICINAE_EXT_ZIP" \
+        "https://github.com/vicinaehq/gnome-extension/releases/download/${VICINAE_EXT_TAG}/vicinae%40dagimg-dot.shell-extension-${VICINAE_EXT_TAG}.zip"; then
+        gnome-extensions install --force "$VICINAE_EXT_ZIP" \
+          && echo "  - Vicinae extension ${VICINAE_EXT_TAG} installed"
+      else
+        echo "  - Could not download the Vicinae extension; install it from"
+        echo "    https://extensions.gnome.org/extension/8594/vicinae/"
+      fi
+      rm -f "$VICINAE_EXT_ZIP"
+    fi
+  fi
+
+  # `gnome-extensions enable` talks to the running shell over D-Bus and fails for an
+  # extension the shell has not rescanned yet, which on Wayland means until the next
+  # login. Append to the gsettings list instead so it activates on its own.
+  if [ -d "$HOME/.local/share/gnome-shell/extensions/$VICINAE_EXT_UUID" ]; then
+    if ! gsettings get org.gnome.shell enabled-extensions | grep -q "$VICINAE_EXT_UUID"; then
+      python3 - "$VICINAE_EXT_UUID" <<'PYEOF' || true
+import ast, subprocess, sys
+uuid = sys.argv[1]
+key = ["org.gnome.shell", "enabled-extensions"]
+cur = ast.literal_eval(subprocess.check_output(["gsettings", "get", *key], text=True).strip())
+if uuid not in cur:
+    cur.append(uuid)
+    subprocess.run(["gsettings", "set", *key, str(cur)], check=True)
+PYEOF
+      echo "  - Vicinae extension enabled (takes effect after logout/login)"
+    fi
+  fi
+
+  echo "  - Vicinae configured (Alt+Space via global_shortcuts)"
 fi
 
 ###############################################################################
