@@ -86,6 +86,7 @@ brew install switchaudio-osx
 
 # AI
 curl -fsSL https://claude.ai/install.sh | bash
+brew install herdr
 
 # System info
 brew install neofetch
