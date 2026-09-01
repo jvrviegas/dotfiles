@@ -5,7 +5,7 @@
 echo "• Installing GUI apps via Flatpak and dnf"
 
 # Ensure Flatpak and Flathub are set up
-sudo dnf install -y flatpak
+sudo dnf install -y --skip-unavailable flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 function installflatpak() {
@@ -17,14 +17,14 @@ installflatpak com.google.Chrome
 installflatpak app.zen_browser.zen
 
 # Terminals
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   alacritty \
   kitty
 
 # Wezterm (COPR)
 if ! command -v wezterm &>/dev/null; then
   sudo dnf copr enable -y wezfurlong/wezterm-nightly 2>/dev/null && \
-    sudo dnf install -y wezterm 2>/dev/null || \
+    sudo dnf install -y --skip-unavailable wezterm 2>/dev/null || \
     echo "  ⚠ wezterm: COPR not available, install manually from https://wezfurlong.org/wezterm/"
 fi
 if ! command -v ghostty &>/dev/null; then
@@ -47,7 +47,7 @@ if ! command -v code &>/dev/null; then
   echo "  - Installing VS Code via RPM repo"
   sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
   echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
-  sudo dnf install -y code
+  sudo dnf install -y --skip-unavailable code
 else
   echo "  - VS Code already installed"
 fi
@@ -63,11 +63,11 @@ installflatpak com.todoist.Todoist
 installflatpak com.spotify.Client
 
 # Documents & writing
-sudo dnf install -y texlive-scheme-basic 2>/dev/null || true
+sudo dnf install -y --skip-unavailable texlive-scheme-basic 2>/dev/null || true
 
 # Utilities
 installflatpak com.github.tchx84.Flatseal
-sudo dnf install -y flameshot
+sudo dnf install -y --skip-unavailable flameshot
 
 # Fonts — Nerd Fonts
 echo "  - Installing Nerd Fonts"
