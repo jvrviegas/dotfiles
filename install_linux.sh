@@ -196,6 +196,19 @@ else
 fi
 echo ""
 
+echo "• Setting up Kanata config symlink"
+if [[ -d "$HOME/.config/kanata" ]] && [[ ! -L "$HOME/.config/kanata" ]]; then
+    mv "$HOME/.config/kanata" "$HOME/.config/kanata-old"
+    echo "  - Backed up existing kanata config to $HOME/.config/kanata-old"
+fi
+if [[ ! -e "$HOME/.config/kanata" ]]; then
+    ln -s "$(pwd)/.config/kanata" "$HOME/.config/kanata"
+    echo "  - Created symlink from $HOME/.config/kanata to $(pwd)/.config/kanata"
+else
+    echo "  - Symlink already exists"
+fi
+echo ""
+
 # ─────────────────────────────────────────────
 # 8. Theme system
 # ─────────────────────────────────────────────
