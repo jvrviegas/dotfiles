@@ -23,6 +23,14 @@ done;
 unset file files;
 echo ""
 
+# Pi extensions
+if [[ -d "./.pi/agent/extensions" ]]; then
+  echo "• Installing Pi extensions"
+  mkdir -p "$HOME/.pi/agent/extensions"
+  cp "./.pi/agent/extensions/"*.ts "$HOME/.pi/agent/extensions/"
+  echo "  - Copied Pi extensions"
+  echo ""
+fi
 
 # Homebrew
 echo "• Check if Homebrew is installed"
@@ -97,6 +105,21 @@ if [ -f "$HOME/.config/tmux/themes/${CURRENT_THEME}.sh" ]; then
   cp "$HOME/.config/tmux/themes/${CURRENT_THEME}.sh" "$HOME/.config/tmux/themes/current.sh"
 fi
 echo "  - Theme set to: $CURRENT_THEME"
+echo ""
+
+
+echo "• Setting up Claude Code statusline"
+mkdir -p "$HOME/.claude"
+cp "$(pwd)/claude/statusline.js" "$HOME/.claude/statusline.js"
+cp "$(pwd)/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
+chmod +x "$HOME/.claude/statusline.js" "$HOME/.claude/statusline-command.sh"
+echo "  - Copied statusline scripts to $HOME/.claude"
+if ! grep -q '"statusLine"' "$HOME/.claude/settings.json" 2>/dev/null; then
+  echo '  - Not enabled yet. Add this to $HOME/.claude/settings.json:'
+  echo '      "statusLine": { "type": "command", "command": "node ~/.claude/statusline.js" }'
+else
+  echo "  - statusLine already configured in settings.json"
+fi
 echo ""
 
 
