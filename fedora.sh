@@ -105,6 +105,53 @@ gsettings set org.gtk.Settings.FileChooser sort-directories-first true
 # gsettings set org.gnome.nautilus.preferences show-delete-permanently true
 
 ###############################################################################
+# GNOME extensions                                                           #
+###############################################################################
+
+sudo dnf install -y gnome-extensions-app
+
+# gext installs the extension version compatible with the current GNOME Shell.
+if ! command -v gext &>/dev/null; then
+  sudo dnf install -y pipx
+  pipx install gnome-extensions-cli
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
+# extensions.gnome.org IDs and their installed UUIDs.
+GNOME_EXTENSIONS=(
+  "4481:forge@jmmaranan.com"
+  "1460:Vitals@CoreCoding.com"
+  "307:dash-to-dock@micxgx.gmail.com"
+  "3193:blur-my-shell@aunetx"
+)
+
+if command -v gext &>/dev/null; then
+  for extension in "${GNOME_EXTENSIONS[@]}"; do
+    extension_id="${extension%%:*}"
+    extension_uuid="${extension#*:}"
+    if ! gnome-extensions list 2>/dev/null | grep -Fxq "$extension_uuid"; then
+      echo "• Installing GNOME extension: $extension_uuid"
+      gext install "$extension_id" || true
+    fi
+  done
+else
+  echo "  - gext is unavailable; GNOME extensions were not installed"
+fi
+
+# Enable every managed extension that GNOME Shell currently knows about.
+GNOME_EXTENSION_UUIDS=(
+  "forge@jmmaranan.com"
+  "Vitals@CoreCoding.com"
+  "dash-to-dock@micxgx.gmail.com"
+  "blur-my-shell@aunetx"
+)
+for extension_uuid in "${GNOME_EXTENSION_UUIDS[@]}"; do
+  if gnome-extensions list 2>/dev/null | grep -Fxq "$extension_uuid"; then
+    gnome-extensions enable "$extension_uuid" 2>/dev/null || true
+  fi
+done
+
+###############################################################################
 # Dock (GNOME Dash-to-Dock / Ubuntu Dock)                                    #
 ###############################################################################
 
@@ -113,6 +160,10 @@ gsettings set org.gtk.Settings.FileChooser sort-directories-first true
 
 # Dash-to-dock settings (if extension is installed)
 DOCK_SCHEMA="org.gnome.shell.extensions.dash-to-dock"
+DOCK_SCHEMA_DIR="$HOME/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas"
+if [[ -f "$DOCK_SCHEMA_DIR/gschemas.compiled" ]]; then
+  export GSETTINGS_SCHEMA_DIR="$DOCK_SCHEMA_DIR"
+fi
 if gsettings list-schemas | grep -q "$DOCK_SCHEMA"; then
   # Set icon size to 36
   gsettings set $DOCK_SCHEMA dash-max-icon-size 36
@@ -129,6 +180,10 @@ if gsettings list-schemas | grep -q "$DOCK_SCHEMA"; then
 
   # Minimize on click
   gsettings set $DOCK_SCHEMA click-action 'minimize'
+
+  # Free Super+Q for the GNOME "close window" binding below. Dash-to-Dock
+  # uses Super+Q by default to show its numbered keyboard overlay.
+  gsettings set $DOCK_SCHEMA shortcut "[]"
 
   # Show on all monitors
   gsettings set $DOCK_SCHEMA multi-monitor true
