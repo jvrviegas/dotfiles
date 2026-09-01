@@ -5,22 +5,23 @@
 
 echo "• Installing window management stack"
 
-# Hyprland compositor
-sudo dnf install -y hyprland
+# Hyprland compositor + ecosystem
+# Not in the Fedora repos (only the hypr* libraries are) — use the solopasha COPR
+if ! dnf repoquery -q --qf '%{name}\n' hyprland 2>/dev/null | grep -qx hyprland; then
+  echo "  - Enabling solopasha/hyprland COPR"
+  sudo dnf copr enable -y solopasha/hyprland 2>/dev/null || \
+    echo "  ⚠ hyprland COPR unavailable, install manually from https://wiki.hypr.land/"
+fi
 
-# Hyprland ecosystem
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
+  hyprland \
   hyprpaper \
   hypridle \
   hyprlock \
   xdg-desktop-portal-hyprland
 
-# Quickshell (bar/shell framework)
-# Not yet in Fedora repos — install from COPR or source
-if ! command -v quickshell &>/dev/null; then
-  echo "  - Quickshell: install from https://quickshell.outfoxxed.me/docs/guide/installation"
-  echo "    COPR: sudo dnf copr enable outfoxxed/quickshell && sudo dnf install -y quickshell"
-fi
+# Quickshell (bar/shell framework) — in the Fedora repos since F42
+sudo dnf install -y --skip-unavailable quickshell
 
 # Vicinae (Raycast-like launcher)
 if ! command -v vicinae &>/dev/null; then
@@ -28,10 +29,10 @@ if ! command -v vicinae &>/dev/null; then
 fi
 
 # Supporting tools
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   pipewire \
   wireplumber \
-  polkit-gnome \
+  mate-polkit \
   grim \
   slurp \
   wl-clipboard \
