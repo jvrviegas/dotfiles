@@ -167,6 +167,14 @@ fi
 # AI
 curl -fsSL https://claude.ai/install.sh | bash
 
+# herdr (agent multiplexer / terminal workspace manager)
+if ! command -v herdr &>/dev/null; then
+  echo "  - Installing herdr"
+  curl -fsSL https://herdr.dev/install.sh | sh
+else
+  echo "  - herdr already installed"
+fi
+
 # System info
 sudo pacman -S --noconfirm --needed fastfetch
 
