@@ -6,19 +6,19 @@ echo "• Updating dnf and installing CLI tools"
 sudo dnf upgrade -y --refresh
 
 # Core utilities
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   coreutils \
   openssh \
   git \
   gh
 
 # Editors
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   vim-enhanced \
   neovim
 
 # Shell & prompt
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   fzf \
   eza \
   tmux \
@@ -33,12 +33,12 @@ else
 fi
 
 # Search & navigation
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   fd-find \
   ripgrep
 
 # Lua
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   lua \
   luajit \
   luarocks
@@ -57,9 +57,9 @@ else
 fi
 
 # Languages & runtimes
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   dotnet-sdk-8.0 \
-  java-21-openjdk-devel \
+  java-25-openjdk-devel \
   rustup
 
 rustup-init -y --no-modify-path 2>/dev/null || true
@@ -75,44 +75,44 @@ else
 fi
 
 # Mobile development
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   android-tools \
-  yarn
+  yarnpkg
 
 # scrcpy (not in default repos)
 if ! command -v scrcpy &>/dev/null; then
-  sudo dnf copr enable -y zeno/scrcpy 2>/dev/null && sudo dnf install -y scrcpy || \
+  sudo dnf copr enable -y zeno/scrcpy 2>/dev/null && sudo dnf install -y --skip-unavailable scrcpy || \
     echo "  ⚠ scrcpy: install manually from https://github.com/Genymobile/scrcpy"
 fi
 
 # Containers
-sudo dnf install -y docker-compose
+sudo dnf install -y --skip-unavailable docker-compose
 
 # Data & databases
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   jq \
   sqlite
 
 # Media & documents
-sudo dnf install -y \
-  ffmpeg \
+sudo dnf install -y --skip-unavailable \
+  ffmpeg-free \
   fmt \
   fontforge \
   libsixel-devel \
   mpv \
   ocrmypdf \
-  pandoc \
+  pandoc-cli \
   poppler-utils \
   tesseract-langpack-eng
 
 # Networking & security
-sudo dnf install -y \
+sudo dnf install -y --skip-unavailable \
   httpie \
   nmap \
   pgpdump
 
 # Build dependencies for cargo crates
-sudo dnf install -y openssl-devel pkg-config
+sudo dnf install -y --skip-unavailable openssl-devel pkgconf-pkg-config
 
 # websocat (install via cargo)
 if ! command -v websocat &>/dev/null; then
@@ -130,6 +130,41 @@ else
   echo "  - kanata already installed"
 fi
 
+# Kanata setup: udev rule, input group, uinput module, systemd user service
+if command -v kanata &>/dev/null; then
+  echo "  - Configuring kanata (udev, input group, systemd)"
+  KANATA_BIN="$(command -v kanata)"
+
+  # Read /dev/input/event* and write /dev/uinput as a normal user
+  sudo usermod -aG input "$USER" 2>/dev/null || true
+  echo 'KERNEL=="uinput", MODE="0660", GROUP="input", OPTIONS+="static_node=uinput"' | \
+    sudo tee /etc/udev/rules.d/99-kanata-uinput.rules > /dev/null
+  sudo udevadm control --reload-rules
+  sudo modprobe uinput
+  # Re-apply the rule to the already-created node so no reboot is needed
+  sudo udevadm trigger --action=add --subsystem-match=misc --sysname-match=uinput
+  echo "uinput" | sudo tee /etc/modules-load.d/uinput.conf > /dev/null
+
+  mkdir -p "$HOME/.config/systemd/user"
+  cat > "$HOME/.config/systemd/user/kanata.service" <<UNIT
+[Unit]
+Description=Kanata keyboard remapper
+Documentation=https://github.com/jtroo/kanata
+
+[Service]
+Type=simple
+ExecStart=${KANATA_BIN} --cfg %h/.config/kanata/colemak_dhm.kbd
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+UNIT
+  systemctl --user daemon-reload
+  systemctl --user enable kanata.service 2>/dev/null || true
+  echo "  - kanata service enabled (starts after you log out and back in)"
+fi
+
 # Virtualization (QEMU/KVM)
 sudo dnf group install -y --with-optional virtualization
 sudo systemctl enable --now libvirtd
@@ -142,15 +177,24 @@ sudo usermod -aG libvirt "$USER" 2>/dev/null || true
 #   quickget list                 # shows all available OSes
 #   quickgui                      # GUI frontend
 if ! command -v quickemu &>/dev/null; then
-  sudo dnf copr enable -y quickemu/quickemu 2>/dev/null && \
-    sudo dnf install -y quickemu quickgui 2>/dev/null || \
-    echo "  ⚠ quickemu: COPR not available for this Fedora version, install manually"
+  # quickemu is in the Fedora repos; quickgui (GUI frontend) may not be
+  sudo dnf install -y --skip-unavailable quickemu
+  sudo dnf install -y --skip-unavailable quickgui 2>/dev/null || \
+    echo "  - quickgui (GUI frontend) unavailable; quickemu CLI is enough"
 fi
 
 # AI
 curl -fsSL https://claude.ai/install.sh | bash
 
+# herdr (agent multiplexer / terminal workspace manager)
+if ! command -v herdr &>/dev/null; then
+  echo "  - Installing herdr"
+  curl -fsSL https://herdr.dev/install.sh | sh
+else
+  echo "  - herdr already installed"
+fi
+
 # System info
-sudo dnf install -y fastfetch
+sudo dnf install -y --skip-unavailable fastfetch
 
 echo "  ✓ CLI tools installed"
