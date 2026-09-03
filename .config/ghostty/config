@@ -9,6 +9,11 @@ window-padding-y = 8
 macos-window-shadow = false
 macos-titlebar-style = hidden
 
+# Default is true: Ghostty enables macOS secure keyboard entry at password
+# prompts, which blocks all event taps. skhd aborts on launch and crash-loops
+# while it is held. See .local/bin/skhd-doctor.
+macos-auto-secure-input = false
+
 background-opacity = 0.75
 background-blur-radius = 15
 

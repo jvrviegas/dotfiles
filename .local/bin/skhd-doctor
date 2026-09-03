@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Diagnose and recover skhd when hotkeys stop responding.
+#
+# The usual cause is macOS secure keyboard entry: skhd checks it only at
+# startup and aborts if it is on, then launchd crash-loops it. Restarting
+# is pointless until whichever app enabled secure input releases it.
+
+SERVICE="gui/$(id -u)/com.koekeishiya.skhd"
+ERR_LOG="/tmp/skhd_$(whoami).err.log"
+TCC_DB="/Library/Application Support/com.apple.TCC/TCC.db"
+
+blocked=0
+
+# 1. Secure keyboard entry — the blocker that makes skhd abort on launch
+secure_pid=$(ioreg -l -w 0 -d 1 -k IOConsoleUsers |
+  grep -o 'kCGSSessionSecureInputPID"=[0-9]*' | grep -o '[0-9]*$')
+
+if [[ -n "$secure_pid" && "$secure_pid" != "0" ]]; then
+  app=$(ps -p "$secure_pid" -o comm= 2>/dev/null)
+  echo "✗ secure keyboard entry ON, held by pid $secure_pid ${app:+($(basename "$app"))}"
+  echo "  skhd cannot start while this is held. Quit or unfocus that app"
+  echo "  (a focused password field is enough), then re-run."
+  blocked=1
+else
+  echo "✓ secure keyboard entry off"
+fi
+
+# 2. Accessibility grant — TCC keys on the versioned Cellar path, so a
+#    brew upgrade silently invalidates it
+installed=$(readlink /opt/homebrew/bin/skhd | sed 's|^\.\./||')
+installed="/opt/homebrew/${installed}"
+granted=$(sqlite3 "$TCC_DB" \
+  "select client from access where service='kTCCServiceAccessibility' and client like '%skhd%' and auth_value=2;" 2>/dev/null)
+
+if [[ -z "$granted" ]]; then
+  echo "? accessibility grant unreadable (needs Full Disk Access) or missing"
+elif [[ "$granted" == "$installed" ]]; then
+  echo "✓ accessibility granted to installed binary"
+else
+  echo "✗ accessibility grant is stale after an upgrade"
+  echo "  granted:   $granted"
+  echo "  installed: $installed"
+  echo "  Fix: System Settings > Privacy & Security > Accessibility,"
+  echo "       remove the skhd entry with '−', re-add /opt/homebrew/bin/skhd with '+'."
+  blocked=1
+fi
+
+# 3. Service state
+state=$(launchctl print "$SERVICE" 2>/dev/null | awk -F'= ' '/^\tstate = /{print $2}')
+runs=$(launchctl print "$SERVICE" 2>/dev/null | awk -F'= ' '/^\truns = /{print $2}')
+exit_code=$(launchctl print "$SERVICE" 2>/dev/null | awk -F'= ' '/last exit code = /{print $2}')
+echo "· service state=${state:-unknown} runs=${runs:-?} last_exit=${exit_code:-none}"
+
+if [[ -s "$ERR_LOG" ]]; then
+  echo "· last error: $(tail -1 "$ERR_LOG")"
+fi
+
+# 4. Restart, unless something above makes it futile
+if (( blocked )); then
+  echo
+  echo "Not restarting — resolve the ✗ above first."
+  exit 1
+fi
+
+echo
+echo "Restarting skhd..."
+launchctl kickstart -k "$SERVICE" || { echo "kickstart failed"; exit 1; }
+sleep 1
+
+if pgrep -x skhd >/dev/null; then
+  echo "✓ skhd running (pid $(pgrep -x skhd))"
+else
+  echo "✗ skhd not running after restart — check $ERR_LOG"
+  exit 1
+fi

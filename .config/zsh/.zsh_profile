@@ -11,6 +11,7 @@ alias proj='cd ~/Projects/'
 alias ipod="cd ios && pod install && .."
 alias sozsh="exec zsh"
 alias za="zellij a"
+alias skhdr='launchctl kickstart -k "gui/$(id -u)/com.koekeishiya.skhd" && echo "skhd restarted"'
 
 # ASDF version manager
 if [ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]; then
