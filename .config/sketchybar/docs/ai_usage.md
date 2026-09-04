@@ -17,7 +17,7 @@ Claude Code usage is read automatically from the official Claude OAuth usage API
 https://api.anthropic.com/api/oauth/usage
 ```
 
-The provider obtains the Claude Code OAuth credential from macOS Keychain entry `Claude Code-credentials` and calls the API locally. Its locally stored `subscriptionType` is shown beside the Claude popup title when present. The API returns official plan-limit utilization for:
+The provider obtains the Claude Code OAuth credential from macOS Keychain entry `Claude Code-credentials` and calls the API locally. If the cached access token has expired, it uses the stored refresh token and persists rotated credentials before requesting usage. Its locally stored `subscriptionType` is shown beside the Claude popup title when present. The API returns official plan-limit utilization for:
 
 - `five_hour`
 - `seven_day`
@@ -32,13 +32,13 @@ Fallback estimated values are prefixed with `≈` in the bar/popup and include a
 
 ### GPT/Codex
 
-GPT/Codex usage is read automatically from Codex's ChatGPT plan usage endpoint when `codex login` is configured:
+GPT/Codex usage is read automatically through Codex app-server's `account/rateLimits/read` method when `codex login` is configured. This lets Codex own OAuth refresh instead of the plugin relying on a possibly expired token from `~/.codex/auth.json`. Older Codex versions fall back to the ChatGPT plan usage endpoint:
 
 ```text
 https://chatgpt.com/backend-api/wham/usage
 ```
 
-The provider reads `~/.codex/auth.json` and uses the Codex access token. Its `plan_type` is shown beside the GPT/Codex popup title when present. This endpoint returns real primary (5-hour) and secondary (weekly) plan-limit usage for the signed-in ChatGPT/Codex account. Credit/usage-based Codex accounts may return `rate_limit: null` plus `credits.has_credits: true`; when no percentage window is available, the compact bar shows credits such as `G:82cr`, `G:∞cr`, or `G:cr` when the API confirms credits but does not expose a numeric balance. If the official API returns `balance: null`, `AI_USAGE_GPT_CREDITS_BALANCE` can fill a manual estimated amount such as `G:≈82cr`. The popup shows a `Credits` row. Manual GPT values remain available as fallback and are shown as estimates with `≈`.
+The returned `plan_type` is shown beside the GPT/Codex popup title when present. This endpoint returns real primary (5-hour) and secondary (weekly) plan-limit usage for the signed-in ChatGPT/Codex account. Credit/usage-based Codex accounts may return `rate_limit: null` plus `credits.has_credits: true`; when no percentage window is available, the compact bar shows credits such as `G:82cr`, `G:∞cr`, or `G:cr` when the API confirms credits but does not expose a numeric balance. If the official API returns `balance: null`, `AI_USAGE_GPT_CREDITS_BALANCE` can fill a manual estimated amount such as `G:≈82cr`. The popup shows a `Credits` row. Manual GPT values remain available as fallback and are shown as estimates with `≈`.
 
 ## Setup
 
@@ -213,7 +213,7 @@ Then inspect the provider:
 ~/.config/sketchybar/plugins/ai_usage_providers/claude_code.sh | jq .
 ```
 
-If diagnostics mention `Claude OAuth usage API rate limited`, the official endpoint returned `429`; the provider will temporarily use fallback data and retry after `AI_USAGE_CLAUDE_API_BACKOFF_SECONDS`.
+If diagnostics mention `Claude OAuth usage API rate limited` or `Claude OAuth token refresh rate limited`, Anthropic returned `429`; the provider will temporarily use fallback data and retry after `AI_USAGE_CLAUDE_API_BACKOFF_SECONDS`. If an expired credential cannot be refreshed for another reason, run `claude auth login`.
 
 If the provider says `ccusage unavailable`, the OAuth usage API was unavailable and the fallback could not run. Ensure Claude Code is logged in (`claude auth status`) and `npx` is available or install `ccusage`.
 
