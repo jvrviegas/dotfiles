@@ -205,6 +205,94 @@ get_codex_access_token() {
   jq -r '.tokens.access_token // empty' "$HOME/.codex/auth.json" 2>/dev/null
 }
 
+# Ask Codex itself for limits first. Unlike reading auth.json and calling the
+# backend directly, app-server owns OAuth refresh and keeps working when the
+# cached access token has expired.
+fetch_codex_app_server_usage() {
+  if ! command -v codex >/dev/null 2>&1 || ! command -v python3 >/dev/null 2>&1; then
+    return 1
+  fi
+
+  python3 - <<'PY'
+import json
+import selectors
+import subprocess
+import sys
+
+process = subprocess.Popen(
+    ["codex", "app-server"],
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.DEVNULL,
+    text=True,
+    bufsize=1,
+)
+selector = selectors.DefaultSelector()
+selector.register(process.stdout, selectors.EVENT_READ)
+
+
+def send(message):
+    process.stdin.write(json.dumps(message) + "\n")
+    process.stdin.flush()
+
+
+def receive(response_id, timeout=10):
+    while selector.select(timeout):
+        line = process.stdout.readline()
+        if not line:
+            break
+        try:
+            message = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if message.get("id") == response_id:
+            return message
+    raise RuntimeError("Codex app-server response timed out")
+
+try:
+    send({"id": 1, "method": "initialize", "params": {"clientInfo": {"name": "sketchybar-ai-usage", "title": "SketchyBar AI Usage", "version": "1.0.0"}}})
+    initialized = receive(1)
+    if "error" in initialized:
+        raise RuntimeError("Codex app-server initialization failed")
+    send({"method": "initialized", "params": {}})
+    send({"id": 2, "method": "account/rateLimits/read", "params": {}})
+    response = receive(2)
+    snapshot = response.get("result", {}).get("rateLimits")
+    if not isinstance(snapshot, dict):
+        raise RuntimeError("Codex app-server returned no rate limits")
+
+    def window(value):
+        if not isinstance(value, dict):
+            return None
+        minutes = value.get("windowDurationMins")
+        return {
+            "used_percent": value.get("usedPercent"),
+            "limit_window_seconds": minutes * 60 if isinstance(minutes, (int, float)) else None,
+            "reset_at": value.get("resetsAt"),
+        }
+
+    credits = snapshot.get("credits") or {}
+    normalized = {
+        "plan_type": snapshot.get("planType"),
+        "rate_limit": {
+            "primary_window": window(snapshot.get("primary")),
+            "secondary_window": window(snapshot.get("secondary")),
+        },
+        "credits": {
+            "has_credits": credits.get("hasCredits", False),
+            "unlimited": credits.get("unlimited", False),
+            "balance": credits.get("balance"),
+        },
+        "spend_control": {"reached": snapshot.get("spendControlReached", False)},
+    }
+    print(json.dumps(normalized, separators=(",", ":")))
+except Exception:
+    sys.exit(1)
+finally:
+    process.terminate()
+PY
+}
+
 fetch_codex_usage() {
   local token="$1"
   if [[ -z "$token" || ! -x "$(command -v curl 2>/dev/null)" ]]; then
@@ -225,7 +313,7 @@ fetch_codex_usage() {
 }
 
 emit_codex_usage() {
-  local usage_json="$1"
+  local usage_json="$1" usage_source="${2:-codex_wham_usage_api}"
   local plan primary_used secondary_used primary_remaining secondary_remaining primary_reset secondary_reset primary_window secondary_window
   local fiveh_remaining fiveh_used fiveh_reset fiveh_window fiveh_basis weekly_remaining weekly_used weekly_reset weekly_window weekly_basis
   local has_rate_limit credits_has credits_unlimited_api credits_balance_api credits_balance_from_manual credits_overage_reached spend_reached effective_credits_has credits_limit_reached credits_status_value
@@ -358,6 +446,7 @@ emit_codex_usage() {
 
   jq -n \
     --arg plan "$plan" \
+    --arg source "$usage_source" \
     --argjson remaining "$top_remaining" \
     --argjson reset "$top_reset" \
     --arg status "$top_status" \
@@ -392,7 +481,7 @@ emit_codex_usage() {
       reset_at: $reset,
       status: $status,
       message: $message,
-      source: "codex_wham_usage_api",
+      source: $source,
       is_estimate: $top_is_estimate,
       basis: $basis,
       display_label: $display_label,
@@ -461,9 +550,15 @@ if [[ -n "$status_override" && "$status_override" != "ok" ]]; then
 fi
 
 if [[ "$api_enabled" != "0" && "$api_enabled" != "false" && "$api_enabled" != "no" ]]; then
+  codex_usage="$(fetch_codex_app_server_usage || true)"
+  if jq -e . >/dev/null 2>&1 <<<"$codex_usage" && emit_codex_usage "$codex_usage" codex_app_server; then
+    exit 0
+  fi
+
+  # Compatibility fallback for older Codex versions without app-server.
   codex_token="$(get_codex_access_token || true)"
   codex_usage="$(fetch_codex_usage "$codex_token" || true)"
-  if jq -e . >/dev/null 2>&1 <<<"$codex_usage" && emit_codex_usage "$codex_usage"; then
+  if jq -e . >/dev/null 2>&1 <<<"$codex_usage" && emit_codex_usage "$codex_usage" codex_wham_usage_api; then
     exit 0
   fi
 fi
