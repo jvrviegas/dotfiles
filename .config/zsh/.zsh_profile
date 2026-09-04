@@ -28,6 +28,11 @@ fi
 # Intel Platform (macOS only)
 [[ "$(uname)" == "Darwin" ]] && alias intel="arch -x86_64"
 
+# Open the current directory in a focused Herdr workspace
+hw() {
+    herdr workspace create --cwd "$PWD" --label "$(basename "$PWD")" --focus && herdr
+}
+
 # Where should I put you?
 bindkey -s ^f "tmux-sessionizer\n"
 
