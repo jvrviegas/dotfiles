@@ -1,0 +1,22 @@
+# Red Dead Redemption 2 - herdr theme
+[theme]
+name = "custom"
+
+auto_switch = false
+[theme.custom]
+panel_bg    = "#1a1410"   # frontier night
+surface0    = "#261e17"   # leather hide
+surface1    = "#3d3229"   # iron border
+surface_dim = "#443124"   # selected/active row — leather tint
+overlay0    = "#7a7062"   # old iron
+overlay1    = "#a89880"   # aged paper
+subtext0    = "#c4b4a0"   # worn leather
+text        = "#e4d8c2"   # parchment
+accent      = "#c4732e"   # dead eye
+yellow      = "#e0a040"   # golden hour — working
+green       = "#8aaa4a"   # prairie — idle / done
+red         = "#c84a3c"   # fresh wound — blocked
+blue        = "#8a9ca8"   # gunmetal
+teal        = "#7a9a3c"   # prairie
+peach       = "#c46a2e"   # campfire
+mauve       = "#94521c"   # old whiskey

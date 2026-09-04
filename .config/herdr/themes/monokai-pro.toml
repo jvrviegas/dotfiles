@@ -1,0 +1,22 @@
+# Monokai Pro - herdr theme
+[theme]
+name = "custom"
+
+auto_switch = false
+[theme.custom]
+panel_bg    = "#19181a"   # black
+surface0    = "#2d2a2e"   # bg
+surface1    = "#403e41"   # bg lighter
+surface_dim = "#3a4a2e"   # selected/active row — green tint
+overlay0    = "#727072"
+overlay1    = "#939293"   # grey
+subtext0    = "#c1c0c0"
+text        = "#fcfcfa"   # white
+accent      = "#a9dc76"   # green
+yellow      = "#ffd866"   # working
+green       = "#a9dc76"   # idle / done
+red         = "#ff6188"   # blocked
+blue        = "#78dce8"
+teal        = "#78dce8"
+peach       = "#fc9867"
+mauve       = "#ab9df2"

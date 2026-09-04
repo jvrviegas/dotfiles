@@ -1,0 +1,22 @@
+# Hollow Knight - herdr theme
+[theme]
+name = "custom"
+
+auto_switch = false
+[theme.custom]
+panel_bg    = "#0d0d14"   # abyss
+surface0    = "#171722"   # abyss2
+surface1    = "#2d2d42"   # shade
+surface_dim = "#413466"   # selected/active row — void-purple tint
+overlay0    = "#6f6a8f"   # shadow
+overlay1    = "#8a86a8"
+subtext0    = "#dcd7f2"   # pale ore
+text        = "#f4f1ff"   # white palace
+accent      = "#f0e6b8"   # moth glow
+yellow      = "#f0dc8a"   # radiance — working
+green       = "#8ae6d0"   # greenpath — idle / done
+red         = "#d95f74"   # combat — blocked
+blue        = "#b48cff"   # dream blue
+teal        = "#5cb3a0"   # greenpath
+peach       = "#d8b65a"   # geo
+mauve       = "#b56cff"   # deep void

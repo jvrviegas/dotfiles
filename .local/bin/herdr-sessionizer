@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# herdr-sessionizer — herdr port of tmux-sessionizer
+#
+# fzf-pick a project under ~/Projects, open it as a NEW herdr WORKSPACE
+# (single default tab — create more tabs on demand yourself) and switch to it.
+#
+# Behavior:
+#   * If a workspace with the same label already exists, just focus it.
+#     Otherwise create it. Either way, switch to it.
+#   * On a cold server start, removes the empty default workspace herdr opens
+#     automatically, so the session contains only your selection.
+#
+# Requires: fd, fzf, jq, herdr
+#
+# ── JSON SHAPE (verified on herdr 0.7.1) ───────────────────────────────────
+# `herdr workspace list` / `create` / `get` print an envelope; the workspace id
+# lives at .result.workspace(s)[].workspace_id. The top-level `.id` is the
+# REQUEST id (e.g. "cli:workspace:create"), NOT a workspace. There is no --json
+# flag (passing it prints a usage error). The jq below extracts .workspace_id
+# recursively, so it survives shape drift. Re-verify with:
+#     herdr workspace list | jq .
+# ───────────────────────────────────────────────────────────────────────────
+
+# 1. Pick the project (accept a path arg too, like the original)
+if [[ $# -eq 1 ]]; then
+  selected=$1
+else
+  selected=$(fd . ~/Projects --min-depth 1 --max-depth 5 --type d | fzf)
+fi
+[[ -z ${selected:-} ]] && exit 0
+
+# 2. Label = parent_current, dots -> underscores (collision-safe, as before)
+parent_dir=$(basename "$(dirname "$selected")")
+current_dir=$(basename "$selected")
+label=$(echo "${parent_dir}_${current_dir}" | tr . _)
+
+# 3. Ensure the herdr server is up; remember whether WE cold-started it
+server_was_running=true
+if ! herdr status server >/dev/null 2>&1; then
+  server_was_running=false
+  herdr server >/dev/null 2>&1 &
+  for _ in $(seq 1 30); do
+    herdr status server >/dev/null 2>&1 && break
+    sleep 0.1
+  done
+fi
+
+# 4. Reuse the workspace if one with this label exists; otherwise create it.
+ws=$(herdr workspace list 2>/dev/null \
+     | jq -r --arg L "$label" 'first(.. | objects | select(.label? == $L) | .workspace_id?) // empty')
+
+created=false
+if [[ -z ${ws:-} ]]; then
+  created=true
+  ws=$(herdr workspace create --cwd "$selected" --label "$label" --focus \
+       | jq -r 'first(.. | objects | .workspace_id? // empty) // empty')
+fi
+
+# 5. Cold start only: when we just created the workspace on a freshly booted
+#    server, drop the auto-created default workspace(s) so the session holds
+#    only your selection. Skipped when the server was already running.
+if [[ $server_was_running == false && $created == true ]]; then
+  herdr workspace list 2>/dev/null \
+    | jq -r --arg keep "$ws" '[.. | objects | .workspace_id? // empty] | .[] | select(. != $keep)' \
+    | while read -r id; do
+        [[ -n $id ]] && herdr workspace close "$id" >/dev/null 2>&1
+      done
+fi
+
+# 6. Ensure the new workspace is focused, then attach if we're outside herdr
+#    (running `herdr` inside herdr is a nested launch and is blocked by default)
+herdr workspace focus "$ws" >/dev/null 2>&1
+[[ -z ${HERDR_ENV:-} ]] && herdr

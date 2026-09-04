@@ -1,0 +1,22 @@
+# Darth Vader - herdr theme
+[theme]
+name = "custom"
+
+auto_switch = false
+[theme.custom]
+panel_bg    = "#08080a"   # void
+surface0    = "#16161c"   # armor
+surface1    = "#26262e"   # durasteel
+surface_dim = "#3a1a1c"   # selected/active row — saber-red tint
+overlay0    = "#6a6a74"   # steel
+overlay1    = "#90909a"   # hull
+subtext0    = "#b4b4bc"   # trooper
+text        = "#d8d8dc"   # imperial
+accent      = "#d43a3a"   # saber
+yellow      = "#e0bc63"   # panel amber — working
+green       = "#79c987"   # console — idle / done
+red         = "#ef4f4f"   # blade — blocked
+blue        = "#7fa3cc"
+teal        = "#7ee6e6"   # rim light
+peach       = "#d4703a"   # alert
+mauve       = "#8a5f8f"

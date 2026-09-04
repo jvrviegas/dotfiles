@@ -1,0 +1,22 @@
+# The Witcher - herdr theme
+[theme]
+name = "custom"
+
+auto_switch = false
+[theme.custom]
+panel_bg    = "#0b0f12"   # kaer morhen
+surface0    = "#1b2428"   # wet stone
+surface1    = "#2a363b"   # iron border
+surface_dim = "#423522"   # selected/active row — amber tint
+overlay0    = "#827d72"   # dull steel
+overlay1    = "#9a948a"
+subtext0    = "#c1bbaa"   # weathered steel
+text        = "#d8d3c5"   # silver
+accent      = "#d89a2b"   # witcher amber
+yellow      = "#e0b85f"   # candle gold — working
+green       = "#8fcf4f"   # potion — idle / done
+red         = "#d75f4f"   # wound — blocked
+blue        = "#7f9aa3"   # aard
+teal        = "#7fbf3f"   # potion
+peach       = "#c56b2c"   # igni
+mauve       = "#a66a1f"   # old amber

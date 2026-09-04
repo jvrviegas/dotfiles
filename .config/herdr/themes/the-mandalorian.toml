@@ -1,0 +1,22 @@
+# The Mandalorian - herdr theme
+[theme]
+name = "custom"
+
+auto_switch = false
+[theme.custom]
+panel_bg    = "#0a0a0f"   # deep space
+surface0    = "#15151d"   # space panel
+surface1    = "#20202b"   # space gray
+surface_dim = "#21495f"   # selected/active row — hologram-blue tint
+overlay0    = "#586888"   # carbonite
+overlay1    = "#7888a8"   # ice
+subtext0    = "#c8c8d6"   # beskar dim
+text        = "#e4e4ec"   # beskar
+accent      = "#5ec4e8"   # hologram
+yellow      = "#e8c070"   # blaster — working
+green       = "#78c878"   # grogu — idle / done
+red         = "#e85858"   # imperial — blocked
+blue        = "#2d84a8"   # hyperspace
+teal        = "#5ec4e8"   # hologram
+peach       = "#e89858"   # neon
+mauve       = "#c09848"   # desert sun

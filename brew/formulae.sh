@@ -20,6 +20,7 @@ brew install fzf
 brew install eza
 brew install starship
 brew install tmux
+brew install herdr
 brew install zoxide
 
 # Search & navigation

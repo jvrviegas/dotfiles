@@ -1,0 +1,22 @@
+# Gruvbox (dark, hard) - herdr theme
+[theme]
+name = "custom"
+
+auto_switch = false
+[theme.custom]
+panel_bg    = "#1d2021"   # bg0_h
+surface0    = "#3c3836"   # bg1 — elevated rows / inactive tabs
+surface1    = "#504945"   # bg2 — secondary elevation
+surface_dim = "#493420"   # selected/active row — soft warm orange tint
+overlay0    = "#928374"   # gray — muted UI text
+overlay1    = "#a89984"   # fg4
+subtext0    = "#bdae93"   # fg3
+text        = "#ebdbb2"   # fg1
+accent      = "#fe8019"   # orange
+yellow      = "#fabd2f"   # working
+green       = "#b8bb26"   # idle / done
+red         = "#fb4934"   # blocked
+blue        = "#83a598"
+teal        = "#8ec07c"
+peach       = "#fe8019"
+mauve       = "#d3869b"
