@@ -72,21 +72,6 @@ else
   echo "  - NVM setup already present in .zshrc"
 fi
 
-echo "• Setting up Neovim config symlink"
-# Backup existing nvim config if it exists and is not already a symlink
-if [[ -d "$HOME/.config/nvim" ]] && [[ ! -L "$HOME/.config/nvim" ]]; then
-    mv "$HOME/.config/nvim" "$HOME/.config/nvim-old"
-    echo "  - Backed up existing nvim config to $HOME/.config/nvim-old"
-fi
-# Create symlink to nvim config in dotfiles repo
-if [[ ! -e "$HOME/.config/nvim" ]]; then
-    ln -s "$(pwd)/.config/nvim" "$HOME/.config/nvim"
-    echo "  - Created symlink from $HOME/.config/nvim to $(pwd)/.config/nvim"
-else
-    echo "  - Symlink already exists"
-fi
-echo ""
-
 echo "• Setting up Kanata config symlink"
 # Backup existing kanata config if it exists and is not already a symlink
 if [[ -d "$HOME/.config/kanata" ]] && [[ ! -L "$HOME/.config/kanata" ]]; then
