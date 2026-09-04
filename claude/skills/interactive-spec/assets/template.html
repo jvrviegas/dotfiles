@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><!-- PROJECT_NAME --> — Functional Specification</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  INTERACTIVE SPEC TEMPLATE
+  ═══════════════════════════════════════════════════════════════════════════
+
+  HOW TO USE THIS TEMPLATE:
+  1. Search for {{PROJECT_NAME}} and replace with the actual project name.
+  2. Replace the stats bar numbers (rule count, area count, etc.) with real values.
+  3. Replace the sidebar area links to match your actual areas and IDs.
+  4. For each area:
+     a. Copy the <!-- AREA EXAMPLE --> block (one per area).
+     b. Fill in the area id, title, prefix, overview, concepts, accordion groups, and rules.
+  5. Fill in the 5-7 Mermaid diagrams.
+  6. Fill in the Quick Reference cards.
+  7. Fill in the Triage Report tables.
+  8. Adjust CSS --accent colour to match project brand.
+
+  PATTERNS USED THROUGHOUT:
+  - {{PROJECT_NAME}}        → replace with project name
+  - <!-- AREA: ... -->       → marks the start of an area section
+  - <!-- RULES: ... -->      → marks a group of rules inside an accordion
+  - ⚠ confirm intent rules  → add <span class="warn-tag">⚠ confirm</span> before the rule text
+
+  The CSS and JavaScript at the bottom are reusable as-is for any project.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #fff;
+    --surface2: #f1f5f9;
+    --text: #0f172a;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --border: #e2e8f0;
+    --accent: #2563eb;        /* ← Change to project brand colour */
+    --accent-light: #eff6ff;
+    --accent-soft: #dbeafe;
+    --warn: #f59e0b;
+    --warn-bg: #fffbeb;
+    --warn-border: #fde68a;
+    --danger: #ef4444;
+    --danger-bg: #fef2f2;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+    --code: #f1f5f9;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --sidebar-w: 300px;
+    --transition: .18s ease;
+    --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #334155;
+    --text: #f1f5f9;
+    --text2: #cbd5e1;
+    --text3: #64748b;
+    --border: #334155;
+    --accent: #60a5fa;
+    --accent-light: #172554;
+    --accent-soft: #1e3a5f;
+    --warn: #fbbf24;
+    --warn-bg: #451a03;
+    --warn-border: #78350f;
+    --danger-bg: #450a0a;
+    --success-bg: #052e16;
+    --code: #1e293b;
+    --shadow: 0 1px 3px rgba(0,0,0,.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    display: flex;
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  /* ═══ SIDEBAR ═══ */
+  nav#sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-w); background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto; z-index: 20;
+    display: flex; flex-direction: column;
+    transition: background var(--transition), border var(--transition);
+  }
+  .sidebar-header {
+    padding: 20px 18px 12px; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: var(--surface); z-index: 2;
+  }
+  .sidebar-header h2 { font-size: 15px; font-weight: 800; letter-spacing: .01em; }
+  .sidebar-header .sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .sidebar-header .draft-pill {
+    display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    background: var(--warn-bg); color: var(--warn); padding: 2px 8px; border-radius: 10px;
+    margin-top: 6px; letter-spacing: .04em;
+  }
+
+  #search-box {
+    margin: 12px 14px; padding: 9px 12px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--surface2); color: var(--text);
+    font-size: 13px; outline: none; transition: border var(--transition);
+  }
+  #search-box:focus { border-color: var(--accent); }
+  #search-box::placeholder { color: var(--text3); }
+
+  .nav-tree { flex: 1; overflow-y: auto; padding: 0 10px 20px; }
+  .nav-tree .area-link {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600; color: var(--text);
+    text-decoration: none; cursor: pointer; transition: background var(--transition);
+    margin-bottom: 1px;
+  }
+  .nav-tree .area-link:hover { background: var(--surface2); }
+  .nav-tree .area-link.active { background: var(--accent-soft); color: var(--accent); }
+  .nav-tree .area-link .idx {
+    font-size: 11px; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--surface2); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background var(--transition);
+  }
+  .nav-tree .area-link.active .idx { background: var(--accent); color: #fff; }
+
+  .sidebar-footer {
+    padding: 12px 18px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--text3);
+  }
+  .sidebar-footer button {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 5px 10px; font-size: 11px;
+    cursor: pointer; color: var(--text2); transition: all var(--transition);
+  }
+  .sidebar-footer button:hover { background: var(--accent-soft); color: var(--accent); }
+
+  /* ═══ MAIN ═══ */
+  main {
+    margin-left: var(--sidebar-w); flex: 1;
+    max-width: 960px; padding: 32px 44px 80px;
+    transition: background var(--transition);
+  }
+
+  /* ── View tabs ── */
+  .view-tabs {
+    display: flex; gap: 4px; margin-bottom: 28px;
+    background: var(--surface2); border-radius: var(--radius);
+    padding: 4px; width: fit-content;
+  }
+  .view-tabs button {
+    padding: 8px 18px; border: none; border-radius: var(--radius-sm);
+    background: transparent; color: var(--text2); cursor: pointer;
+    font-size: 13px; font-weight: 600; transition: all var(--transition);
+  }
+  .view-tabs button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 20px;
+    text-align: center; min-width: 100px; transition: all var(--transition);
+  }
+  .stat-card .num { font-size: 26px; font-weight: 800; color: var(--accent); }
+  .stat-card .label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+  .stat-card.warn-card .num { color: var(--warn); }
+
+  /* ── Search results ── */
+  #search-results {
+    display: none; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0; margin-bottom: 24px;
+    max-height: 480px; overflow-y: auto; box-shadow: var(--shadow-md);
+  }
+  #search-results:not(:empty) { display: block; }
+  #search-results .result-item {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background var(--transition); font-size: 13px;
+  }
+  #search-results .result-item:hover { background: var(--accent-light); }
+  #search-results .result-item .rid { font-weight: 700; color: var(--accent); font-size: 12px; }
+  #search-results .result-item .area-name { font-size: 11px; color: var(--text3); margin-left: 8px; }
+  #search-results .result-item .excerpt { margin-top: 2px; color: var(--text2); }
+
+  /* ── Area sections ── */
+  .area { margin-bottom: 48px; scroll-margin-top: 24px; }
+  .area-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+  }
+  .area-header h2 { font-size: 22px; font-weight: 800; }
+  .area-header .badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 2px 10px; border-radius: 10px; letter-spacing: .04em;
+  }
+  .badge.draft { background: var(--warn-bg); color: var(--warn); }
+  .area-meta {
+    font-size: 12px; color: var(--text3); margin-bottom: 16px;
+  }
+  .area-meta code { background: var(--code); padding: 1px 6px; border-radius: 3px; font-size: 11px; }
+
+  /* ── Accordion ── */
+  .accordion { margin-bottom: 8px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); transition: all var(--transition); }
+  .accordion-header {
+    padding: 14px 18px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 700; user-select: none; transition: background var(--transition);
+  }
+  .accordion-header:hover { background: var(--surface2); }
+  .accordion-header .arrow {
+    width: 20px; height: 20px; transition: transform var(--transition);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--text3);
+  }
+  .accordion.open .accordion-header .arrow { transform: rotate(90deg); }
+  .accordion-header .count {
+    font-size: 11px; font-weight: 500; color: var(--text3); margin-left: auto;
+    background: var(--surface2); padding: 2px 8px; border-radius: 10px;
+  }
+  .accordion-body { display: none; padding: 0 18px 16px; }
+  .accordion.open .accordion-body { display: block; }
+
+  /* ── Rules ── */
+  .rule {
+    padding: 8px 10px 8px 14px; border-left: 3px solid transparent;
+    margin-bottom: 2px; font-size: 13px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    transition: background var(--transition), border var(--transition);
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .rule:hover { background: var(--surface2); }
+  .rule.highlight { background: var(--accent-light); border-left-color: var(--accent); animation: flash .6s; }
+  @keyframes flash { 0%,100% { background: var(--accent-light); } 50% { background: var(--accent-soft); } }
+  .rule .rid {
+    font-weight: 700; font-size: 11px; color: var(--accent); white-space: nowrap;
+    cursor: pointer; user-select: all; min-width: 72px;
+  }
+  .rule .rid:hover { text-decoration: underline; }
+  .rule .content { flex: 1; }
+  .rule code { font-family: var(--mono); font-size: 11px; background: var(--code); padding: 1px 5px; border-radius: 3px; }
+  .rule .warn-tag {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 7px;
+    border-radius: 8px; margin-right: 4px;
+    background: var(--warn-bg); color: var(--warn);
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; margin: 12px 0 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  th { font-weight: 700; background: var(--surface2); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--text3); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .icon-cell { text-align: center; font-size: 16px; }
+
+  /* ── Concepts grid ── */
+  .concepts-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px; margin-bottom: 20px;
+  }
+  .concept-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    transition: all var(--transition);
+  }
+  .concept-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .concept-card p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .concept-card code { font-size: 11px; }
+
+  /* ── Mermaid ── */
+  .mermaid-wrap {
+    position: relative;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin: 16px 0;
+    overflow-x: auto; text-align: center;
+  }
+  .mermaid-wrap .mermaid { display: block; }
+  .mermaid-wrap .mermaid svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .mermaid-wrap .caption {
+    font-size: 11px; color: var(--text3); margin-top: 8px;
+    text-align: center;
+  }
+  .diagram-controls {
+    position: absolute; top: 8px; right: 8px; display: flex; gap: 6px;
+    opacity: 0; transition: opacity var(--transition); z-index: 2;
+  }
+  .mermaid-wrap:hover .diagram-controls { opacity: 1; }
+  .diagram-controls button {
+    font-size: 11px; padding: 4px 9px; cursor: pointer;
+    background: var(--surface); color: var(--text2);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow); transition: all var(--transition);
+  }
+  .diagram-controls button:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── Diagram fullscreen viewer ── */
+  #diagram-modal {
+    position: fixed; inset: 0; z-index: 1000; display: none;
+    background: rgba(0,0,0,.72); backdrop-filter: blur(3px);
+  }
+  #diagram-modal.open { display: flex; flex-direction: column; }
+  #diagram-modal .dm-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 18px; background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  #diagram-modal .dm-title { font-size: 13px; font-weight: 700; color: var(--text); margin-right: auto; }
+  #diagram-modal .dm-bar button {
+    font-size: 12px; padding: 6px 12px; cursor: pointer;
+    background: var(--bg); color: var(--text2);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+  }
+  #diagram-modal .dm-bar button:hover { color: var(--accent); border-color: var(--accent); }
+  #diagram-modal .dm-stage {
+    flex: 1; overflow: auto; padding: 24px; display: flex; align-items: flex-start; justify-content: center;
+  }
+  #diagram-modal .dm-stage svg { transform-origin: top center; }
+
+  /* ── Quirks ── */
+  .quirks-box {
+    background: var(--warn-bg); border: 1px solid var(--warn-border);
+    border-radius: var(--radius); padding: 16px 20px; margin-top: 20px;
+  }
+  .quirks-box h4 { color: var(--warn); font-size: 13px; margin-bottom: 8px; }
+  .quirks-box li { font-size: 12px; margin-bottom: 5px; color: var(--text2); }
+  .quirks-box code { font-size: 11px; }
+
+  /* ── Quick ref cards ── */
+  #quick-ref { display: none; }
+  #quick-ref.active { display: block; }
+  .qr-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin-bottom: 28px;
+  }
+  .qr-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px;
+    transition: all var(--transition); cursor: pointer;
+  }
+  .qr-card:hover { box-shadow: var(--shadow-md); border-color: var(--accent); }
+  .qr-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .qr-card .qr-body { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .qr-card .qr-body strong { color: var(--text); }
+  .qr-card .qr-body ul { padding-left: 16px; margin: 4px 0; }
+  .qr-card .qr-body li { margin-bottom: 2px; }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--text); color: var(--bg); font-size: 12px;
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 100;
+  }
+  #toast.show { opacity: 1; }
+
+  /* ── Responsive ── */
+  @media (max-width: 860px) {
+    #sidebar { display: none; }
+    main { margin-left: 0; padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <h2><!-- PROJECT_NAME --> Spec</h2>
+    <p class="sub">Reverse-engineered from code</p>
+    <span class="draft-pill">Draft — Pending PM Review</span>
+  </div>
+  <input type="text" id="search-box" placeholder="🔍  Search all rules…" autocomplete="off">
+  <div class="nav-tree">
+    <!--
+      SIDEBAR LINKS — one per area. The href must match the area's id with a # prefix.
+      Add a link for the triage section with style="color: var(--warn);"
+    -->
+    <!-- AREA_LINK: area-id, Area Number, Area Title -->
+    <a class="area-link" href="#area-triage" data-area="triage" style="color: var(--warn);">
+      <span class="idx" style="background:var(--warn-bg);color:var(--warn);">!</span> Triage Report
+    </a>
+  </div>
+  <div class="sidebar-footer">
+    <span id="theme-label">☀️ Light</span>
+    <button id="theme-toggle">🌙 Dark mode</button>
+  </div>
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main>
+
+<div class="view-tabs">
+  <button class="active" data-view="full">📋 Full Spec</button>
+  <button data-view="quick">⚡ Quick Reference</button>
+</div>
+
+<!-- ── Stats bar ── -->
+<!--
+  STATS BAR — replace numbers with actual counts from the spec.
+  Add/remove stat-card divs as needed.
+-->
+<div class="stats-bar">
+  <div class="stat-card"><div class="num"><!-- RULE_COUNT --></div><div class="label">Behavior Rules</div></div>
+  <div class="stat-card"><div class="num"><!-- AREA_COUNT --></div><div class="label">Area Sections</div></div>
+  <div class="stat-card"><div class="num"><!-- ENTITY_FIELD_COUNT --></div><div class="label">Entity Fields</div></div>
+  <div class="stat-card warn-card"><div class="num"><!-- ISSUE_COUNT --></div><div class="label">Suspected Issues</div></div>
+  <div class="stat-card"><div class="num"><!-- ERROR_CODE_COUNT --></div><div class="label">Error Codes</div></div>
+  <div class="stat-card"><div class="num"><!-- DIAGRAM_COUNT --></div><div class="label">Diagrams</div></div>
+</div>
+
+<div id="search-results"></div>
+
+<!-- ═══════════ FULL SPEC VIEW ═══════════ -->
+<div id="full-spec">
+
+<!-- ────── DIAGRAMS SECTION ────── -->
+<!--
+  DIAGRAMS — wrap each Mermaid diagram in:
+  <div class="mermaid-wrap">
+    <div class="mermaid">...mermaid source...</div>
+    <div class="caption">Diagram Title</div>
+  </div>
+
+  Put all diagrams inside a single accordion that starts open.
+  Use standard diagram types:
+  - graph LR/TD for architecture and flows
+  - stateDiagram-v2 for state machines
+  - sequenceDiagram for sequences
+  - erDiagram for entity relationships
+  - flowchart LR/TD for decision trees
+-->
+<div class="accordion open" id="acc-diagrams">
+  <div class="accordion-header"><span class="arrow">▶</span> 📐 Architecture &amp; Flow Diagrams <span class="count"><!-- DIAGRAM_COUNT --> diagrams</span></div>
+  <div class="accordion-body">
+
+    <!-- DIAGRAM 1: System Architecture -->
+    <div class="mermaid-wrap">
+      <div class="mermaid">
+graph LR
+    subgraph "External"
+        EXT1[External System 1]
+        EXT2[External System 2]
+    end
+    subgraph "Backend"
+        API[API Server]
+        DB[(Database)]
+    end
+    subgraph "Frontend"
+        UI[Web Application]
+    end
+    EXT1 --> API
+    EXT2 --> API
+    UI --> API
+    API --> DB
+      </div>
+      <div class="caption">System Architecture Overview</div>
+    </div>
+
+    <!-- DIAGRAM 2: Core State Machine -->
+    <div class="mermaid-wrap">
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> State1
+    State1 --> State2
+    State2 --> State3
+    State3 --> [*]
+      </div>
+      <div class="caption">Core State Machine</div>
+    </div>
+
+    <!-- Add 3-5 more diagrams specific to the project -->
+
+  </div>
+</div>
+
+<!-- ═══════════ AREA EXAMPLE ═══════════ -->
+<!--
+  AREA TEMPLATE — copy this block for each spec area.
+  Replace all <!-- ... --> comments with real content.
+
+  Required attributes:
+  - .area id         → must match a sidebar link href
+  - .rule data-rule  → unique rule ID (e.g., "AUTH-4")
+  - .rule data-area  → short area key matching the area id suffix (e.g., "auth")
+-->
+<!--
+<div class="area" id="area-XXXXX">
+  <div class="area-header">
+    <h2>N. Area Title</h2>
+    <span class="badge draft">DRAFT</span>
+  </div>
+  <p class="area-meta">Prefix: <code>PREFIX-</code> · N rules · N error codes</p>
+
+  <p>Overview paragraph — 2-3 sentences describing what this area covers.</p>
+
+  <h3 style="margin-top:20px;">Key Concepts</h3>
+  <div class="concepts-grid">
+    <div class="concept-card"><h4>🏷 Concept Name</h4><p>Brief definition. Use <code>code</code> and <strong>bold</strong> for emphasis.</p></div>
+    <div class="concept-card"><h4>🏷 Another Concept</h4><p>Another definition.</p></div>
+  </div>
+
+  <!-- ACCORDION GROUP — one per capability/feature -->
+  <!--
+  <div class="accordion open" id="acc-XXXXX-group1">
+    <div class="accordion-header"><span class="arrow">▶</span> Capability Name <span class="count">N rules</span></div>
+    <div class="accordion-body">
+
+      <!-- RULE — copy for each rule -->
+      <!--
+      <div class="rule" data-rule="PREFIX-1" data-area="xxxxx">
+        <span class="rid" title="Click to copy">PREFIX-1</span>
+        <span class="content">
+          Rule text. Use <code>code</code> for endpoints/field names,
+          <strong>bold</strong> for emphasis, and exact values.
+        </span>
+      </div>
+
+      <!-- RULE WITH ⚠ CONFIRM INTENT — add warn-tag before content -->
+      <!--
+      <div class="rule" data-rule="PREFIX-5" data-area="xxxxx">
+        <span class="rid" title="Click to copy">PREFIX-5</span>
+        <span class="content">
+          <span class="warn-tag">⚠ confirm</span>
+          Rule text describing behavior that may be unintended.
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TABLE — use for error codes, permissions matrices, field definitions -->
+  <!--
+  <div class="table-wrap">
+  <table>
+    <tr><th>Column 1</th><th>Column 2</th><th>Column 3</th></tr>
+    <tr><td>Value</td><td>Value</td><td>Value</td></tr>
+  </table>
+  </div>
+
+  <!-- KNOWN GAPS & QUIRKS -->
+  <!--
+  <div class="quirks-box"><h4>⚠ Known Gaps &amp; Quirks</h4>
+    <ul>
+      <li><strong>PREFIX-N:</strong> Description of the quirk or gap.</li>
+    </ul>
+  </div>
+</div>
+-->
+
+<!-- ═══════════ TRIAGE REPORT ═══════════ -->
+<div class="area" id="area-triage">
+  <div class="area-header">
+    <h2>⚠ Triage Report</h2>
+  </div>
+  <p>Suspected bugs and confirm-intent items discovered during reverse-engineering scan. Ranked by severity.</p>
+
+  <h3 style="color:var(--danger); margin-top:20px;">🔴 High Severity (<!-- HIGH_COUNT -->)</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Rule</th><th>Issue</th><th>Impact</th></tr>
+    <!-- TRIAGE_HIGH rows -->
+  </table>
+  </div>
+
+  <h3 style="color:var(--warn); margin-top:20px;">🟡 Medium Severity (<!-- MED_COUNT -->)</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Rule</th><th>Issue</th><th>Impact</th></tr>
+    <!-- TRIAGE_MED rows -->
+  </table>
+  </div>
+
+  <h3 style="color:var(--text3); margin-top:20px;">🟢 Low Severity / Observations (<!-- LOW_COUNT -->)</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Rule</th><th>Issue</th></tr>
+    <!-- TRIAGE_LOW rows -->
+  </table>
+  </div>
+</div>
+
+</div><!-- /#full-spec -->
+
+<!-- ═══════════ QUICK REFERENCE VIEW ═══════════ -->
+<div id="quick-ref">
+
+  <h2 style="margin-bottom:8px;">⚡ Quick Reference</h2>
+  <p style="color:var(--text3);margin-bottom:24px;">Key facts, thresholds, and formulas at a glance. Click any card to jump to the full spec.</p>
+
+  <!--
+    QUICK REFERENCE CARDS — group by area with h3 headers.
+    Each card has data-nav="area-XXXXX" pointing to the area's id.
+    Extract the most important facts, numbers, thresholds, and formulas.
+  -->
+
+  <!--
+  <h3 style="margin-bottom:12px;">📁 Area Name</h3>
+  <div class="qr-grid">
+    <div class="qr-card" data-nav="area-xxxxx">
+      <h4>Card Title</h4>
+      <div class="qr-body">Key facts with <strong>bold values</strong> and <code>code</code>.</div>
+    </div>
+  </div>
+  -->
+
+</div>
+
+</main>
+
+<div id="toast">Copied to clipboard</div>
+
+<div id="diagram-modal">
+  <div class="dm-bar">
+    <span class="dm-title"></span>
+    <button data-zoom="out">− Zoom</button>
+    <button data-zoom="reset">Reset</button>
+    <button data-zoom="in">+ Zoom</button>
+    <button data-zoom="close">✕ Close</button>
+  </div>
+  <div class="dm-stage"></div>
+</div>
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<!-- This JS is reusable as-is for any project. No changes needed. -->
+<script>
+/* ═══════════ INIT ═══════════ */
+// Preserve each diagram's source so it can be re-rendered on theme change.
+document.querySelectorAll('.mermaid').forEach(el => { el.dataset.original = el.textContent; });
+mermaid.initialize({ startOnLoad: false, theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default', securityLevel: 'loose' });
+mermaid.run().then(addDiagramControls);
+
+/* ═══════════ ACCORDION ═══════════ */
+document.querySelectorAll('.accordion-header').forEach(h => {
+  h.addEventListener('click', () => h.parentElement.classList.toggle('open'));
+});
+
+/* ═══════════ THEME TOGGLE ═══════════ */
+const html = document.documentElement;
+const themeToggle = document.getElementById('theme-toggle');
+const themeLabel = document.getElementById('theme-label');
+themeToggle.addEventListener('click', () => {
+  const next = html.dataset.theme === 'light' ? 'dark' : 'light';
+  html.dataset.theme = next;
+  themeLabel.textContent = next === 'light' ? '☀️ Light' : '🌙 Dark';
+  themeToggle.textContent = next === 'light' ? '🌙 Dark mode' : '☀️ Light mode';
+  mermaid.initialize({ theme: next === 'dark' ? 'dark' : 'default', securityLevel: 'loose' });
+  document.querySelectorAll('.mermaid').forEach(el => {
+    el.removeAttribute('data-processed');
+    el.innerHTML = el.dataset.original || '';
+  });
+  mermaid.run().then(addDiagramControls);
+});
+
+/* ═══════════ COPY RULE ID ═══════════ */
+document.querySelectorAll('.rule .rid').forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    const id = el.textContent.trim();
+    navigator.clipboard.writeText(id).then(() => {
+      const toast = document.getElementById('toast');
+      toast.textContent = `Copied: ${id}`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1500);
+    });
+  });
+});
+
+/* ═══════════ VIEW TABS ═══════════ */
+document.querySelectorAll('.view-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    document.getElementById('full-spec').style.display = view === 'full' ? 'block' : 'none';
+    document.getElementById('quick-ref').classList.toggle('active', view === 'quick');
+    document.getElementById('quick-ref').style.display = view === 'quick' ? 'block' : 'none';
+  });
+});
+
+/* ═══════════ QUICK REF CARD CLICKS → NAVIGATE ═══════════ */
+document.querySelectorAll('.qr-card[data-nav]').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.view-tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelector('.view-tabs button[data-view="full"]').classList.add('active');
+    document.getElementById('full-spec').style.display = 'block';
+    document.getElementById('quick-ref').classList.remove('active');
+    document.getElementById('quick-ref').style.display = 'none';
+
+    const target = document.getElementById(card.dataset.nav);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target.style.transition = 'none';
+      target.style.boxShadow = '0 0 0 3px var(--accent)';
+      setTimeout(() => { target.style.transition = 'box-shadow .6s'; target.style.boxShadow = ''; }, 100);
+    }
+  });
+});
+
+/* ═══════════ SEARCH ═══════════ */
+const searchBox = document.getElementById('search-box');
+const searchResults = document.getElementById('search-results');
+const allRules = Array.from(document.querySelectorAll('.rule')).map(r => ({
+  el: r,
+  id: r.dataset.rule,
+  area: r.dataset.area,
+  text: r.textContent.toLowerCase(),
+  areaName: r.closest('.area')?.querySelector('h2')?.textContent?.trim() || ''
+}));
+
+searchBox.addEventListener('input', () => {
+  const q = searchBox.value.trim().toLowerCase();
+  if (q.length < 1) { searchResults.innerHTML = ''; searchResults.style.display = 'none'; return; }
+
+  const matches = allRules.filter(r => r.text.includes(q));
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div class="result-item" style="color:var(--text3);">No rules match your search.</div>';
+    searchResults.style.display = 'block';
+    return;
+  }
+
+  searchResults.innerHTML = matches.slice(0, 30).map(m => `
+    <div class="result-item" data-rule="${m.id}">
+      <span class="rid">${m.id}</span><span class="area-name">${m.areaName}</span>
+      <div class="excerpt">${highlightMatch(m.el.querySelector('.content')?.textContent?.trim() || '', q)}</div>
+    </div>
+  `).join('');
+  searchResults.style.display = 'block';
+
+  searchResults.querySelectorAll('.result-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const ruleEl = document.querySelector(`.rule[data-rule="${item.dataset.rule}"]`);
+      if (ruleEl) {
+        let parent = ruleEl.closest('.accordion');
+        while (parent) { parent.classList.add('open'); parent = parent.parentElement.closest('.accordion'); }
+        document.querySelectorAll('.view-tabs button').forEach(b => b.classList.remove('active'));
+        document.querySelector('.view-tabs button[data-view="full"]').classList.add('active');
+        document.getElementById('full-spec').style.display = 'block';
+        document.getElementById('quick-ref').style.display = 'none';
+        ruleEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        ruleEl.classList.add('highlight');
+        setTimeout(() => ruleEl.classList.remove('highlight'), 1200);
+        searchResults.style.display = 'none';
+        searchBox.value = '';
+      }
+    });
+  });
+});
+
+function highlightMatch(text, q) {
+  const idx = text.toLowerCase().indexOf(q);
+  if (idx === -1) return text.length > 120 ? text.slice(0, 120) + '…' : text;
+  const start = Math.max(0, idx - 40);
+  const end = Math.min(text.length, idx + q.length + 80);
+  let snippet = (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '');
+  return snippet.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<strong style="background:var(--accent-soft);color:var(--accent);">${m}</strong>`);
+}
+
+/* ═══════════ SIDEBAR ACTIVE TRACKING ═══════════ */
+const areaLinks = document.querySelectorAll('.area-link');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      areaLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.area-link[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-10% 0px -80% 0px' });
+
+document.querySelectorAll('.area[id]').forEach(area => observer.observe(area));
+
+/* ═══════════ KEYBOARD SHORTCUT: Ctrl+K / Cmd+K for search ═══════════ */
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    searchBox.focus();
+  }
+});
+
+/* ═══════════ DIAGRAM CONTROLS: fullscreen + download ═══════════ */
+function slugify(s) { return (s || 'diagram').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
+
+function serializeSvg(svg) {
+  const clone = svg.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  // Bake the natural dimensions in so downloads/PNGs aren't clamped by the page's width:100%.
+  const vb = (svg.getAttribute('viewBox') || '').split(/\s+/).map(Number);
+  const w = vb.length === 4 ? vb[2] : svg.getBoundingClientRect().width;
+  const h = vb.length === 4 ? vb[3] : svg.getBoundingClientRect().height;
+  clone.setAttribute('width', w);
+  clone.setAttribute('height', h);
+  clone.style.maxWidth = 'none';
+  return { xml: '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone), w, h };
+}
+
+function download(href, name) {
+  const a = document.createElement('a');
+  a.href = href; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function downloadSvg(svg, name) {
+  const { xml } = serializeSvg(svg);
+  const url = URL.createObjectURL(new Blob([xml], { type: 'image/svg+xml;charset=utf-8' }));
+  download(url, name + '.svg');
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadPng(svg, name) {
+  const { xml, w, h } = serializeSvg(svg);
+  const scale = 2; // retina-quality raster
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = w * scale; canvas.height = h * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = getComputedStyle(document.querySelector('.mermaid-wrap')).backgroundColor || '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      download(url, name + '.png');
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  };
+  img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(xml)));
+}
+
+/* ── Fullscreen viewer ── */
+const dModal = document.getElementById('diagram-modal');
+const dStage = dModal.querySelector('.dm-stage');
+const dTitle = dModal.querySelector('.dm-title');
+let dZoom = 1, dCurrentSvg = null;
+function applyZoom() { if (dCurrentSvg) dCurrentSvg.style.transform = `scale(${dZoom})`; }
+function openModal(svg, title) {
+  dTitle.textContent = title || 'Diagram';
+  dStage.innerHTML = '';
+  dCurrentSvg = svg.cloneNode(true);
+  dCurrentSvg.style.maxWidth = 'none';
+  dCurrentSvg.style.height = 'auto';
+  dZoom = 1; applyZoom();
+  dStage.appendChild(dCurrentSvg);
+  dModal.classList.add('open');
+}
+function closeModal() { dModal.classList.remove('open'); dStage.innerHTML = ''; dCurrentSvg = null; }
+dModal.querySelector('.dm-bar').addEventListener('click', e => {
+  const z = e.target.dataset.zoom;
+  if (z === 'in') { dZoom = Math.min(5, dZoom + 0.25); applyZoom(); }
+  else if (z === 'out') { dZoom = Math.max(0.25, dZoom - 0.25); applyZoom(); }
+  else if (z === 'reset') { dZoom = 1; applyZoom(); }
+  else if (z === 'close') closeModal();
+});
+dModal.addEventListener('click', e => { if (e.target === dModal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && dModal.classList.contains('open')) closeModal(); });
+
+function addDiagramControls() {
+  document.querySelectorAll('.mermaid-wrap').forEach(wrap => {
+    const svg = wrap.querySelector('svg');
+    if (!svg) return; // parse error — nothing to control
+    const name = slugify(wrap.querySelector('.caption')?.textContent || 'diagram');
+    let bar = wrap.querySelector('.diagram-controls');
+    if (bar) bar.remove(); // rebuild after re-render
+    bar = document.createElement('div');
+    bar.className = 'diagram-controls';
+    const mk = (label, fn) => { const b = document.createElement('button'); b.textContent = label; b.addEventListener('click', fn); bar.appendChild(b); };
+    mk('⤢ Fullscreen', () => openModal(svg, wrap.querySelector('.caption')?.textContent));
+    mk('⬇ SVG', () => downloadSvg(svg, name));
+    mk('⬇ PNG', () => downloadPng(svg, name));
+    wrap.appendChild(bar);
+  });
+}
+</script>
+</body>
+</html>
