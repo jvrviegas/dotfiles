@@ -5,9 +5,10 @@ this directory. Running `source install.sh` copies the settings, global
 instructions, commands, hooks, skills, themes, notification script, and
 statusline files to `~/.claude/`.
 
-Shared cross-agent skills are stored under `.agents/skills/` and copied to
-`~/.agents/skills/`. Relative symlinks in `claude/skills/` continue to resolve
-there.
+Shared cross-agent skill sources are stored under `agent-skills/` and copied to
+`~/.agents/skills/`. Keeping the tracked source outside `.agents/skills/` avoids
+Pi loading both project and global copies. Relative symlinks in `claude/skills/`
+resolve to the tracked source.
 
 Credentials, local settings, projects, sessions, history, caches, plugin
 installations, generated skill dependencies, and other runtime data are not

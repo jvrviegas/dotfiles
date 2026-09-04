@@ -133,8 +133,8 @@ for resource in settings.json CLAUDE.md notify.sh statusline.js statusline-comma
   fi
 done
 
-if [[ -d "./.agents/skills" ]]; then
-  rsync -a "./.agents/skills/" "$HOME/.agents/skills/"
+if [[ -d "./agent-skills" ]]; then
+  rsync -a "./agent-skills/" "$HOME/.agents/skills/"
   echo "  - Copied shared agent skills"
 fi
 

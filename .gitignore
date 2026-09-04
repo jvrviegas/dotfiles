@@ -43,7 +43,7 @@ claude/cache/
 claude/debug/
 claude/plugins/
 claude/skills/Archive.zip
-.agents/skills/**/.deps/
+agent-skills/**/.deps/
 
 # Pi runtime data and credentials (only portable config/resources are tracked)
 .pi/agent/auth.json
