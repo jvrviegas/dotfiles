@@ -1,0 +1,47 @@
+# Red Dead Redemption 2 Theme for Ghostty
+# Inspired by Rockstar's Red Dead Redemption 2
+# Frontier nights, Dead Eye amber, prairie greens, worn leather
+
+# Background colors - Frontier night
+background = 1a1410
+foreground = e4d8c2
+
+# Cursor - Dead Eye amber
+cursor-color = c4732e
+cursor-text = 1a1410
+
+# Selection - old whiskey amber glow
+selection-background = 94521c
+selection-foreground = e4d8c2
+
+# Black - frontier night / dark leather
+palette = 0=1a1410
+palette = 8=2d221a
+
+# Red - blood / wounds
+palette = 1=a8382a
+palette = 9=c84a3c
+
+# Green - prairie grass / herbs
+palette = 2=7a9a3c
+palette = 10=8aaa4a
+
+# Yellow - Dead Eye / golden hour
+palette = 3=c4732e
+palette = 11=e0a040
+
+# Blue - gunmetal / cold steel
+palette = 4=658088
+palette = 12=8a9ca8
+
+# Magenta - leather / saddle brown
+palette = 5=8a6e50
+palette = 13=a68060
+
+# Cyan - steel blue / distant mountains
+palette = 6=7a9498
+palette = 14=95acb0
+
+# White - worn leather / parchment
+palette = 7=c4b4a0
+palette = 15=e4d8c2
