@@ -28,23 +28,43 @@ fi
 mkdir -p "$THEME_DIR"
 echo "$THEME" > "$THEME_DIR/current"
 
-# --- Wallpaper (all spaces) ---
+# Platform-specific helpers
+IS_MACOS=false
+[[ "$(uname -s)" == "Darwin" ]] && IS_MACOS=true
+
+sedi() {
+  if $IS_MACOS; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
+
+# --- Wallpaper ---
 for ext in jpg jpeg png; do
   WALLPAPER="$WALLPAPER_DIR/${THEME}.${ext}"
   if [[ -f "$WALLPAPER" ]]; then
-    wallpaper-all-spaces "$WALLPAPER"
+    if $IS_MACOS && command -v wallpaper-all-spaces >/dev/null 2>&1; then
+      wallpaper-all-spaces "$WALLPAPER"
+    elif [[ "${XDG_CURRENT_DESKTOP,,}" == *gnome* ]] && command -v gsettings >/dev/null 2>&1; then
+      WALLPAPER_URI="$(python3 -c 'import pathlib, sys; print(pathlib.Path(sys.argv[1]).resolve().as_uri())' "$WALLPAPER")"
+      gsettings set org.gnome.desktop.background picture-uri "$WALLPAPER_URI"
+      if gsettings list-keys org.gnome.desktop.background | grep -qx 'picture-uri-dark'; then
+        gsettings set org.gnome.desktop.background picture-uri-dark "$WALLPAPER_URI"
+      fi
+    fi
     break
   fi
 done
 
 # --- Ghostty ---
 if [[ -f "$GHOSTTY_CONFIG" ]]; then
-  sed -i '' "s/^theme = .*/theme = ${THEME}/" "$GHOSTTY_CONFIG"
+  sedi "s/^theme = .*/theme = ${THEME}/" "$GHOSTTY_CONFIG"
 fi
 
 # --- Neovim (persistent) ---
 if [[ -f "$NVIM_INIT" ]]; then
-  sed -i '' "/^[[:space:]]*--/!s/vim\.cmd\.colorscheme '.*'/vim.cmd.colorscheme '${THEME}'/" "$NVIM_INIT"
+  sedi "/^[[:space:]]*--/!s/vim\.cmd\.colorscheme '.*'/vim.cmd.colorscheme '${THEME}'/" "$NVIM_INIT"
 fi
 
 # --- Neovim (live - send to all running instances) ---
@@ -62,12 +82,12 @@ fi
 
 # --- Kitty ---
 if [[ -f "$KITTY_CONFIG" && -f "$HOME/.config/kitty/themes/${THEME}.conf" ]]; then
-  sed -i '' "/# BEGIN_KITTY_THEME/,/# END_KITTY_THEME/s/include .*/include ${THEME}.conf/" "$KITTY_CONFIG"
+  sedi "/# BEGIN_KITTY_THEME/,/# END_KITTY_THEME/s/include .*/include ${THEME}.conf/" "$KITTY_CONFIG"
 fi
 
 # --- Alacritty ---
 if [[ -f "$ALACRITTY_CONFIG" && -f "$HOME/.config/alacritty/themes/${THEME}.toml" ]]; then
-  sed -i '' "s#~/.config/alacritty/themes/.*\.toml#~/.config/alacritty/themes/${THEME}.toml#" "$ALACRITTY_CONFIG"
+  sedi "s#~/.config/alacritty/themes/.*\.toml#~/.config/alacritty/themes/${THEME}.toml#" "$ALACRITTY_CONFIG"
 fi
 
 # --- Pi ---
@@ -96,13 +116,15 @@ if [[ -f "$HERDR_CONFIG" && -f "$HERDR_THEME_FILE" ]] && command -v herdr >/dev/
     /# END_HERDR_THEME/ { skip=0 }
     !skip
   ' "$HERDR_CONFIG" > "${HERDR_CONFIG}.tmp" && mv "${HERDR_CONFIG}.tmp" "$HERDR_CONFIG"
-  sed -i '' 's/^name = "custom"/name = "terminal"/' "$HERDR_CONFIG"
+  sedi 's/^name = "custom"/name = "terminal"/' "$HERDR_CONFIG"
   herdr server reload-config >/dev/null 2>&1
-  sed -i '' 's/^name = "terminal"/name = "custom"/' "$HERDR_CONFIG"
+  sedi 's/^name = "terminal"/name = "custom"/' "$HERDR_CONFIG"
   herdr server reload-config >/dev/null 2>&1
 fi
 
-# --- Sketchybar ---
-sketchybar --reload 2>/dev/null &
+# --- Sketchybar (macOS) ---
+if $IS_MACOS && command -v sketchybar >/dev/null 2>&1; then
+  sketchybar --reload 2>/dev/null &
+fi
 
 echo "Switched to: $THEME"

@@ -215,7 +215,13 @@ echo ""
 echo "• Setting up theme system"
 mkdir -p "$HOME/.config/theme"
 mkdir -p "$HOME/.config/tmux/themes"
-mkdir -p "$HOME/.config/wallpapers"
+WALLPAPER_SOURCE="$(pwd)/.config/wallpapers"
+if [[ -e "$HOME/.config/wallpapers" ]] && [[ ! -L "$HOME/.config/wallpapers" ]]; then
+    mv "$HOME/.config/wallpapers" "$HOME/.config/wallpapers-old"
+    echo "  - Backed up existing wallpapers to $HOME/.config/wallpapers-old"
+fi
+ln -sfn "$WALLPAPER_SOURCE" "$HOME/.config/wallpapers"
+echo "  - Linked wallpapers to $WALLPAPER_SOURCE"
 cp "$(pwd)/.config/tmux/themes/"*.sh "$HOME/.config/tmux/themes/" 2>/dev/null || true
 chmod +x "$HOME/.config/tmux/themes/"*.sh 2>/dev/null || true
 if [ ! -f "$HOME/.config/theme/current" ]; then
