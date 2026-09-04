@@ -2,7 +2,7 @@
 
 echo "• Installing Zap"
 
-if command -v zap &>/dev/null; then
+if [[ $(which zap) != "" ]]; then
   echo "  - Zap already installed"
 
 else
