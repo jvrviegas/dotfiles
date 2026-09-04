@@ -1,0 +1,44 @@
+# The Witcher Theme for Alacritty
+# Inspired by The Witcher 3: Wild Hunt
+
+[colors.primary]
+background = "#0b0f12"       # Kaer Morhen night
+foreground = "#d8d3c5"       # Witcher silver
+
+[colors.cursor]
+text = "#0b0f12"
+cursor = "#d89a2b"           # Witcher eyes amber
+
+[colors.selection]
+text = "#d8d3c5"
+background = "#a66a1f"       # Old amber glow
+
+[colors.normal]
+black = "#0b0f12"            # Keep shadows
+red = "#b84a42"              # Blood
+green = "#7fbf3f"            # Potions
+yellow = "#d89a2b"           # Medallion amber
+blue = "#516b73"             # Aard steel-blue
+magenta = "#8f6f4a"          # Yrden dusk
+cyan = "#688791"             # Cold steel
+white = "#c1bbaa"            # Weathered steel
+
+[colors.bright]
+black = "#1b2428"            # Wet stone
+red = "#d75f4f"              # Fresh wound
+green = "#8fcf4f"            # Toxicity bright
+yellow = "#e0b85f"           # Candlelight
+blue = "#7f9aa3"             # Aard bright
+magenta = "#b08a5a"          # Dusk magic bright
+cyan = "#9bb0b6"             # Steel bright
+white = "#d8d3c5"            # Polished silver
+
+[colors.dim]
+black = "#05080a"
+red = "#8f3434"
+green = "#415f2d"
+yellow = "#7d562c"
+blue = "#3f535a"
+magenta = "#624832"
+cyan = "#516b73"
+white = "#827d72"
