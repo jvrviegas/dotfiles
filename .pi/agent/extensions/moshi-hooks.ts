@@ -2,7 +2,7 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent"
 import { spawn } from "node:child_process"
 
-const helperBinary = "/opt/homebrew/bin/moshi-hook"
+const helperBinary = process.env.MOSHI_HOOK_BINARY || "moshi-hook"
 
 function firstString(...values: unknown[]): string {
   for (const value of values) {
@@ -96,7 +96,11 @@ function send(eventName: string, event: unknown, ctx: unknown, extra: Record<str
       stdio: ["pipe", "ignore", "ignore"],
       detached: true,
     })
-    child.stdin.end(JSON.stringify(payload))
+    // spawn() reports a missing binary asynchronously, so try/catch alone is
+    // insufficient. Consume child and stdin errors to keep hooks best-effort.
+    child.once("error", () => {})
+    child.stdin?.once("error", () => {})
+    child.stdin?.end(JSON.stringify(payload))
     child.unref()
   } catch {
     // Hooks should never interrupt the user's Pi turn when Moshi is absent.
