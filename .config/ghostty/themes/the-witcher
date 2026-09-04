@@ -1,0 +1,47 @@
+# The Witcher Theme for Ghostty
+# Inspired by The Witcher 3: Wild Hunt
+# Kaer Morhen night, Witcher eyes amber, potions green, weathered steel
+
+# Background colors - Kaer Morhen night
+background = 0b0f12
+foreground = d8d3c5
+
+# Cursor - Witcher eyes
+cursor-color = d89a2b
+cursor-text = 0b0f12
+
+# Selection - old amber glow
+selection-background = a66a1f
+selection-foreground = d8d3c5
+
+# Black - keep shadows
+palette = 0=0b0f12
+palette = 8=1b2428
+
+# Red - monsters / wounds
+palette = 1=b84a42
+palette = 9=d75f4f
+
+# Green - potions / toxicity
+palette = 2=7fbf3f
+palette = 10=8fcf4f
+
+# Yellow - medallion / candlelight
+palette = 3=d89a2b
+palette = 11=e0b85f
+
+# Blue - Aard / cold signs
+palette = 4=516b73
+palette = 12=7f9aa3
+
+# Magenta - Yrden / dusk magic
+palette = 5=8f6f4a
+palette = 13=b08a5a
+
+# Cyan - steel blue
+palette = 6=688791
+palette = 14=9bb0b6
+
+# White - Witcher silver
+palette = 7=c1bbaa
+palette = 15=d8d3c5
