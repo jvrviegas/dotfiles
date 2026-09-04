@@ -40,8 +40,12 @@ JSON
 printf '200'
 MOCK
 chmod +x "$TMP_DIR/bin/security" "$TMP_DIR/bin/curl"
+cat > "$TMP_DIR/oauth-state.json" <<'JSON'
+{"message":"Claude OAuth token refresh rate limited: previous token","retry_after_epoch":4102444800}
+JSON
 
 output="$(PATH="$TMP_DIR/bin:/usr/bin:/bin" AI_USAGE_CLAUDE_API_STATE_FILE="$TMP_DIR/oauth-state.json" "$ROOT_DIR/plugins/ai_usage_providers/claude_code.sh")"
+[[ ! -f "$TMP_DIR/oauth-state.json" ]]
 
 jq -e '
   .source == "claude_oauth_usage_api" and
