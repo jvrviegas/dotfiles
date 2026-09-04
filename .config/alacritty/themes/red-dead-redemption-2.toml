@@ -1,0 +1,44 @@
+# Red Dead Redemption 2 Theme for Alacritty
+# Inspired by Rockstar's Red Dead Redemption 2
+
+[colors.primary]
+background = "#1a1410"       # Frontier night
+foreground = "#e4d8c2"       # Warm parchment
+
+[colors.cursor]
+text = "#1a1410"
+cursor = "#c4732e"           # Dead Eye amber
+
+[colors.selection]
+text = "#e4d8c2"
+background = "#94521c"       # Old whiskey amber glow
+
+[colors.normal]
+black = "#1a1410"            # Frontier night
+red = "#a8382a"              # Blood
+green = "#7a9a3c"            # Prairie herbs
+yellow = "#c4732e"           # Dead Eye amber
+blue = "#658088"             # Gunmetal
+magenta = "#8a6e50"          # Leather
+cyan = "#7a9498"             # Steel blue
+white = "#c4b4a0"            # Worn leather
+
+[colors.bright]
+black = "#2d221a"            # Dark leather
+red = "#c84a3c"              # Fresh wound
+green = "#8aaa4a"            # Bright prairie
+yellow = "#e0a040"           # Golden hour
+blue = "#8a9ca8"             # Bright gunmetal
+magenta = "#a68060"          # Warm leather
+cyan = "#95acb0"             # Bright steel
+white = "#e4d8c2"            # Warm parchment
+
+[colors.dim]
+black = "#0d0a08"
+red = "#8a2828"
+green = "#425a22"
+yellow = "#7d5024"
+blue = "#3a4d54"
+magenta = "#624a38"
+cyan = "#516b70"
+white = "#7a7062"
