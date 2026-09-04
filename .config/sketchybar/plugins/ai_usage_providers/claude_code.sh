@@ -87,6 +87,66 @@ get_claude_plan_type() {
   jq -r '.claudeAiOauth.subscriptionType // empty' <<<"$1" 2>/dev/null
 }
 
+claude_oauth_expired() {
+  local expires_at now_ms
+  expires_at="$(jq -r '.claudeAiOauth.expiresAt // 0' <<<"$1" 2>/dev/null || echo 0)"
+  now_ms="$(( $(date +%s) * 1000 ))"
+  [[ "$expires_at" =~ ^[0-9]+$ ]] && (( expires_at > 0 && expires_at <= now_ms ))
+}
+
+persist_claude_oauth_credential() {
+  local credential="$1" metadata account
+  metadata="$(security find-generic-password -s 'Claude Code-credentials' -g 2>&1 || true)"
+  account="$(sed -n 's/.*"acct"<blob>="\([^"]*\)".*/\1/p' <<<"$metadata" | head -n 1)"
+  account="${account:-$(id -un)}"
+  security add-generic-password -U -a "$account" -s 'Claude Code-credentials' -w "$credential" >/dev/null 2>&1
+}
+
+refresh_claude_oauth_credential() {
+  local credential="$1" refresh_token body_file http_code access_token rotated_refresh expires_in now_ms updated
+  refresh_token="$(jq -r '.claudeAiOauth.refreshToken // empty' <<<"$credential" 2>/dev/null)"
+  [[ -n "$refresh_token" ]] || return 1
+
+  body_file="$(mktemp)"
+  http_code="$(curl -sS \
+    --connect-timeout 5 \
+    --max-time 10 \
+    -o "$body_file" \
+    -w '%{http_code}' \
+    -H 'Content-Type: application/json' \
+    --data "$(jq -nc --arg refresh "$refresh_token" '{grant_type:"refresh_token",refresh_token:$refresh,client_id:"9d1c250a-e61b-44d9-88ed-5944d1962f5e"}')" \
+    'https://platform.claude.com/v1/oauth/token' 2>/dev/null || true)"
+
+  if [[ "$http_code" != "200" ]]; then
+    if [[ "$http_code" == "429" ]]; then
+      local message
+      message="$(jq -r '.error.message // .message // "rate limited"' "$body_file" 2>/dev/null || echo 'rate limited')"
+      write_oauth_backoff "$http_code" "Claude OAuth token refresh rate limited: $message"
+    fi
+    rm -f "$body_file"
+    return 1
+  fi
+
+  access_token="$(jq -r '.access_token // empty' "$body_file" 2>/dev/null)"
+  rotated_refresh="$(jq -r '.refresh_token // empty' "$body_file" 2>/dev/null)"
+  expires_in="$(jq -r '.expires_in // 28800' "$body_file" 2>/dev/null)"
+  rm -f "$body_file"
+  [[ -n "$access_token" && "$expires_in" =~ ^[0-9]+$ ]] || return 1
+
+  now_ms="$(( $(date +%s) * 1000 ))"
+  updated="$(jq -c \
+    --arg access "$access_token" \
+    --arg refresh "$rotated_refresh" \
+    --argjson expires_at "$((now_ms + expires_in * 1000))" \
+    '.claudeAiOauth.accessToken = $access
+      | .claudeAiOauth.expiresAt = $expires_at
+      | if $refresh == "" then . else .claudeAiOauth.refreshToken = $refresh end' \
+    <<<"$credential")"
+  persist_claude_oauth_credential "$updated" || return 1
+  clear_oauth_backoff
+  printf '%s\n' "$updated"
+}
+
 oauth_state_message() {
   if [[ -f "$oauth_state_file" ]]; then
     jq -r '.message // empty' "$oauth_state_file" 2>/dev/null || true
@@ -144,6 +204,7 @@ fetch_oauth_usage() {
     -w '%{http_code}' \
     -H "Authorization: Bearer $token" \
     -H 'Accept: application/json' \
+    -H 'anthropic-beta: oauth-2025-04-20' \
     -H "User-Agent: $user_agent" \
     'https://api.anthropic.com/api/oauth/usage' 2>/dev/null || true)"
 
@@ -297,20 +358,30 @@ reset_weekly_at() {
 }
 
 if [[ "$api_enabled" != "0" && "$api_enabled" != "false" && "$api_enabled" != "no" ]]; then
-  if oauth_backoff_active && [[ "${AI_USAGE_CLAUDE_API_FORCE:-0}" != "1" ]]; then
+  claude_credentials="$(get_claude_oauth_credential || true)"
+  oauth_refresh_failed=false
+  if ! claude_oauth_expired "$claude_credentials" && [[ "$(oauth_state_message)" == "Claude OAuth token refresh rate limited:"* ]]; then
+    # A successful `claude auth login` replaced the expired credential; do not
+    # let the previous refresh backoff suppress the new token.
+    clear_oauth_backoff
+  fi
+  if claude_oauth_expired "$claude_credentials"; then
+    refreshed_credentials="$(refresh_claude_oauth_credential "$claude_credentials" || true)"
+    if jq -e . >/dev/null 2>&1 <<<"$refreshed_credentials"; then
+      claude_credentials="$refreshed_credentials"
+    else
+      oauth_refresh_failed=true
+      oauth_fallback_reason="$(oauth_state_message)"
+      oauth_fallback_reason="${oauth_fallback_reason:-Claude OAuth token expired; run claude auth login}"
+    fi
+  fi
+
+  if [[ "$oauth_refresh_failed" != true ]] && oauth_backoff_active && [[ "${AI_USAGE_CLAUDE_API_FORCE:-0}" != "1" ]]; then
     oauth_fallback_reason="$(oauth_state_message)"
-  else
-    claude_credentials="$(get_claude_oauth_credential || true)"
+  elif [[ "$oauth_refresh_failed" != true ]]; then
     oauth_token="$(get_claude_oauth_token "$claude_credentials" || true)"
     claude_plan_type="$(get_claude_plan_type "$claude_credentials" || true)"
     oauth_usage="$(fetch_oauth_usage "$oauth_token" || true)"
-    if ! jq -e . >/dev/null 2>&1 <<<"$oauth_usage" && [[ -z "$(oauth_state_message)" ]] && command -v claude >/dev/null 2>&1; then
-      claude auth status >/dev/null 2>&1 || true
-      claude_credentials="$(get_claude_oauth_credential || true)"
-      oauth_token="$(get_claude_oauth_token "$claude_credentials" || true)"
-      claude_plan_type="$(get_claude_plan_type "$claude_credentials" || true)"
-      oauth_usage="$(fetch_oauth_usage "$oauth_token" || true)"
-    fi
     if jq -e . >/dev/null 2>&1 <<<"$oauth_usage" && emit_oauth_usage "$oauth_usage" "$claude_plan_type"; then
       exit 0
     fi
