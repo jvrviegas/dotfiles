@@ -1,0 +1,11 @@
+{
+  "name": "pi-claude-code-auth",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "pi provider using local Claude Code OAuth credentials",
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  }
+}
