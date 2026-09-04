@@ -1,4 +1,4 @@
-theme = the-mandalorian
+theme = the-witcher
 
 # font-family = "Zenbones Brainy"
 
@@ -19,6 +19,9 @@ background-blur-radius = 15
 
 cursor-style-blink = false
 shell-integration-features = no-cursor
+
+# Bell -> desktop notification + sound (for Claude Code / pi finishing in tmux)
+bell-features = system,audio,attention,title
 
 keybind = super+enter=unbind
 keybind = shift+enter=text:\n
