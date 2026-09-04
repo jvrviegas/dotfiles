@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+if [[ $# -eq 1 ]]; then
+  selected=$1
+  echo "$selected"
+else
+  selected=$(fd . ~/Notes --min-depth 1 --max-depth 10 --type f | fzf)
+fi
+
+if [[ -z $selected ]]; then
+  exit 0
+fi
+
+# Get the directory containing the selected file
+selected_dir=$(dirname "$selected")
+# Get just the filename for the window name
+filename=$(basename "$selected")
+# Remove extension and replace dots/spaces with underscores for window name
+selected_name=$(echo "${filename%.*}" | tr '. ' '_')
+
+session_name="notes"
+
+# Create the notes session if it doesn't exist
+if ! tmux has-session -t $session_name 2> /dev/null; then
+  tmux new-session -ds $session_name
+fi
+
+# Check if a window with this name already exists in the notes session
+if ! tmux list-windows -t $session_name -F "#{window_name}" | grep -q "^$selected_name$" 2> /dev/null; then
+  tmux new-window -t $session_name -n $selected_name -c "$selected_dir" "nvim '$selected'"
+else
+  # If window exists, just send the nvim command to open the file
+  tmux send-keys -t $session_name:$selected_name "nvim '$selected'" Enter
+fi
+
+# Switch to the notes session and the specific window
+if [[ -z $TMUX ]]; then
+  tmux attach-session -t $session_name
+  tmux select-window -t $session_name:$selected_name
+else
+  tmux switch-client -t $session_name
+  tmux select-window -t $session_name:$selected_name
+fi
+
