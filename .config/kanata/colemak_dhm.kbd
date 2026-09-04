@@ -2,9 +2,7 @@
   process-unmapped-keys   yes
   concurrent-tap-hold     yes
   allow-hardware-repeat   no
-  linux-dev-names-include (
-    "AT Translated Set 2 keyboard"
-  )
+  linux-dev               /dev/input/by-path/platform-i8042-serio-0-event-kbd
   macos-dev-names-include (
     "Apple Internal Keyboard / Trackpad"  ;; Built-in keyboard
     "Open use"                           ;; Magic Keyboard (Bluetooth)
