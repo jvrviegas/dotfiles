@@ -34,5 +34,5 @@ y = 30
 
 [general]
 import = [
-	"~/.config/alacritty/themes/hollow-knight.toml"
+	"~/.config/alacritty/themes/the-witcher.toml"
 ]
