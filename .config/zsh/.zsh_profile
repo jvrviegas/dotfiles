@@ -34,7 +34,7 @@ hw() {
 }
 
 # Where should I put you?
-bindkey -s ^f "tmux-sessionizer\n"
+bindkey -s ^f "herdr-sessionizer\n"
 
 # Where should I put you in your notes?
 bindkey -s ^t "tmux-notes-sessionizer\n"
