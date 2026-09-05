@@ -64,6 +64,16 @@ Zsh uses XDG-compliant `ZDOTDIR` set in `.zshenv` → `$HOME/.config/zsh`. Key a
 
 Git identity switching: `setupWorkGitlab()`, `setupPersonalGithub()`.
 
+## GitHub Account Safety
+
+For every GitHub CLI (`gh`) or authenticated GitHub operation in this repository:
+
+1. Switch to the personal account first: `gh auth switch --hostname github.com --user jvrviegas`.
+2. Perform the required GitHub/Git command(s).
+3. Always switch back to the work account when finished, including after failures: `gh auth switch --hostname github.com --user joao-viegas-procimo`.
+
+Use a shell `trap` or equivalent cleanup mechanism so the work account is restored even if a command exits with an error. Do not leave `jvrviegas` as the active account.
+
 ## Notes
 
 - **Neovim has its own CLAUDE.md** at `.config/nvim/CLAUDE.md` with detailed plugin architecture, LSP servers, keymaps, and code style. Refer to that for all Neovim work.
