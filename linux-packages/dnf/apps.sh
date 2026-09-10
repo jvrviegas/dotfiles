@@ -67,6 +67,7 @@ sudo dnf install -y --skip-unavailable texlive-scheme-basic 2>/dev/null || true
 
 # Utilities
 installflatpak com.github.tchx84.Flatseal
+installflatpak com.mattjakeman.ExtensionManager
 sudo dnf install -y --skip-unavailable flameshot
 
 # Fonts — Nerd Fonts

@@ -68,6 +68,7 @@ sudo pacman -S --noconfirm --needed texlive-basic 2>/dev/null || true
 
 # Utilities
 installflatpak com.github.tchx84.Flatseal
+installflatpak com.mattjakeman.ExtensionManager
 sudo pacman -S --noconfirm --needed flameshot
 
 # Fonts — Nerd Fonts (available in CachyOS/Arch repos)

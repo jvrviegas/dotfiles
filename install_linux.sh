@@ -137,10 +137,16 @@ echo "    2) Hyprland + Quickshell + Vicinae"
 echo "    3) Skip"
 read -rp "  Enter choice [1/2/3]: " wm_choice
 
+SETUP_GNOME=false
 case "$wm_choice" in
   1)
-    echo "  - Applying Fedora GNOME preferences"
-    source fedora.sh
+    if [[ -f "linux-packages/$PKG_DIR/gnome.sh" ]]; then
+      source "linux-packages/$PKG_DIR/gnome.sh"
+      SETUP_GNOME=true
+      echo "  - GNOME preferences will be applied after Node.js is installed"
+    else
+      echo "  ✗ No GNOME dependency script found for $PKG_DIR"
+    fi
     ;;
   2)
     if [[ -f "linux-packages/$PKG_DIR/wm.sh" ]]; then
@@ -264,6 +270,12 @@ else
   echo "  - Bun already installed"
 fi
 echo ""
+
+# Apply GNOME configuration now that Node/npm are available for extensions.
+if [[ "$SETUP_GNOME" == true ]]; then
+  source "$SCRIPT_DIR/linux-desktop/gnome.sh"
+  echo ""
+fi
 
 # ─────────────────────────────────────────────
 # 11. Zap (zsh plugin manager)
