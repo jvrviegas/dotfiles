@@ -43,7 +43,6 @@ There is also `install-script-company/install.sh` for company-specific installat
 ├── skhd/           # Hotkey daemon
 ├── starship/       # Starship prompt
 .local/bin/         # Custom scripts (tmux-sessionizer, tmux-cht.sh, android-emulator.sh, etc.)
-claude/             # Claude Code statusline scripts (copied to $HOME/.claude by install.sh)
 .zshenv             # Sets ZDOTDIR=$HOME/.config/zsh
 .tmux.conf          # Tmux config (vi-mode, vim-like pane nav, monokai-pro theme)
 .gitconfig          # Git config (default branch: main, merge tool: vimdiff, many aliases)

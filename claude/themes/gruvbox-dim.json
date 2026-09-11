@@ -1,9 +1,0 @@
-{
-  "$schema": "./theme.schema.json",
-  "name": "Gruvbox (dimmed highlight)",
-  "base": "dark-ansi",
-  "overrides": {
-    "userMessageBackground": "#3c3836",
-    "userMessageBackgroundHover": "#504945"
-  }
-}

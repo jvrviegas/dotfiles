@@ -23,26 +23,6 @@ done;
 unset file files;
 echo ""
 
-# Pi configuration (credentials, sessions, trust, and caches are intentionally excluded)
-if [[ -d "./.pi/agent" ]]; then
-  echo "• Installing Pi configuration"
-  mkdir -p "$HOME/.pi/agent"
-
-  for resource in settings.json AGENTS.md SYSTEM.md APPEND_SYSTEM.md extensions prompts skills themes; do
-    if [[ -d "./.pi/agent/$resource" ]]; then
-      mkdir -p "$HOME/.pi/agent/$resource"
-      rsync -a "./.pi/agent/$resource/" "$HOME/.pi/agent/$resource/"
-      echo "  - Copied Pi $resource"
-    elif [[ -f "./.pi/agent/$resource" ]]; then
-      cp "./.pi/agent/$resource" "$HOME/.pi/agent/$resource"
-      echo "  - Copied Pi $resource"
-    fi
-  done
-
-  unset resource
-  echo ""
-fi
-
 # Homebrew
 echo "• Check if Homebrew is installed"
 
@@ -110,27 +90,13 @@ echo "  - Theme set to: $CURRENT_THEME"
 echo ""
 
 
-echo "• Installing Claude Code configuration"
-mkdir -p "$HOME/.claude" "$HOME/.agents/skills"
-
-for resource in settings.json CLAUDE.md notify.sh statusline.js statusline-command.sh commands hooks skills themes; do
-  if [[ -d "./claude/$resource" ]]; then
-    mkdir -p "$HOME/.claude/$resource"
-    rsync -a "./claude/$resource/" "$HOME/.claude/$resource/"
-    echo "  - Copied Claude Code $resource"
-  elif [[ -f "./claude/$resource" ]]; then
-    cp "./claude/$resource" "$HOME/.claude/$resource"
-    echo "  - Copied Claude Code $resource"
-  fi
-done
+echo "• Installing shared agent skills"
+mkdir -p "$HOME/.agents/skills"
 
 if [[ -d "./agent-skills" ]]; then
   rsync -a "./agent-skills/" "$HOME/.agents/skills/"
   echo "  - Copied shared agent skills"
 fi
-
-chmod +x "$HOME/.claude/statusline.js" "$HOME/.claude/statusline-command.sh" "$HOME/.claude/notify.sh" 2>/dev/null
-unset resource
 echo ""
 
 

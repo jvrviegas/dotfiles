@@ -26,32 +26,15 @@ screenlog*
 # Project tracking
 TODO.md
 
+# Externally managed repositories
+.config/nvim/
+
 # VMs
 windows-11/
 windows-11.conf
 
-# Claude Code runtime data and credentials
+# AI coding assistant configuration (managed per machine)
 .claude/
-claude/.credentials.json
-claude/settings.local.json
-claude/projects/
-claude/sessions/
-claude/session-env/
-claude/history.jsonl
-claude/file-history/
-claude/cache/
-claude/debug/
-claude/plugins/
-claude/skills/Archive.zip
+claude/
+.pi/
 agent-skills/**/.deps/
-
-# Pi runtime data and credentials (only portable config/resources are tracked)
-.pi/agent/auth.json
-.pi/agent/trust.json
-.pi/agent/mcp.json
-.pi/agent/models-store.json
-.pi/agent/google-workspace/
-.pi/agent/sessions/
-.pi/agent/npm/
-.pi/agent/git/
-.pi/agent/.notebook/
