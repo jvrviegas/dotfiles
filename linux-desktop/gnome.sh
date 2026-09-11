@@ -32,7 +32,8 @@ gsettings set org.gnome.desktop.peripherals.mouse speed -0.44855967078189296
 gsettings set org.gnome.desktop.peripherals.keyboard repeat true
 gsettings set org.gnome.desktop.peripherals.keyboard delay 250
 gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 25
-gsettings set org.gnome.desktop.input-sources xkb-options "['lv3:ralt_alt']"
+# Keep Right Alt as the third-level selector required by the US Macintosh layout.
+gsettings set org.gnome.desktop.input-sources xkb-options "[]"
 
 gsettings set org.gnome.desktop.screensaver lock-enabled true
 gsettings set org.gnome.desktop.screensaver lock-delay 0
