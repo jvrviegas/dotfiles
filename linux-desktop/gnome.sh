@@ -226,12 +226,14 @@ gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Super>f']"
 
 CUSTOM_KB_BASE="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
 CUSTOM_KB_0="${CUSTOM_KB_BASE}/custom0/"
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['${CUSTOM_KB_0}']"
+CUSTOM_KB_1="${CUSTOM_KB_BASE}/custom1/"
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['${CUSTOM_KB_0}', '${CUSTOM_KB_1}']"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} name 'Launch Terminal'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} command 'ghostty'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} binding "'<Super>Return'"
-# Vicinae owns Alt+Space through its input server; remove the obsolete shortcut.
-dconf reset -f "${CUSTOM_KB_BASE}/custom1/" 2>/dev/null || true
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} name 'Flameshot'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} command 'flameshot gui'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} binding "'<Super>2'"
 
 for i in {1..8}; do
   gsettings set org.gnome.desktop.wm.keybindings "switch-to-workspace-$i" "['<Alt>$i']"

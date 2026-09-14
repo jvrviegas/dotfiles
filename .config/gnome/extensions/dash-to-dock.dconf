@@ -6,6 +6,7 @@ custom-theme-shrink=true
 dash-max-icon-size=48
 dock-position='BOTTOM'
 height-fraction=0.90000000000000002
+hot-keys=false
 intellihide-mode='ALL_WINDOWS'
 max-alpha=0.80000000000000004
 pressure-threshold=50.0
