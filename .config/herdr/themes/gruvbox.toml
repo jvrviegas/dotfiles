@@ -1,6 +1,6 @@
 # Gruvbox (dark, hard) - herdr theme
 [theme]
-name = "custom"
+name = "terminal"
 
 auto_switch = false
 [theme.custom]

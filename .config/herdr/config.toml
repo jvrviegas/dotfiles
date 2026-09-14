@@ -20,17 +20,14 @@ new_cwd = "follow"
 # ============================================================
 # Theme — managed by theme-switch. The block between the markers
 # is replaced from ~/.config/herdr/themes/<theme>.toml on switch.
-# NOTE: [theme.custom] only applies when name = "custom" —
-# it is silently ignored on top of built-in themes.
+# [theme.custom] overrides tokens on top of the selected built-in base theme.
+# `terminal` preserves our terminal-based base while applying these colors.
 # surface_dim paints the selected/active sidebar row.
-# Hot-reload quirk: edits to [theme.custom] values alone don't
-# re-apply; theme-switch flips name to a built-in, reloads,
-# flips back, reloads.
 # ============================================================
 # BEGIN_HERDR_THEME
 # The Witcher - herdr theme
 [theme]
-name = "custom"
+name = "terminal"
 
 auto_switch = false
 [theme.custom]
@@ -38,6 +35,7 @@ panel_bg    = "#0b0f12"   # kaer morhen
 surface0    = "#1b2428"   # wet stone
 surface1    = "#2a363b"   # iron border
 surface_dim = "#423522"   # selected/active row — amber tint
+selection_bg  = "#a66a1f" # workspace-picker cursor / keyboard selection
 overlay0    = "#827d72"   # dull steel
 overlay1    = "#9a948a"
 subtext0    = "#c1bbaa"   # weathered steel

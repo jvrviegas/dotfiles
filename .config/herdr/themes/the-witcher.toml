@@ -1,6 +1,6 @@
 # The Witcher - herdr theme
 [theme]
-name = "custom"
+name = "terminal"
 
 auto_switch = false
 [theme.custom]
@@ -8,6 +8,7 @@ panel_bg    = "#0b0f12"   # kaer morhen
 surface0    = "#1b2428"   # wet stone
 surface1    = "#2a363b"   # iron border
 surface_dim = "#423522"   # selected/active row — amber tint
+selection_bg  = "#a66a1f" # workspace-picker cursor / keyboard selection
 overlay0    = "#827d72"   # dull steel
 overlay1    = "#9a948a"
 subtext0    = "#c1bbaa"   # weathered steel

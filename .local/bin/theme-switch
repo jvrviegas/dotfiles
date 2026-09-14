@@ -106,8 +106,7 @@ fi
 
 # --- Herdr ---
 # Splices ~/.config/herdr/themes/<theme>.toml between the BEGIN/END markers.
-# Quirk: herdr only re-derives [theme.custom] when the theme *name* changes,
-# so flip to a built-in, reload, flip back, reload.
+# Theme overrides are layered on Herdr's valid `terminal` base theme.
 HERDR_CONFIG="$HOME/.config/herdr/config.toml"
 HERDR_THEME_FILE="$HOME/.config/herdr/themes/${THEME}.toml"
 if [[ -f "$HERDR_CONFIG" && -f "$HERDR_THEME_FILE" ]] && command -v herdr >/dev/null 2>&1; then
@@ -116,9 +115,6 @@ if [[ -f "$HERDR_CONFIG" && -f "$HERDR_THEME_FILE" ]] && command -v herdr >/dev/
     /# END_HERDR_THEME/ { skip=0 }
     !skip
   ' "$HERDR_CONFIG" > "${HERDR_CONFIG}.tmp" && mv "${HERDR_CONFIG}.tmp" "$HERDR_CONFIG"
-  sedi 's/^name = "custom"/name = "terminal"/' "$HERDR_CONFIG"
-  herdr server reload-config >/dev/null 2>&1
-  sedi 's/^name = "terminal"/name = "custom"/' "$HERDR_CONFIG"
   herdr server reload-config >/dev/null 2>&1
 fi
 
