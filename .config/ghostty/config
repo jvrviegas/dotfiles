@@ -3,6 +3,7 @@ theme = the-witcher
 # font-family = "Zenbones Brainy"
 
 window-decoration = true
+gtk-titlebar = false
 window-padding-x = 8
 window-padding-y = 8
 
