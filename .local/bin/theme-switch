@@ -57,6 +57,15 @@ for ext in jpg jpeg png; do
   fi
 done
 
+# --- Open Bar (GNOME) ---
+if [[ "$IS_MACOS" == false && "${XDG_CURRENT_DESKTOP,,}" == *gnome* ]]; then
+  OPENBAR_THEME_HELPER="$HOME/.config/gnome/apply-openbar-theme.sh"
+  if [[ -x "$OPENBAR_THEME_HELPER" ]] && ! "$OPENBAR_THEME_HELPER" "$THEME"; then
+    echo "Open Bar theme update failed: $THEME" >&2
+    exit 1
+  fi
+fi
+
 # --- Ghostty ---
 if [[ -f "$GHOSTTY_CONFIG" ]]; then
   sedi "s/^theme = .*/theme = ${THEME}/" "$GHOSTTY_CONFIG"

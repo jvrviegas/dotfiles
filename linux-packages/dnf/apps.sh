@@ -37,10 +37,6 @@ installflatpak io.dbeaver.DBeaverCommunity
 installflatpak com.getpostman.Postman
 installflatpak com.mongodb.Compass
 
-# Google Cloud CLI
-if ! command -v gcloud &>/dev/null; then
-  echo "  - gcloud: install from https://cloud.google.com/sdk/docs/install#rpm"
-fi
 
 # VS Code (RPM repo)
 if ! command -v code &>/dev/null; then

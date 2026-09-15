@@ -69,6 +69,9 @@ fi
 # Containers
 sudo pacman -S --noconfirm --needed docker-compose
 
+# Google Cloud CLI
+sudo pacman -S --noconfirm --needed google-cloud-cli
+
 # Data & databases
 sudo pacman -S --noconfirm --needed \
   jq \

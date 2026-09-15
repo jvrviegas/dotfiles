@@ -5,6 +5,8 @@
 
 GNOME_CONFIG_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}/.config/gnome"
 EXTENSIONS_DIR="$HOME/.local/share/gnome-shell/extensions"
+OPENBAR_THEME_SOURCE="$GNOME_CONFIG_DIR/apply-openbar-theme.sh"
+OPENBAR_THEME_HELPER="$HOME/.config/gnome/apply-openbar-theme.sh"
 
 if [[ "${XDG_CURRENT_DESKTOP:-}" != *GNOME* ]] && ! command -v gnome-shell &>/dev/null; then
   echo "  ✗ GNOME Shell is not installed; skipping GNOME configuration"
@@ -121,8 +123,10 @@ GNOME_EXTENSIONS=(
   "3193:blur-my-shell@aunetx"
   "3843:just-perfection-desktop@just-perfection"
   "5177:vertical-workspaces@G-dH.github.com"
+  "6580:openbar@neuromorph"
   "19:user-theme@gnome-shell-extensions.gcampax.github.com"
   "1319:gsconnect@andyholmes.github.io"
+  "8230:junk-notification-cleaner@murar8.github.com"
 )
 
 if command -v gext &>/dev/null; then
@@ -170,8 +174,10 @@ GNOME_EXTENSION_UUIDS=(
   "blur-my-shell@aunetx"
   "just-perfection-desktop@just-perfection"
   "vertical-workspaces@G-dH.github.com"
+  "openbar@neuromorph"
   "user-theme@gnome-shell-extensions.gcampax.github.com"
   "gsconnect@andyholmes.github.io"
+  "junk-notification-cleaner@murar8.github.com"
   "earport@anoryth.github.io"
   "coding-agent-rate-limit-indicator@github.com"
   "vicinae@dagimg-dot"
@@ -223,17 +229,31 @@ dconf write /org/gnome/shell/extensions/coding-agent-rate-limit-indicator/refres
 
 gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
 gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Super>f']"
+# Disable the standalone Super overview trigger; use Super+Space instead.
+gsettings set org.gnome.mutter overlay-key ''
+gsettings set org.gnome.shell.keybindings toggle-overview "['<Super>space']"
+# Super+Space is assigned to input-source switching by default; retain only
+# the dedicated keyboard key so Overview can own the shortcut.
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source "['XF86Keyboard']"
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Shift>XF86Keyboard']"
+# Let Flameshot own Super+2 rather than GNOME's built-in screenshot UI.
+gsettings set org.gnome.shell.keybindings show-screenshot-ui "[]"
 
 CUSTOM_KB_BASE="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
 CUSTOM_KB_0="${CUSTOM_KB_BASE}/custom0/"
 CUSTOM_KB_1="${CUSTOM_KB_BASE}/custom1/"
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['${CUSTOM_KB_0}', '${CUSTOM_KB_1}']"
+CUSTOM_KB_2="${CUSTOM_KB_BASE}/custom2/"
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['${CUSTOM_KB_0}', '${CUSTOM_KB_1}', '${CUSTOM_KB_2}']"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} name 'Launch Terminal'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} command 'ghostty'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} binding "'<Super>Return'"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} name 'Flameshot'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} command 'flameshot gui'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} binding "'<Super>2'"
+# Fallback for GNOME sessions where Vicinae's evdev input server cannot grab Alt+Space.
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_2} name 'Toggle Vicinae'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_2} command 'vicinae toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_2} binding "'<Alt>space'"
 
 for i in {1..8}; do
   gsettings set org.gnome.desktop.wm.keybindings "switch-to-workspace-$i" "['<Alt>$i']"
@@ -280,6 +300,29 @@ if sys.argv[1] not in current:
     current.append(sys.argv[1])
 subprocess.run(["gsettings", "set", *key, str(current)], check=True)
 PYEOF
+  fi
+fi
+
+# The repository's .config directory is copied during installation. Keep this
+# helper executable in the deployed tree too, including when gnome.sh is run
+# directly after a repository update.
+if [[ -f "$OPENBAR_THEME_SOURCE" ]]; then
+  mkdir -p "$(dirname "$OPENBAR_THEME_HELPER")"
+  if cp "$OPENBAR_THEME_SOURCE" "$OPENBAR_THEME_HELPER"; then
+    chmod +x "$OPENBAR_THEME_HELPER"
+  else
+    echo "  ⚠ Could not deploy the Open Bar theme helper"
+  fi
+fi
+
+CURRENT_THEME="the-mandalorian"
+CURRENT_THEME_FILE="$HOME/.config/theme/current"
+if [[ -r "$CURRENT_THEME_FILE" ]]; then
+  CURRENT_THEME="$(<"$CURRENT_THEME_FILE")"
+fi
+if [[ -x "$OPENBAR_THEME_HELPER" ]]; then
+  if ! "$OPENBAR_THEME_HELPER" "$CURRENT_THEME"; then
+    echo "  ⚠ Could not apply Open Bar theme: $CURRENT_THEME"
   fi
 fi
 

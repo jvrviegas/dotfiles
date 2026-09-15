@@ -36,10 +36,6 @@ installflatpak io.dbeaver.DBeaverCommunity
 installflatpak com.getpostman.Postman
 installflatpak com.mongodb.Compass
 
-# Google Cloud CLI
-if command -v paru &>/dev/null; then
-  paru -S --noconfirm --needed google-cloud-cli 2>/dev/null || true
-fi
 
 # VS Code
 if ! command -v code &>/dev/null; then
