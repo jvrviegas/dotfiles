@@ -8,6 +8,7 @@ panel_bg    = "#19181a"   # black
 surface0    = "#2d2a2e"   # bg
 surface1    = "#403e41"   # bg lighter
 surface_dim = "#3a4a2e"   # selected/active row — green tint
+selection_bg = "#5d803f" # workspace-picker cursor / keyboard selection
 overlay0    = "#727072"
 overlay1    = "#939293"   # grey
 subtext0    = "#c1c0c0"

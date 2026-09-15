@@ -8,6 +8,7 @@ panel_bg    = "#0a0a0f"   # deep space
 surface0    = "#15151d"   # space panel
 surface1    = "#20202b"   # space gray
 surface_dim = "#21495f"   # selected/active row — hologram-blue tint
+selection_bg = "#286b89" # workspace-picker cursor / keyboard selection
 overlay0    = "#586888"   # carbonite
 overlay1    = "#7888a8"   # ice
 subtext0    = "#c8c8d6"   # beskar dim

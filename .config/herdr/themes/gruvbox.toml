@@ -8,6 +8,7 @@ panel_bg    = "#1d2021"   # bg0_h
 surface0    = "#3c3836"   # bg1 — elevated rows / inactive tabs
 surface1    = "#504945"   # bg2 — secondary elevation
 surface_dim = "#493420"   # selected/active row — soft warm orange tint
+selection_bg = "#9d5317" # workspace-picker cursor / keyboard selection
 overlay0    = "#928374"   # gray — muted UI text
 overlay1    = "#a89984"   # fg4
 subtext0    = "#bdae93"   # fg3

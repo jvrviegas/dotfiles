@@ -8,6 +8,7 @@ panel_bg    = "#1a1410"   # frontier night
 surface0    = "#261e17"   # leather hide
 surface1    = "#3d3229"   # iron border
 surface_dim = "#443124"   # selected/active row — leather tint
+selection_bg = "#8d4a1f" # workspace-picker cursor / keyboard selection
 overlay0    = "#7a7062"   # old iron
 overlay1    = "#a89880"   # aged paper
 subtext0    = "#c4b4a0"   # worn leather

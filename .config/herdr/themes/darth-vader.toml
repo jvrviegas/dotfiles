@@ -8,6 +8,7 @@ panel_bg    = "#08080a"   # void
 surface0    = "#16161c"   # armor
 surface1    = "#26262e"   # durasteel
 surface_dim = "#3a1a1c"   # selected/active row — saber-red tint
+selection_bg = "#8f2429" # workspace-picker cursor / keyboard selection
 overlay0    = "#6a6a74"   # steel
 overlay1    = "#90909a"   # hull
 subtext0    = "#b4b4bc"   # trooper

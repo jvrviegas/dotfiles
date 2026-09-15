@@ -8,6 +8,7 @@ panel_bg    = "#0d0d14"   # abyss
 surface0    = "#171722"   # abyss2
 surface1    = "#2d2d42"   # shade
 surface_dim = "#413466"   # selected/active row — void-purple tint
+selection_bg = "#5c4a91" # workspace-picker cursor / keyboard selection
 overlay0    = "#6f6a8f"   # shadow
 overlay1    = "#8a86a8"
 subtext0    = "#dcd7f2"   # pale ore
