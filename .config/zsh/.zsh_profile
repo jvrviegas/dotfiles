@@ -2,6 +2,7 @@
 alias nppm='pnpm'
 alias ppm='pnpm'
 alias vim='nvim'
+[[ "$(uname)" == "Linux" && -f /etc/fedora-release ]] && alias open='xdg-open'
 alias ls='eza --icons'
 alias ll='eza --icons -la'
 # alias cd='z'
