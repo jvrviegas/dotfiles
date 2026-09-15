@@ -127,6 +127,9 @@ GNOME_EXTENSIONS=(
   "19:user-theme@gnome-shell-extensions.gcampax.github.com"
   "1319:gsconnect@andyholmes.github.io"
   "8230:junk-notification-cleaner@murar8.github.com"
+  "6949:moveclock@kuvaus.org"
+  "5090:space-bar@luchrioh"
+  "3740:compiz-alike-magic-lamp-effect@hermes83.github.com"
 )
 
 if command -v gext &>/dev/null; then
@@ -165,6 +168,27 @@ install_git_extension https://github.com/Anoryth/earport.git \
 install_git_extension https://github.com/HansRobo/coding-agent-rate-limit-indicator.git \
   coding-agent-rate-limit-indicator@github.com
 
+install_git_directory_extension() {
+  local repo="$1"
+  local uuid="$2"
+  [[ -d "$EXTENSIONS_DIR/$uuid" ]] && return
+
+  local checkout
+  checkout=$(mktemp -d)
+  echo "  - Installing GNOME extension: $uuid"
+  if git clone --depth 1 "$repo" "$checkout" >/dev/null 2>&1 \
+    && [[ -d "$checkout/$uuid" ]]; then
+    cp -a "$checkout/$uuid" "$EXTENSIONS_DIR/$uuid"
+  else
+    echo "  ⚠ Could not download $repo"
+  fi
+  rm -rf "$checkout"
+}
+
+# Tailscale Status is distributed as a UUID-named directory in its Git repo.
+install_git_directory_extension https://github.com/maxgallup/tailscale-status.git \
+  tailscale-status@maxgallup.github.com
+
 # GNOME on Wayland may not notice a newly installed extension until the next
 # login. Persist UUIDs now so each extension activates after that reload.
 GNOME_EXTENSION_UUIDS=(
@@ -178,6 +202,10 @@ GNOME_EXTENSION_UUIDS=(
   "user-theme@gnome-shell-extensions.gcampax.github.com"
   "gsconnect@andyholmes.github.io"
   "junk-notification-cleaner@murar8.github.com"
+  "moveclock@kuvaus.org"
+  "space-bar@luchrioh"
+  "compiz-alike-magic-lamp-effect@hermes83.github.com"
+  "tailscale-status@maxgallup.github.com"
   "earport@anoryth.github.io"
   "coding-agent-rate-limit-indicator@github.com"
   "vicinae@dagimg-dot"
