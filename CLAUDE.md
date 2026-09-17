@@ -4,62 +4,59 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-macOS dotfiles repository managing development environment configurations: terminal emulators (Ghostty, Alacritty, Kitty, Wezterm), Neovim, tmux, zsh, window managers (yabai, skhd), and macOS system preferences.
+Cross-platform dotfiles repository with explicit deployment profiles for macOS, Fedora GNOME, and Omarchy.
 
 ## Setup Commands
 
 ```bash
-source install.sh          # Full installation (copies dotfiles, installs Homebrew, formulae, casks, NVM, node, zsh plugins)
-source osx.sh              # macOS system preferences (many options commented out — enable as needed)
-source brew/formulae.sh    # Homebrew CLI tools only
-source brew/cask.sh        # Homebrew GUI apps only
-source brew/wm.sh          # Window manager tools (yabai, skhd)
+./install --profile macos
+./install --profile fedora-gnome
+./install --profile omarchy
+./install --profile omarchy --config-only
+./install --profile omarchy --packages-only
 ```
 
-There is also `install-script-company/install.sh` for company-specific installations.
+`install.sh`, `fedora.sh`, and `omarchy.sh` are compatibility wrappers around the unified installer.
 
 ## Architecture
 
 ### Deployment Model
 
-**Critical distinction:** Most configs (`.gitconfig`, `.tmux.conf`, `.zshenv`, `.local/`, `.config/`) are **copied** to `$HOME` during installation. However, `.config/nvim/` and `.config/kanata/` are **symlinked** (e.g. `$HOME/.config/nvim` → `$(pwd)/.config/nvim`), so changes to those are tracked directly in this repo. All other config changes must be made in this repo and re-copied.
+`install` is the only deployment interface. It loads `lib/deploy.sh`, then the selected adapter at `profiles/<profile>/profile.sh`. Shared and profile `home/` trees mirror paths under `$HOME`. Replaced files are backed up under `~/.local/state/dotfiles-backups/`.
+
+Never recursively copy the repository into `$HOME`; use `deploy_file`, `deploy_overlay`, or `deploy_symlink` from the deployment module.
 
 ### Configuration Structure
 
-```
-.config/
-├── nvim/           # Neovim (symlinked, has its own CLAUDE.md — see there for nvim details)
-├── zsh/            # Zsh config (ZDOTDIR via .zshenv)
-│   ├── .zshrc      # Shell setup, plugins, PATH, NVM, Java
-│   ├── .zsh_profile # Aliases, git helpers, FZF theme
-│   └── zap_zsh.sh  # Zap plugin manager installer
-├── ghostty/        # Ghostty terminal config
-├── alacritty/      # Alacritty terminal config
-├── kitty/          # Kitty terminal config
-├── wezterm/        # Wezterm terminal config
-├── tmux/           # Tmux colorscheme scripts
-├── sketchybar/     # macOS menu bar (plugins/ and items/)
-├── yabai/          # Tiling window manager
-├── skhd/           # Hotkey daemon
-├── starship/       # Starship prompt
-.local/bin/         # Custom scripts (tmux-sessionizer, tmux-cht.sh, android-emulator.sh, etc.)
-.zshenv             # Sets ZDOTDIR=$HOME/.config/zsh
-.tmux.conf          # Tmux config (vi-mode, vim-like pane nav, monokai-pro theme)
-.gitconfig          # Git config (default branch: main, merge tool: vimdiff, many aliases)
+```text
+home/common/                    # Shared home overlay
+├── .config/zsh/                # Zsh configuration
+├── .config/{alacritty,ghostty,kitty,wezterm}/
+├── .config/{git,kanata,starship,tmux}/
+├── .local/bin/                 # Portable helper scripts
+├── .gitconfig
+├── .tmux.conf
+└── .zshenv
+profiles/
+├── macos/                      # macOS overlay, Homebrew packages, system settings
+├── fedora-gnome/               # Fedora overlay, dnf/Flatpak packages, GNOME settings
+└── omarchy/                    # Omarchy-safe Hyprland, shell, XKB, and systemd files
+lib/deploy.sh                   # Shared backup/deployment implementation
+install                         # Unified installer interface
 ```
 
 ### Key Technologies
 
 - **Shell**: zsh with [Zap](https://www.zapzsh.com/) plugin manager, Starship prompt
-- **Editor**: Neovim (kickstart.nvim-based, see `.config/nvim/CLAUDE.md`)
+- **Editor**: Neovim
 - **Terminal multiplexer**: tmux with TPM
-- **Navigation**: zoxide (`cd` aliased to `z`), fzf (Tokyonight theme)
-- **Package managers**: Homebrew, NVM (not fnm), ASDF
-- **Window management**: yabai + skhd (optional)
+- **Navigation**: zoxide (`cd` aliased to `z`), fzf
+- **Package managers**: Homebrew (macOS), dnf/Flatpak (Fedora), Omarchy CLI (Omarchy)
+- **Window management**: AeroSpace/Sketchybar (macOS), GNOME (Fedora), Hyprland/Omarchy Shell (Omarchy)
 
 ### Zsh Configuration
 
-Zsh uses XDG-compliant `ZDOTDIR` set in `.zshenv` → `$HOME/.config/zsh`. Key aliases: `vim='nvim'`, `ls='eza --icons'`, `cd='z'`, `sozsh` (reload zsh config), `nvim-config` (edit nvim config), `nvim-dir` (cd to nvim config).
+Zsh uses XDG-compliant `ZDOTDIR` set in `home/common/.zshenv` → `$HOME/.config/zsh`. Key aliases: `vim='nvim'`, `ls='eza --icons'`, `cd='z'`, `sozsh` (reload zsh config), `nvim-config` (edit nvim config), `nvim-dir` (cd to nvim config).
 
 Git identity switching: `setupWorkGitlab()`, `setupPersonalGithub()`.
 
@@ -75,6 +72,6 @@ Use a shell `trap` or equivalent cleanup mechanism so the work account is restor
 
 ## Notes
 
-- **Neovim has its own CLAUDE.md** at `.config/nvim/CLAUDE.md` with detailed plugin architecture, LSP servers, keymaps, and code style. Refer to that for all Neovim work.
-- After config changes outside nvim, re-run `source install.sh` or manually copy changed files to `$HOME`.
-- The README.md is outdated (references Vundle, OhMyZSH, bash files) — the repo has since migrated to zsh/Zap/kickstart.nvim.
+- Keep shared files in `home/common/`; keep OS or desktop-specific files in the relevant profile.
+- Apply changes with `./install --profile <profile> --config-only`.
+- The generic Arch/Hyprland profile has been retired; use the Omarchy profile.

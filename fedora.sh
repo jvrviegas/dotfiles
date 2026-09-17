@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# Standalone Fedora GNOME setup. install_linux.sh runs the same dependency and
-# desktop scripts in separate phases so Node.js is available to extensions.
-
-set -e
-
+# Compatibility wrapper. Prefer: ./install --profile fedora-gnome
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/linux-packages/dnf/gnome.sh"
-source "$SCRIPT_DIR/linux-desktop/gnome.sh"
+"$SCRIPT_DIR/install" --profile fedora-gnome "$@"

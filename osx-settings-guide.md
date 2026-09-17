@@ -1,6 +1,6 @@
 # macOS Configuration Guide for MacBook Pro M4
 
-This guide explains all the settings in the `osx.sh` script, their applicability to the MacBook Pro M4, and the benefits of each configuration.
+This guide explains all settings in `profiles/macos/osx.sh`, their applicability to the MacBook Pro M4, and the benefits of each configuration.
 
 ## Table of Contents
 - [General UI/UX](#general-uiux)

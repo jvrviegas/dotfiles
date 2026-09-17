@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+trap 'status=$?; echo "✗ Installation failed at line $LINENO: $BASH_COMMAND (exit $status)" >&2' ERR
+
+DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export DOTFILES_ROOT
+
+usage() {
+  cat <<'USAGE'
+Usage: ./install --profile <macos|fedora-gnome|omarchy> [mode]
+
+Modes:
+  --config-only       Deploy configuration without installing packages
+  --packages-only     Install packages without deploying configuration
+  --help              Show this help
+
+Without a mode, packages and configuration are both installed.
+USAGE
+}
+
+profile=""
+install_packages=true
+install_config=true
+
+while (( $# > 0 )); do
+  case "$1" in
+    --profile)
+      profile=${2:-}
+      shift 2
+      ;;
+    --config-only)
+      install_packages=false
+      shift
+      ;;
+    --packages-only)
+      install_config=false
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "✗ Unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+case "$profile" in
+  macos|fedora-gnome|omarchy) ;;
+  "") echo "✗ --profile is required" >&2; usage >&2; exit 2 ;;
+  *) echo "✗ Unknown profile: $profile" >&2; usage >&2; exit 2 ;;
+esac
+
+if [[ $install_packages == false && $install_config == false ]]; then
+  echo "✗ --config-only and --packages-only cannot be combined" >&2
+  exit 2
+fi
+
+source "$DOTFILES_ROOT/lib/deploy.sh"
+source "$DOTFILES_ROOT/profiles/$profile/profile.sh"
+
+for profile_function in profile_preflight profile_install_packages profile_install_config; do
+  declare -F "$profile_function" >/dev/null || {
+    echo "✗ Profile '$profile' does not implement $profile_function" >&2
+    exit 1
+  }
+done
+
+profile_preflight
+begin_deployment "$profile"
+
+if [[ $install_packages == true ]]; then
+  profile_install_packages
+fi
+if [[ $install_config == true ]]; then
+  profile_install_config
+fi
+
+finish_deployment
+echo "✓ $profile installation complete"

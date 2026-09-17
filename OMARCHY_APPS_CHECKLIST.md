@@ -2,15 +2,15 @@
 
 Drafted from the macOS application lists in:
 
-- `brew/formulae.sh`
-- `brew/cask.sh`
-- `brew/wm.sh`
+- `profiles/macos/packages/formulae.sh`
+- `profiles/macos/packages/apps.sh`
+- `profiles/macos/packages/wm.sh`
 
 Status was checked against this Omarchy machine (Omarchy `4.0.4-1`).
 
 ## Checklist conventions
 
-- `[x]` — already installed; the future install script should skip it safely.
+- `[x]` — already installed; the Omarchy profile should skip it safely.
 - `[ ]` under **Available but not installed** — check the apps that should be included in the install script.
 - `[ ]` under **No native Linux version** — check once the proposed replacement or omission has been reviewed.
 - Package names and installation methods will be confirmed when the script is created.

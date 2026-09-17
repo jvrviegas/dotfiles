@@ -1,72 +1,52 @@
-# My precious .dotfiles :gem:
+# Dotfiles
 
-[![Dotfiles](https://img.shields.io/badge/dot-files-green.svg)](https://dotfiles.github.io/)
+Cross-platform dotfiles organized as shared home configuration plus explicit deployment profiles.
 
-![My Terminal Colors](http://i.imgur.com/oGP6knz.png)
+## Install
 
-
-## Typeface
-
-I use the typeface  [FiraCode](https://github.com/tonsky/FiraCode)
-
-
-## OSX defaults
-
-To configurate a new Mac with my default settings
-
-```
-$ source osx.sh
+```bash
+./install --profile macos
+./install --profile fedora-gnome
+./install --profile omarchy
 ```
 
+Install only one phase when needed:
 
-## Vim, ZSH
-
-To config my [Vim](http://www.vim.org/) and [OhMyZSH](https://ohmyz.sh/) settings just run the **install.sh**
-
-It will:
-- ask for your git **user** and **email** to configurate using `git config --global`
-- install [Homebrew](http://brew.sh/) if you don't have
-- copy the **dot (.)** files to your home path
-  -  `.aliases`
-  - `.bash_profile`
-  - `.bash_prompt`
-  - `.bashrc`
-  - `.exports`
-  - `.gitconfig`
-  - `.gitignore`
-  - `.screenrc`
-  - `.vim`
-  - `.vimrc`
-- install the Vim plugins using [Vundle](https://github.com/VundleVim/Vundle.vim)
-
-Just run:
-
-```
-$ source install.sh
+```bash
+./install --profile omarchy --config-only
+./install --profile omarchy --packages-only
 ```
 
+Legacy entry points remain as thin wrappers:
 
-## Homebrew
-
-To install all my command line apps using [homebrew](http://brew.sh/)
-
-```
-$ source brew.sh
-```
-
-
-## Homebrew Cask
-
-To install all my apps using [Homebrew Cask](http://caskroom.io/)
-
-```
-$ source cask.sh
+```bash
+./install.sh       # macos
+./fedora.sh        # fedora-gnome
+./omarchy.sh       # omarchy
 ```
 
+## Layout
 
-## Author
+```text
+home/common/                 Shared files, mirroring paths below $HOME
+profiles/macos/              macOS home overlay, packages, and system settings
+profiles/fedora-gnome/       Fedora GNOME overlay, packages, and desktop setup
+profiles/omarchy/            Omarchy overlay, packages, and safe configuration
+lib/deploy.sh                Shared backup and deployment module
+install                      Unified installer interface
+```
 
-| [![twitter/vitorleal](http://gravatar.com/avatar/e133221d7fbc0dee159dca127d2f6f00?s=80)](http://twitter.com/vitorleal "Follow @vitorleal on Twitter") |
-|---|
-| [Vitor Leal](http://vitorleal.com) |
+Profile `home/` directories mirror their destination. For example:
 
+```text
+profiles/omarchy/home/.config/hypr/input.lua
+                           → ~/.config/hypr/input.lua
+```
+
+Replaced files are backed up under:
+
+```text
+~/.local/state/dotfiles-backups/<profile>-<timestamp>/
+```
+
+The retired generic Arch/Hyprland profile is intentionally unsupported. Use the `omarchy` profile for an Omarchy installation.

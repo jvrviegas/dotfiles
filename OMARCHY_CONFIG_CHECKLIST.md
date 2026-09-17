@@ -1,7 +1,8 @@
 # Omarchy `.config` and `.local` migration checklist
 
-This checklist covers the repository's current `.config/` and `.local/` contents.
-Use it to select what a future Omarchy-safe dotfiles installer should deploy.
+This checklist records which shared and profile-owned files the Omarchy adapter deploys.
+Destination paths are shown relative to `$HOME`, even though sources now live under
+`home/common/` and `profiles/omarchy/home/`.
 
 ## Checklist conventions
 
@@ -20,7 +21,7 @@ The current live Alacritty, Ghostty, and Kitty configs are unchanged Omarchy def
 ~/.local/state/omarchy/current/theme/
 ```
 
-Copying this repository's entire `.config/` directory would overwrite several of those files. The future installer should use an explicit allowlist instead of `cp -r .config "$HOME"`.
+The unified installer therefore uses an explicit allowlist in the Omarchy profile instead of deploying the entire shared home overlay.
 
 ---
 
@@ -217,4 +218,4 @@ These have no useful Omarchy behavior and should normally be omitted.
 yes, zsh retaining mise
 - [x] Decide whether Colemak-DH Kanata mapping should be deployed.
 yes, it needs to install kanata, configure the service and configure with Colemak-DH
-- [x] Build the future installer from an allowlist; never recursively copy all of `.config/` or `.local/`.
+- [x] Deploy Omarchy from an explicit allowlist; never recursively copy all shared configuration.
