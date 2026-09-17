@@ -78,6 +78,7 @@ deploy_file "$PROFILE_HOME/.config/hypr/input.lua" "$HOME/.config/hypr/input.lua
 deploy_file "$PROFILE_HOME/.config/xkb/symbols/us_mac_accents" \
   "$HOME/.config/xkb/symbols/us_mac_accents"
 deploy_file "$PROFILE_HOME/.XCompose" "$HOME/.XCompose"
+deploy_file "$PROFILE_HOME/.config/omarchy/shell.toml" "$HOME/.config/omarchy/shell.toml"
 
 xkbcli compile-keymap --test \
   --layout us_mac_accents \
@@ -94,12 +95,22 @@ for plugin_file in BarWidget.qml Model.js Panel.qml manifest.json; do
   deploy_file "$clock_plugin_source/$plugin_file" "$clock_plugin_target/$plugin_file"
 done
 omarchy plugin validate "$clock_plugin_target"
+
+# Install the user-owned bar plugin. This full-bar clone adds an inset floating
+# surface with rounded corners; shell.toml controls its 38px content height.
+bar_plugin_id="joaoviegas.bar"
+bar_plugin_source="$PROFILE_HOME/.config/omarchy/plugins/$bar_plugin_id"
+bar_plugin_target="$HOME/.config/omarchy/plugins/$bar_plugin_id"
+deploy_overlay "$bar_plugin_source" "$bar_plugin_target"
+omarchy plugin validate "$bar_plugin_target"
 omarchy-shell shell rescanPlugins >/dev/null
 
-# Keep the current shell configuration intact while enabling the customized
-# clock at the final position in the right section.
+# Keep the current shell layout intact while enabling the customized clock and
+# selecting the floating bar implementation.
 backup_path "$HOME/.config/omarchy/shell.json"
 omarchy plugin enable "$clock_plugin_id" --section right --index 9999
+omarchy plugin enable "$bar_plugin_id"
+omarchy restart shell
 
 if hyprctl reload &>/dev/null; then
   config_errors=$(hyprctl configerrors)
