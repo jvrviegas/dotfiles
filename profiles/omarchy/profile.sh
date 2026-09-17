@@ -19,7 +19,7 @@ profile_install_packages() {
 
   local repo_packages=(
     lua-language-server jdk17-openjdk rustup scrcpy httpie pgpdump
-    alacritty android-tools dbeaver visual-studio-code-bin spotify zsh
+    alacritty android-tools dbeaver visual-studio-code-bin spotify syncthing zsh
   )
   local aur_packages=(
     google-cloud-cli mongodb-compass-bin postman-bin slack-desktop kanata-bin
