@@ -36,7 +36,10 @@ fi
 
 # Open the current directory in a focused Herdr workspace
 hw() {
-    herdr workspace create --cwd "$PWD" --label "$(basename "$PWD")" --focus && herdr
+    herdr workspace create --cwd "$PWD" --label "$(basename "$PWD")" --focus || return
+    if [[ -z ${HERDR_ENV:-} ]]; then
+        herdr
+    fi
 }
 
 # Where should I put you?
