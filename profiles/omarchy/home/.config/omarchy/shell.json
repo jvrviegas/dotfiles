@@ -5,7 +5,7 @@
     "lock": 300
   },
   "bar": {
-    "id": "joaoviegas.bar",
+    "id": "omarchy.bar",
     "position": "top",
     "transparent": false,
     "centerAnchor": "",
@@ -40,7 +40,7 @@
           "id": "lcavadas.system-monitor"
         },
         {
-          "id": "omarchy.agents"
+          "id": "joaoviegas.agents"
         },
         {
           "id": "omarchy.bluetooth"

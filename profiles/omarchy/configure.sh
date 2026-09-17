@@ -118,20 +118,21 @@ for plugin_file in BarWidget.qml Model.js Panel.qml manifest.json; do
 done
 omarchy plugin validate "$clock_plugin_target"
 
-# Install the user-owned bar plugin. This full-bar clone adds an inset floating
-# surface with rounded corners; shell.toml controls its 38px content height.
-bar_plugin_id="joaoviegas.bar"
-bar_plugin_source="$PROFILE_HOME/.config/omarchy/plugins/$bar_plugin_id"
-bar_plugin_target="$HOME/.config/omarchy/plugins/$bar_plugin_id"
-deploy_overlay "$bar_plugin_source" "$bar_plugin_target"
-omarchy plugin validate "$bar_plugin_target"
-omarchy-shell shell rescanPlugins >/dev/null
+# Install the user-owned agents plugin. Its bar readout shows both subscription
+# marks and the allowance remaining in each provider's current session window.
+agents_plugin_id="joaoviegas.agents"
+agents_plugin_source="$PROFILE_HOME/.config/omarchy/plugins/$agents_plugin_id"
+agents_plugin_target="$HOME/.config/omarchy/plugins/$agents_plugin_id"
+deploy_overlay "$agents_plugin_source" "$agents_plugin_target"
+omarchy plugin validate "$agents_plugin_target"
 
-# Keep the current shell layout intact while enabling the customized clock and
-# selecting the floating bar implementation.
+# Keep the current shell layout intact while enabling the customized widgets.
+# Service-backed third-party widgets such as OmaStats require the trusted stock
+# bar; replacement bars intentionally receive a service-less shell facade.
 backup_path "$HOME/.config/omarchy/shell.json"
 omarchy plugin enable "$clock_plugin_id" --section right --index 9999
-omarchy plugin enable "$bar_plugin_id"
+omarchy plugin enable "$agents_plugin_id"
+omarchy plugin enable omarchy.bar
 omarchy restart shell
 
 if hyprctl reload &>/dev/null; then
