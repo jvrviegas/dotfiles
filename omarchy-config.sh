@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Deploy the items selected in OMARCHY_CONFIG_CHECKLIST.md without replacing
-# Omarchy's Hyprland, shell, terminal, tmux, or theme-managed configuration.
+# Deploy the items selected in OMARCHY_CONFIG_CHECKLIST.md while preserving
+# Omarchy-managed terminal, tmux, and theme configuration. Hyprland overrides
+# are installed individually, and shell layout changes use the Omarchy CLI.
 
 set -Eeuo pipefail
 trap 'status=$?; echo "✗ Configuration failed at line $LINENO: $BASH_COMMAND (exit $status)" >&2' ERR
@@ -111,6 +112,48 @@ done < <(git config --file "$SCRIPT_DIR/.gitconfig" --null --list)
 
 install_user_file "$SCRIPT_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
 echo "  - Preserved the existing Git name and email"
+echo ""
+
+echo "• Deploying Omarchy desktop customizations"
+install_user_file "$SCRIPT_DIR/.config/hypr/looknfeel.lua" "$HOME/.config/hypr/looknfeel.lua"
+install_user_file "$SCRIPT_DIR/.config/hypr/input.lua" "$HOME/.config/hypr/input.lua"
+install_user_file "$SCRIPT_DIR/.config/xkb/symbols/us_mac_accents" \
+  "$HOME/.config/xkb/symbols/us_mac_accents"
+install_user_file "$SCRIPT_DIR/.XCompose" "$HOME/.XCompose"
+
+xkbcli compile-keymap --test \
+  --layout us_mac_accents \
+  --variant intl \
+  --options compose:caps,shift:both_capslock_cancel,lv3:lalt_switch,lv3:ralt_alt
+omarchy restart xcompose
+
+# Install the user-owned clock plugin. It follows Omarchy's built-in clock but
+# anchors its calendar to the clock instead of centering it on the bar.
+clock_plugin_id="joaoviegas.clock"
+clock_plugin_source="$SCRIPT_DIR/.config/omarchy/plugins/$clock_plugin_id"
+clock_plugin_target="$HOME/.config/omarchy/plugins/$clock_plugin_id"
+for plugin_file in BarWidget.qml Model.js Panel.qml manifest.json; do
+  install_user_file "$clock_plugin_source/$plugin_file" "$clock_plugin_target/$plugin_file"
+done
+omarchy plugin validate "$clock_plugin_target"
+omarchy-shell shell rescanPlugins >/dev/null
+
+# Keep the current shell configuration intact while enabling the customized
+# clock at the final position in the right section.
+backup_user_path "$HOME/.config/omarchy/shell.json"
+omarchy plugin enable "$clock_plugin_id" --section right --index 9999
+
+if hyprctl reload &>/dev/null; then
+  config_errors=$(hyprctl configerrors)
+  if [[ -n $config_errors ]]; then
+    echo "✗ Hyprland reported configuration errors:" >&2
+    printf '%s\n' "$config_errors" >&2
+    exit 1
+  fi
+  echo "  - Hyprland configuration reloaded successfully"
+else
+  echo "  ! Hyprland is not active; customizations will load at next login"
+fi
 echo ""
 
 echo "• Deploying shared agent skills"

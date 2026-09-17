@@ -1,0 +1,20 @@
+// US International layout with macOS-style accent combinations on Level 3.
+// Left Alt selects Level 3 via Hyprland's kb_options; Right Alt remains Alt.
+default partial alphanumeric_keys
+xkb_symbols "intl" {
+    include "us(intl)"
+
+    name[Group1] = "English (US, intl., macOS accents)";
+
+    // Left Alt + ` -> grave accent (e.g. à)
+    key <TLDE> { [ dead_grave, dead_tilde, dead_grave, dead_horn ] };
+
+    // Left Alt + E/I/U/N -> acute/circumflex/diaeresis/tilde accents.
+    key <AD03> { [ e, E, dead_acute, acute ] };
+    key <AD08> { [ i, I, dead_circumflex, U02C6 ] };
+    key <AD07> { [ u, U, dead_diaeresis, diaeresis ] };
+    key <AB06> { [ n, N, dead_tilde, U02DC ] };
+
+    // Left Alt + C -> ç; Left Alt + Shift + C -> Ç.
+    key <AB03> { [ c, C, ccedilla, Ccedilla ] };
+};

@@ -1,0 +1,12 @@
+# Run `omarchy restart xcompose` to apply changes.
+
+# Include fast emoji access.
+include "/usr/share/omarchy/default/xcompose"
+
+# Brazilian Portuguese: acute dead key followed by C produces cedilla.
+<dead_acute> <c> : "ç" ccedilla
+<dead_acute> <C> : "Ç" Ccedilla
+
+# Identification
+<Multi_key> <space> <n> : "Joao Viegas"
+<Multi_key> <space> <e> : "jvrviegas@gmail.com"

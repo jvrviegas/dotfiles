@@ -47,10 +47,20 @@ Copying this repository's entire `.config/` directory would overwrite several of
 
 ### Omarchy desktop behavior
 
-- [ ] **`.config/hypr/`** — **High impact / can replace Omarchy Hyprland behavior and theme colors**
-  - Contains an older standalone `hyprland.conf` with custom autostart, bindings, input, borders, Waybar, hyprpaper, and Vicinae.
-  - Omarchy currently uses its Lua-based files under `~/.config/hypr/` and generated theme colors.
-  - Recommendation: do not copy the directory. Port wanted bindings/input settings into Omarchy's current Lua files individually.
+- [x] **`.config/hypr/`** — **High impact / deploy only selected Omarchy Lua overrides**
+  - The older standalone `hyprland.conf` remains excluded.
+  - Deploy `looknfeel.lua` for 12px window rounding and `input.lua` for touchpad natural scrolling and the custom US International layout.
+  - The installer copies these files individually and validates the active Hyprland configuration.
+
+- [x] **`.config/xkb/` and `.XCompose`** — **High impact / custom keyboard input**
+  - Bases the keyboard on US International while adding macOS-style accent sequences to Left Alt.
+  - Keeps Right Alt available for regular Omarchy shortcuts.
+  - Overrides dead acute + `c`/`C` to produce Brazilian Portuguese `ç`/`Ç`.
+
+- [x] **`.config/omarchy/shell.json` and `.config/omarchy/plugins/joaoviegas.clock/`** — **High impact / customized shell layout and clock**
+  - Records the customized bar with the clock at the far right.
+  - Tracks a user-owned clone of Omarchy's clock whose calendar popup anchors beneath the clock instead of opening in the center.
+  - The installer preserves the live shell configuration, installs and validates the cloned plugin, then enables it at the far right.
 
 - [ ] **`.config/tmux/`** — **High impact / replaces Omarchy tmux behavior and color handling**
   - Repository config uses the separate `theme-switch` system and fixed theme scripts.
