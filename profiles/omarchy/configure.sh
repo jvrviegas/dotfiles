@@ -164,8 +164,11 @@ deploy_overlay "$DOTFILES_ROOT/agent-skills" "$HOME/.agents/skills"
 echo "  - Installed shared skills in ~/.agents/skills"
 echo ""
 
-echo "• Deploying Herdr sessionizer"
+echo "• Deploying Herdr integration"
 deploy_file "$COMMON_HOME/.local/bin/herdr-sessionizer" "$HOME/.local/bin/herdr-sessionizer" 755
+deploy_file "$PROFILE_HOME/.config/omarchy/hooks/theme-set.d/herdr-theme" \
+  "$HOME/.config/omarchy/hooks/theme-set.d/herdr-theme" 755
+"$HOME/.config/omarchy/hooks/theme-set.d/herdr-theme"
 echo ""
 
 echo "• Configuring Kanata with Colemak-DH"
