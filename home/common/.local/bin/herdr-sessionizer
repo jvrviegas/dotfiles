@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # herdr-sessionizer — herdr port of tmux-sessionizer
 #
-# fzf-pick a project under ~/Projects, open it as a NEW herdr WORKSPACE
-# (single default tab — create more tabs on demand yourself) and switch to it.
+# fzf-pick a project under ~/Projects (plus top-level Git repositories in
+# $HOME), open it as a NEW herdr WORKSPACE, and switch to it.
 #
 # Behavior:
 #   * If a workspace with the same label already exists, just focus it.
@@ -21,11 +21,20 @@
 #     herdr workspace list | jq .
 # ───────────────────────────────────────────────────────────────────────────
 
-# 1. Pick the project (accept a path arg too, like the original)
+# 1. Pick the project (accept a path arg too, like the original).
+# Top-level repositories cover machines where projects such as dotfiles live
+# directly under $HOME and ~/Projects has not been populated yet.
 if [[ $# -eq 1 ]]; then
   selected=$1
 else
-  selected=$(fd . ~/Projects --min-depth 1 --max-depth 5 --type d | fzf)
+  selected=$({
+    if [[ -d $HOME/Projects ]]; then
+      fd . "$HOME/Projects" --min-depth 1 --max-depth 5 --type d
+    fi
+    for dir in "$HOME"/*; do
+      [[ -d $dir/.git ]] && printf '%s\n' "$dir"
+    done
+  } | sort -u | fzf)
 fi
 [[ -z ${selected:-} ]] && exit 0
 
