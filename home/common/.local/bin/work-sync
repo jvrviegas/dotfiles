@@ -119,6 +119,8 @@ if $apply; then
 fi
 
 filters=(
+  --filter='protect */'
+  --exclude='.stversions/'
   --exclude='node_modules/'
   --exclude='.venv/'
   --exclude='venv/'
@@ -135,6 +137,7 @@ rsync_args=(
   -aH
   --human-readable
   --itemize-changes
+  --omit-dir-times
   --stats
   --partial
   --delete
