@@ -5,6 +5,7 @@
     "lock": 300
   },
   "bar": {
+    "id": "joaoviegas.bar",
     "position": "top",
     "transparent": false,
     "centerAnchor": "",
