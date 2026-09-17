@@ -14,11 +14,43 @@
 
 ;; Global key overrides for arrow key navigation
 ;; Ctrl+m/n/e/i (Colemak-DH output on QWERTY h/j/k/l positions) → arrow keys
-(defoverrides
+;; macOS additionally maps Cmd+1..9 → Ctrl+1..9 (Mission Control: switch to desktop N)
+;; Both Cmd sides, since HRMs emit lmet (a) and rmet (o). Not applied on Linux.
+(platform (macos)
+  (defoverrides
   (lctl m) (lft)
   (lctl n) (down)
   (lctl e) (up)
   (lctl i) (rght)
+
+  (lmet 1) (lctl 1)
+  (rmet 1) (lctl 1)
+  (lmet 2) (lctl 2)
+  (rmet 2) (lctl 2)
+  (lmet 3) (lctl 3)
+  (rmet 3) (lctl 3)
+  (lmet 4) (lctl 4)
+  (rmet 4) (lctl 4)
+  (lmet 5) (lctl 5)
+  (rmet 5) (lctl 5)
+  (lmet 6) (lctl 6)
+  (rmet 6) (lctl 6)
+  (lmet 7) (lctl 7)
+  (rmet 7) (lctl 7)
+  (lmet 8) (lctl 8)
+  (rmet 8) (lctl 8)
+  (lmet 9) (lctl 9)
+  (rmet 9) (lctl 9)
+  )
+)
+
+(platform (linux)
+  (defoverrides
+  (lctl m) (lft)
+  (lctl n) (down)
+  (lctl e) (up)
+  (lctl i) (rght)
+  )
 )
 
 ;; Combination keys (chords)
