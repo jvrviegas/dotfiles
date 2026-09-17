@@ -2,25 +2,30 @@
 alias nppm='pnpm'
 alias ppm='pnpm'
 alias vim='nvim'
-[[ "$(uname)" == "Linux" && -f /etc/fedora-release ]] && alias open='xdg-open'
+[[ "$(uname)" == "Linux" ]] && alias open='xdg-open'
 alias ls='eza --icons'
 alias ll='eza --icons -la'
 # alias cd='z'
 alias nvim-config='vim ~/.config/nvim/'
 alias nvim-dir='cd ~/.config/nvim'
 alias proj='cd ~/Projects/'
-alias ipod="cd ios && pod install && .."
 alias sozsh="exec zsh"
-alias za="zellij a"
-alias skhdr='launchctl kickstart -k "gui/$(id -u)/com.koekeishiya.skhd" && echo "skhd restarted"'
+command -v zellij &>/dev/null && alias za="zellij a"
 
-# ASDF version manager
-if [ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]; then
-  . /opt/homebrew/opt/asdf/libexec/asdf.sh
-elif [ -f /opt/asdf-vm/asdf.sh ]; then
-  . /opt/asdf-vm/asdf.sh
-elif [ -f "$HOME/.asdf/asdf.sh" ]; then
-  . "$HOME/.asdf/asdf.sh"
+if [[ "$(uname)" == "Darwin" ]]; then
+  alias ipod='cd ios && pod install && cd ..'
+  alias skhdr='launchctl kickstart -k "gui/$(id -u)/com.koekeishiya.skhd" && echo "skhd restarted"'
+fi
+
+# ASDF remains available on non-Omarchy systems. Omarchy uses mise instead.
+if [[ ! -d /usr/share/omarchy ]]; then
+  if [ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]; then
+    . /opt/homebrew/opt/asdf/libexec/asdf.sh
+  elif [ -f /opt/asdf-vm/asdf.sh ]; then
+    . /opt/asdf-vm/asdf.sh
+  elif [ -f "$HOME/.asdf/asdf.sh" ]; then
+    . "$HOME/.asdf/asdf.sh"
+  fi
 fi
 
 # Source secrets (API keys, tokens) from a non-tracked file
@@ -37,10 +42,11 @@ hw() {
 # Where should I put you?
 bindkey -s ^f "herdr-sessionizer\n"
 
-# Where should I put you in your notes?
-bindkey -s ^t "tmux-notes-sessionizer\n"
-
-# bindkey -s ^t "~/.config/colorscheme/colorscheme-selector.sh\n"
+# Keep the notes shortcut on systems that deploy the helper. Omarchy leaves
+# Ctrl+T available because tmux-notes-sessionizer is not selected there.
+if [[ ! -d /usr/share/omarchy ]] && command -v tmux-notes-sessionizer &>/dev/null; then
+  bindkey -s ^t "tmux-notes-sessionizer\n"
+fi
 
 # Git
 setupWorkGitlab() {
@@ -189,6 +195,9 @@ zd() {
 # "
 
 ## Hollow Knight
+# Keep the fixed palette on macOS/Fedora. On Omarchy, use terminal colors so
+# fzf follows the current Omarchy theme.
+if [[ ! -d /usr/share/omarchy ]]; then
 export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
   --highlight-line \
   --info=inline-right \
@@ -212,3 +221,4 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
   --color=separator:#f4c542 \
   --color=spinner:#7b68ee \
 "
+fi

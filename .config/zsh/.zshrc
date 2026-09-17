@@ -22,8 +22,17 @@ else
   unset _jdk
 fi
 
-export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+# Omarchy keeps Starship at ~/.config/starship.toml. Other platforms retain
+# this repository's XDG-style path.
+if [[ -d /usr/share/omarchy ]]; then
+  unset STARSHIP_CONFIG
+else
+  export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+fi
 command -v starship &> /dev/null && eval "$(starship init zsh)"
+
+# Omarchy manages language runtimes with mise.
+[[ -d /usr/share/omarchy ]] && command -v mise &> /dev/null && eval "$(mise activate zsh)"
 
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
@@ -42,10 +51,12 @@ command -v fzf &> /dev/null && source <(fzf --zsh)
 # eval "$(fnm env --use-on-cd --shell zsh)"
 # source <(fnm completions --shell zsh)
 
-# NVM setup
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# NVM remains available on non-Omarchy systems. Omarchy uses mise instead.
+if [[ ! -d /usr/share/omarchy ]]; then
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
 
 # source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
 
@@ -74,8 +85,7 @@ command -v go &> /dev/null && export PATH="$PATH:$(go env GOBIN)"
 
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/joaovvr/Projects/dotfiles/google-cloud-sdk/path.zsh.inc' ]; then . '/home/joaovvr/Projects/dotfiles/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/home/joaovvr/Projects/dotfiles/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/joaovvr/Projects/dotfiles/google-cloud-sdk/completion.zsh.inc'; fi
+# Google Cloud CLI completion from its standard Linux installation location.
+if [[ "$(uname)" == "Linux" && -f /opt/google-cloud-cli/completion.zsh.inc ]]; then
+  source /opt/google-cloud-cli/completion.zsh.inc
+fi

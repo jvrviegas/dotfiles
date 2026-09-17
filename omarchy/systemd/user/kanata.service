@@ -1,0 +1,12 @@
+[Unit]
+Description=Kanata keyboard remapper
+Documentation=https://github.com/jtroo/kanata
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/kanata --cfg %h/.config/kanata/colemak_dhm.kbd --no-wait
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
