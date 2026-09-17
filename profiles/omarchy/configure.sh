@@ -114,6 +114,17 @@ else
 fi
 echo ""
 
+echo "• Configuring Syncthing"
+if command -v syncthing &>/dev/null; then
+  systemctl --user enable --now syncthing.service
+  echo "  - Syncthing enabled and running"
+  echo "  - Web UI: http://127.0.0.1:8384"
+else
+  echo "✗ Syncthing is not installed; run the profile without --config-only first." >&2
+  exit 1
+fi
+echo ""
+
 echo "• Deploying shared agent skills"
 deploy_overlay "$DOTFILES_ROOT/agent-skills" "$HOME/.agents/skills"
 echo "  - Installed shared skills in ~/.agents/skills"
