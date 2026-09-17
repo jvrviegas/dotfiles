@@ -36,6 +36,16 @@ command -v starship &> /dev/null && eval "$(starship init zsh)"
 
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+# Use ANSI palette slots so shell highlighting follows the active terminal theme.
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=7'
+typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=1,bold'
+ZSH_HIGHLIGHT_STYLES[arg0]='fg=2'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=3'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=4'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]='fg=5'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=3'
+ZSH_HIGHLIGHT_STYLES[comment]='fg=8'
 plug "zsh-users/zsh-autosuggestions"
 plug "zap-zsh/completions"
 plug "zsh-users/zsh-syntax-highlighting"
