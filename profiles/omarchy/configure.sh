@@ -80,6 +80,28 @@ deploy_file "$PROFILE_HOME/.config/xkb/symbols/us_mac_accents" \
 deploy_file "$PROFILE_HOME/.XCompose" "$HOME/.XCompose"
 deploy_file "$PROFILE_HOME/.config/omarchy/shell.toml" "$HOME/.config/omarchy/shell.toml"
 
+# Port the custom macOS palettes to native Omarchy themes. Omarchy generates
+# terminal, shell, Hyprland, tmux, Neovim, and application themes from each
+# colors.toml; the shared wallpapers are installed as theme backgrounds.
+custom_themes=(
+  the-mandalorian
+  the-witcher
+  hollow-knight
+  red-dead-redemption-2
+  darth-vader
+)
+for theme in "${custom_themes[@]}"; do
+  theme_source="$PROFILE_HOME/.config/omarchy/themes/$theme"
+  theme_target="$HOME/.config/omarchy/themes/$theme"
+  deploy_overlay "$theme_source" "$theme_target"
+
+  wallpaper=$(find "$COMMON_HOME/.config/wallpapers" -maxdepth 1 -type f \
+    -name "$theme.*" -print -quit)
+  if [[ -n $wallpaper ]]; then
+    deploy_file "$wallpaper" "$theme_target/backgrounds/$(basename "$wallpaper")"
+  fi
+done
+
 xkbcli compile-keymap --test \
   --layout us_mac_accents \
   --variant intl \

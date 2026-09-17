@@ -1,0 +1,33 @@
+mode = "dark"
+
+# Soul blue, dream essence, and pale Hallownest bone.
+accent = "#85c1e9"
+selection = "#303440"
+muted = "#505264"
+
+# Neutral ramp: the Void -> shell shadow -> pure pale light.
+background = "#20222c"
+dark_background = "#171820"
+darker_background = "#101116"
+lighter_background = "#2d3040"
+
+foreground = "#e6e6e6"
+dark_foreground = "#888898"
+light_foreground = "#d2d2dc"
+bright_foreground = "#ffffff"
+
+red = "#ff6b6b"
+yellow = "#ffe066"
+orange = "#f4c542"
+green = "#4ecdc4"
+cyan = "#8be9fd"
+blue = "#00d4ff"
+magenta = "#ff79c6"
+brown = "#8a6f5a"
+
+bright_red = "#ff5555"
+bright_yellow = "#f1fa8c"
+bright_green = "#50fa7b"
+bright_cyan = "#50fa7b"
+bright_blue = "#8be9fd"
+bright_magenta = "#bd93f9"

@@ -1,0 +1,33 @@
+mode = "dark"
+
+# Dead Eye amber, frontier leather, and weathered gunmetal.
+accent = "#cc7b34"
+selection = "#56351f"
+muted = "#574a40"
+
+# Neutral ramp: frontier night -> dark leather -> warm parchment.
+background = "#2b211b"
+dark_background = "#211914"
+darker_background = "#17110e"
+lighter_background = "#3b2d24"
+
+foreground = "#e4d8c2"
+dark_foreground = "#857a6c"
+light_foreground = "#c4b4a0"
+bright_foreground = "#f3e8d4"
+
+red = "#a8382a"
+yellow = "#c4732e"
+orange = "#c4732e"
+green = "#7a9a3c"
+cyan = "#7a9498"
+blue = "#658088"
+magenta = "#8f6b78"
+brown = "#8a6e50"
+
+bright_red = "#c84a3c"
+bright_yellow = "#e0a040"
+bright_green = "#8aaa4a"
+bright_cyan = "#95acb0"
+bright_blue = "#8a9ca8"
+bright_magenta = "#b58a98"

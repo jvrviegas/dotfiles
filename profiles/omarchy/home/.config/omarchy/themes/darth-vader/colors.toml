@@ -1,0 +1,33 @@
+mode = "dark"
+
+# Lightsaber red, helmet rim light, and Imperial steel.
+accent = "#ef4f4f"
+selection = "#461719"
+muted = "#54545e"
+
+# Neutral ramp: meditation chamber -> armor -> stormtrooper white.
+background = "#202027"
+dark_background = "#17171c"
+darker_background = "#101014"
+lighter_background = "#2d2d37"
+
+foreground = "#d8d8dc"
+dark_foreground = "#777780"
+light_foreground = "#b4b4bc"
+bright_foreground = "#eeeef2"
+
+red = "#d43a3a"
+yellow = "#c9a145"
+orange = "#d4703a"
+green = "#5faa6a"
+cyan = "#3f9e9e"
+blue = "#5b7fa6"
+magenta = "#8a5f8f"
+brown = "#6a4a3a"
+
+bright_red = "#ef4f4f"
+bright_yellow = "#e0bc63"
+bright_green = "#79c987"
+bright_cyan = "#7ee6e6"
+bright_blue = "#7fa3cc"
+bright_magenta = "#a87bab"

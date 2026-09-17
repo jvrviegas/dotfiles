@@ -1,0 +1,33 @@
+mode = "dark"
+
+# Beskar silver, desert gold, and hologram blue.
+accent = "#e8c070"
+selection = "#284957"
+muted = "#5d5d70"
+
+# Neutral ramp: deep space -> armor shadow -> readable Beskar.
+background = "#20202a"
+dark_background = "#17171f"
+darker_background = "#101016"
+lighter_background = "#2b2b38"
+
+foreground = "#e4e4ec"
+dark_foreground = "#858596"
+light_foreground = "#c8c8d6"
+bright_foreground = "#f4f4f8"
+
+red = "#c84848"
+yellow = "#c09848"
+orange = "#c07840"
+green = "#589858"
+cyan = "#586888"
+blue = "#2d84a8"
+magenta = "#a9789b"
+brown = "#8c6848"
+
+bright_red = "#e85858"
+bright_yellow = "#e8c070"
+bright_green = "#78c878"
+bright_cyan = "#7888a8"
+bright_blue = "#5ec4e8"
+bright_magenta = "#ca96bb"

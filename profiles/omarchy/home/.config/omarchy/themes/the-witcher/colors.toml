@@ -1,0 +1,33 @@
+mode = "dark"
+
+# Witcher eyes, potion green, and cold Kaer Morhen steel.
+accent = "#d89a2b"
+selection = "#4b3618"
+muted = "#55534e"
+
+# Neutral ramp: night stone -> weathered steel -> polished silver.
+background = "#1d272b"
+dark_background = "#151c1f"
+darker_background = "#0f1416"
+lighter_background = "#29363b"
+
+foreground = "#d8d3c5"
+dark_foreground = "#827d72"
+light_foreground = "#c1bbaa"
+bright_foreground = "#eee9dc"
+
+red = "#b84a42"
+yellow = "#d89a2b"
+orange = "#b96f3d"
+green = "#7fbf3f"
+cyan = "#688791"
+blue = "#516b73"
+magenta = "#8f6f8f"
+brown = "#8f6f4a"
+
+bright_red = "#d75f4f"
+bright_yellow = "#e0b85f"
+bright_green = "#8fcf4f"
+bright_cyan = "#9bb0b6"
+bright_blue = "#7f9aa3"
+bright_magenta = "#b08ab0"
