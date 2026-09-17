@@ -76,7 +76,7 @@ def choose_candidates(
         return {}, 0
 
     for bucket in sorted(source.iterdir()):
-        if not bucket.is_dir():
+        if not bucket.is_dir() or bucket.name == ".stversions":
             continue
         target_bucket = normalize_bucket(bucket.name, kind, mappings)
         for path in bucket.rglob("*"):
