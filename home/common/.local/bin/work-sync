@@ -2,25 +2,34 @@
 set -euo pipefail
 
 MAC_HOST=${WORK_SYNC_MAC_HOST:-Joaos-MacBook-Pro.local}
-MAC_PROJECTS=${WORK_SYNC_MAC_PROJECTS:-/Users/joaoviegas/Projects}
-LINUX_PROJECTS=${WORK_SYNC_LINUX_PROJECTS:-$HOME/Projects}
+MAC_HOME=${WORK_SYNC_MAC_HOME:-/Users/joaoviegas}
+LINUX_HOME=${WORK_SYNC_LINUX_HOME:-$HOME}
+LEGACY_LINUX_HOME=${WORK_SYNC_LEGACY_LINUX_HOME:-/home/joaovvr}
+MAC_PROJECTS=${WORK_SYNC_MAC_PROJECTS:-$MAC_HOME/Projects}
+LINUX_PROJECTS=${WORK_SYNC_LINUX_PROJECTS:-$LINUX_HOME/Projects}
+MAC_PI_SESSIONS=${WORK_SYNC_MAC_PI_SESSIONS:-$MAC_HOME/.pi/agent/sessions}
+LINUX_PI_SESSIONS=${WORK_SYNC_LINUX_PI_SESSIONS:-$LINUX_HOME/.pi/agent/sessions}
+MAC_CLAUDE_SESSIONS=${WORK_SYNC_MAC_CLAUDE_SESSIONS:-$MAC_HOME/.claude/projects}
+LINUX_CLAUDE_SESSIONS=${WORK_SYNC_LINUX_CLAUDE_SESSIONS:-$LINUX_HOME/.claude/projects}
 SSH_COMMAND=${WORK_SYNC_SSH_COMMAND:-ssh}
+NORMALIZER=${WORK_SYNC_NORMALIZER:-$LINUX_HOME/.local/lib/work-sync/normalize.py}
 
 usage() {
   cat <<'EOF'
 Usage: work-sync <mac-to-linux|linux-to-mac> [--apply] [--yes]
 
-Synchronize only Git metadata (.git directories and pointer files). Working
-files remain Syncthing's responsibility.
+Perform a directional handoff of:
+  - the complete Projects tree, including Git metadata
+  - Pi sessions
+  - Claude Code sessions
 
-The default is a dry run. --apply performs the transfer after confirmation;
+The source machine is authoritative for Projects. Platform-specific dependency
+and cache directories are excluded and protected from deletion. Sessions are
+merged by session path/ID, destination-only sessions are preserved, and
+structural macOS/Linux paths are normalized.
+
+The default is a dry run. --apply performs the handoff after confirmation;
 --yes skips the confirmation prompt.
-
-Environment overrides:
-  WORK_SYNC_MAC_HOST
-  WORK_SYNC_MAC_PROJECTS
-  WORK_SYNC_LINUX_PROJECTS
-  WORK_SYNC_SSH_COMMAND
 EOF
 }
 
@@ -50,18 +59,20 @@ if [[ $(uname -s) != Linux ]]; then
   exit 1
 fi
 
-for command in rsync ssh pgrep; do
+for command in rsync ssh pgrep python3 flock; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "work-sync: required command not found: $command" >&2
     exit 1
   }
 done
-
+[[ -f $NORMALIZER ]] || {
+  echo "work-sync: session normalizer not found: $NORMALIZER" >&2
+  exit 1
+}
 [[ -d $LINUX_PROJECTS ]] || {
   echo "work-sync: Linux Projects directory does not exist: $LINUX_PROJECTS" >&2
   exit 1
 }
-
 ssh "$MAC_HOST" "test -d '$MAC_PROJECTS'" || {
   echo "work-sync: cannot access Mac Projects directory: $MAC_HOST:$MAC_PROJECTS" >&2
   exit 1
@@ -69,7 +80,7 @@ ssh "$MAC_HOST" "test -d '$MAC_PROJECTS'" || {
 
 check_local_processes() {
   local name pids found=false
-  for name in git git-lfs pi claude; do
+  for name in git git-lfs pi claude rsync; do
     pids=$(pgrep -x "$name" 2>/dev/null || true)
     if [[ -n $pids ]]; then
       printf '  Linux: %-8s PID(s) %s\n' "$name" "${pids//$'\n'/,}"
@@ -81,7 +92,7 @@ check_local_processes() {
 
 check_remote_processes() {
   ssh "$MAC_HOST" 'found=false
-for name in git git-lfs pi claude; do
+for name in git git-lfs pi claude rsync; do
   pids=$(pgrep -x "$name" 2>/dev/null || true)
   if [ -n "$pids" ]; then
     printf "  macOS: %-8s PID(s) %s\n" "$name" "$(printf "%s" "$pids" | tr "\n" "," | sed "s/,$//")"
@@ -91,13 +102,56 @@ done
 [ "$found" = false ]'
 }
 
+check_local_syncthing() {
+  python3 - "$LINUX_PROJECTS" <<'PY'
+from pathlib import Path
+import sys, xml.etree.ElementTree as ET
+root = Path(sys.argv[1]).expanduser().resolve()
+config = Path.home() / ".local/state/syncthing/config.xml"
+if not config.exists():
+    raise SystemExit(0)
+for folder in ET.parse(config).getroot().findall("folder"):
+    path = Path(folder.get("path", "")).expanduser().resolve()
+    if path == root:
+        print(f"  Linux Syncthing folder {folder.get('id')}: {path}")
+        raise SystemExit(1)
+PY
+}
+
+check_remote_syncthing() {
+  ssh "$MAC_HOST" "python3 - '$MAC_PROJECTS'" <<'PY'
+from pathlib import Path
+import sys, xml.etree.ElementTree as ET
+root = Path(sys.argv[1]).expanduser().resolve()
+config = Path.home() / "Library/Application Support/Syncthing/config.xml"
+if not config.exists():
+    raise SystemExit(0)
+for folder in ET.parse(config).getroot().findall("folder"):
+    path = Path(folder.get("path", "")).expanduser().resolve()
+    if path == root:
+        print(f"  macOS Syncthing folder {folder.get('id')}: {path}")
+        raise SystemExit(1)
+PY
+}
+
 if $apply; then
-  echo "Checking for active Git and coding-agent processes..."
-  processes_ok=true
-  check_local_processes || processes_ok=false
-  check_remote_processes || processes_ok=false
-  if [[ $processes_ok == false ]]; then
-    echo "work-sync: close the processes above before transferring Git metadata" >&2
+  lock_file=${XDG_RUNTIME_DIR:-/tmp}/work-sync-$UID.lock
+  exec 9>"$lock_file"
+  flock -n 9 || {
+    echo "work-sync: another handoff is already running" >&2
+    exit 1
+  }
+
+  echo "Running handoff safety checks..."
+  safe=true
+  check_local_processes || safe=false
+  check_remote_processes || safe=false
+  if ! check_local_syncthing || ! check_remote_syncthing; then
+    echo "work-sync: remove Projects from Syncthing before applying a handoff" >&2
+    safe=false
+  fi
+  if [[ $safe == false ]]; then
+    echo "work-sync: safety checks failed" >&2
     exit 1
   fi
 
@@ -107,8 +161,9 @@ if $apply; then
       exit 1
     fi
     echo
-    echo "Syncthing must report Projects as Up to Date on both machines."
-    echo "The source below is authoritative; destination-only Git state may be deleted."
+    echo "The $direction source is authoritative for Projects."
+    echo "Destination-only project files may be backed up and deleted."
+    echo "Destination-only Pi and Claude sessions will be preserved."
     printf 'Continue with %s? [y/N] ' "$direction"
     read -r reply
     [[ $reply == [yY] || $reply == [yY][eE][sS] ]] || {
@@ -118,59 +173,151 @@ if $apply; then
   fi
 fi
 
-filters=(
-  --filter='protect */'
-  --exclude='.stversions/'
-  --exclude='node_modules/'
-  --exclude='.venv/'
-  --exclude='venv/'
-  --exclude='.next/'
-  --exclude='.turbo/'
-  --exclude='.parcel-cache/'
-  --include='**/.git'
-  --include='**/.git/***'
-  --include='*/'
-  --exclude='*'
+project_excludes=(
+  --exclude='.stversions'
+  --exclude='node_modules'
+  --exclude='.venv'
+  --exclude='venv'
+  --exclude='.next'
+  --exclude='.turbo'
+  --exclude='.parcel-cache'
+  --exclude='.DS_Store'
 )
 
-rsync_args=(
-  -aH
+rsync_projects=(
+  -aHzh
+  --partial
+  --delete-delay
   --human-readable
   --itemize-changes
   --omit-dir-times
   --stats
-  --partial
-  --delete
-  --delete-delay
-  --prune-empty-dirs
   -e "$SSH_COMMAND"
 )
 
-if $apply; then
-  rsync_args+=(--info=progress2)
-else
-  rsync_args+=(--dry-run)
-  echo "Dry run only; rerun with --apply to transfer."
-fi
-
 case $direction in
   mac-to-linux)
-    source_path="$MAC_HOST:$MAC_PROJECTS/"
-    destination_path="$LINUX_PROJECTS/"
+    project_source="$MAC_HOST:$MAC_PROJECTS/"
+    project_destination="$LINUX_PROJECTS/"
     ;;
   linux-to-mac)
-    source_path="$LINUX_PROJECTS/"
-    destination_path="$MAC_HOST:$MAC_PROJECTS/"
+    project_source="$LINUX_PROJECTS/"
+    project_destination="$MAC_HOST:$MAC_PROJECTS/"
     ;;
 esac
 
-echo "Direction: $source_path -> $destination_path"
-rsync "${rsync_args[@]}" "${filters[@]}" "$source_path" "$destination_path"
+if ! $apply; then
+  echo "DRY RUN: Projects"
+  echo "Direction: $project_source -> $project_destination"
+  rsync "${rsync_projects[@]}" --dry-run "${project_excludes[@]}" \
+    "$project_source" "$project_destination"
+
+  echo
+  echo "DRY RUN: session source summary (session contents are not downloaded)"
+  if [[ $direction == mac-to-linux ]]; then
+    ssh "$MAC_HOST" '
+      pi_size=$(du -sh "$HOME/.pi/agent/sessions" 2>/dev/null | awk "{print \$1}")
+      pi_count=$(find "$HOME/.pi/agent/sessions" -type f -name "*.jsonl" 2>/dev/null | wc -l | tr -d " ")
+      claude_size=$(du -sh "$HOME/.claude/projects" 2>/dev/null | awk "{print \$1}")
+      claude_count=$(find "$HOME/.claude/projects" -type f -name "*.jsonl" 2>/dev/null | wc -l | tr -d " ")
+      printf "Pi:     %s, %s JSONL files\n" "$pi_size" "$pi_count"
+      printf "Claude: %s, %s JSONL files\n" "$claude_size" "$claude_count"
+    '
+  else
+    printf 'Pi:     %s, %s JSONL files\n' "$(du -sh "$LINUX_PI_SESSIONS" 2>/dev/null | awk '{print $1}')" "$(find "$LINUX_PI_SESSIONS" -type f -name '*.jsonl' 2>/dev/null | wc -l)"
+    printf 'Claude: %s, %s JSONL files\n' "$(du -sh "$LINUX_CLAUDE_SESSIONS" 2>/dev/null | awk '{print $1}')" "$(find "$LINUX_CLAUDE_SESSIONS" -type f -name '*.jsonl' 2>/dev/null | wc -l)"
+  fi
+  echo
+  echo "Dry run complete. Sessions are merged and normalized only during --apply."
+  echo "Apply with: work-sync $direction --apply"
+  exit 0
+fi
+
+timestamp=$(date +%Y%m%d-%H%M%S)
+local_backup="$LINUX_HOME/.local/state/work-sync-backups/$timestamp"
+remote_backup="$MAC_HOME/.local/state/work-sync-backups/$timestamp"
+
+if [[ $direction == mac-to-linux ]]; then
+  project_backup="$local_backup/projects"
+else
+  project_backup="$remote_backup/projects"
+fi
+mkdir -p "$local_backup"
+
+rsync_projects+=(--backup --backup-dir="$project_backup" --info=progress2)
+
+echo "[1/3] Synchronizing Projects..."
+rsync "${rsync_projects[@]}" "${project_excludes[@]}" \
+  "$project_source" "$project_destination"
+
+echo "[2/3] Normalizing structural Git paths..."
+if [[ $direction == mac-to-linux ]]; then
+  python3 "$NORMALIZER" git-paths --root "$LINUX_PROJECTS" \
+    --map "$MAC_HOME=$LINUX_HOME" \
+    --map "$LEGACY_LINUX_HOME=$LINUX_HOME"
+else
+  ssh "$MAC_HOST" python3 - git-paths --root "$MAC_PROJECTS" \
+    --map "$LINUX_HOME=$MAC_HOME" \
+    --map "$LEGACY_LINUX_HOME=$MAC_HOME" < "$NORMALIZER"
+fi
+
+echo "[3/3] Merging and normalizing coding-agent sessions..."
+temporary=$(mktemp -d "${TMPDIR:-/tmp}/work-sync.XXXXXX")
+trap 'rm -rf "$temporary"' EXIT
+
+if [[ $direction == mac-to-linux ]]; then
+  mkdir -p "$temporary/raw/pi" "$temporary/raw/claude"
+  rsync -aHz --partial --info=progress2 -e "$SSH_COMMAND" \
+    "$MAC_HOST:$MAC_PI_SESSIONS/" "$temporary/raw/pi/"
+  rsync -aHz --partial --info=progress2 -e "$SSH_COMMAND" \
+    "$MAC_HOST:$MAC_CLAUDE_SESSIONS/" "$temporary/raw/claude/"
+
+  python3 "$NORMALIZER" sessions \
+    --kind pi \
+    --source "$temporary/raw/pi" \
+    --destination "$LINUX_PI_SESSIONS" \
+    --backup "$local_backup/sessions/pi" \
+    --map "$MAC_HOME=$LINUX_HOME" \
+    --map "$LEGACY_LINUX_HOME=$LINUX_HOME"
+  python3 "$NORMALIZER" sessions \
+    --kind claude \
+    --source "$temporary/raw/claude" \
+    --destination "$LINUX_CLAUDE_SESSIONS" \
+    --backup "$local_backup/sessions/claude" \
+    --map "$MAC_HOME=$LINUX_HOME" \
+    --map "$LEGACY_LINUX_HOME=$LINUX_HOME"
+else
+  mkdir -p "$temporary/normalized/pi" "$temporary/normalized/claude"
+  python3 "$NORMALIZER" sessions \
+    --kind pi \
+    --source "$LINUX_PI_SESSIONS" \
+    --destination "$temporary/normalized/pi" \
+    --map "$LINUX_HOME=$MAC_HOME" \
+    --map "$LEGACY_LINUX_HOME=$MAC_HOME"
+  python3 "$NORMALIZER" sessions \
+    --kind claude \
+    --source "$LINUX_CLAUDE_SESSIONS" \
+    --destination "$temporary/normalized/claude" \
+    --map "$LINUX_HOME=$MAC_HOME" \
+    --map "$LEGACY_LINUX_HOME=$MAC_HOME"
+
+  ssh "$MAC_HOST" "mkdir -p '$MAC_PI_SESSIONS' '$MAC_CLAUDE_SESSIONS' '$remote_backup/sessions/pi' '$remote_backup/sessions/claude'"
+  rsync -aHz --partial --info=progress2 --backup \
+    --backup-dir="$remote_backup/sessions/pi" -e "$SSH_COMMAND" \
+    "$temporary/normalized/pi/" "$MAC_HOST:$MAC_PI_SESSIONS/"
+  rsync -aHz --partial --info=progress2 --backup \
+    --backup-dir="$remote_backup/sessions/claude" -e "$SSH_COMMAND" \
+    "$temporary/normalized/claude/" "$MAC_HOST:$MAC_CLAUDE_SESSIONS/"
+fi
+
+rm -rf "$temporary"
+trap - EXIT
 
 echo
-if $apply; then
-  echo "Git metadata handoff complete: $direction"
+echo "Handoff complete: $direction"
+echo "Backups: $project_backup"
+if [[ $direction == mac-to-linux ]]; then
+  echo "Session backups: $local_backup/sessions"
 else
-  echo "Dry run complete. Review the changes, then use:"
-  echo "  work-sync $direction --apply"
+  echo "Session backups: $remote_backup/sessions"
 fi
