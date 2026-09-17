@@ -217,15 +217,15 @@ if ! $apply; then
   if [[ $direction == mac-to-linux ]]; then
     ssh "$MAC_HOST" '
       pi_size=$(du -sh "$HOME/.pi/agent/sessions" 2>/dev/null | awk "{print \$1}")
-      pi_count=$(find "$HOME/.pi/agent/sessions" -type f -name "*.jsonl" 2>/dev/null | wc -l | tr -d " ")
+      pi_count=$(find "$HOME/.pi/agent/sessions" -path "*/.stversions" -prune -o -type f -name "*.jsonl" -print 2>/dev/null | wc -l | tr -d " ")
       claude_size=$(du -sh "$HOME/.claude/projects" 2>/dev/null | awk "{print \$1}")
-      claude_count=$(find "$HOME/.claude/projects" -type f -name "*.jsonl" 2>/dev/null | wc -l | tr -d " ")
+      claude_count=$(find "$HOME/.claude/projects" -path "*/.stversions" -prune -o -type f -name "*.jsonl" -print 2>/dev/null | wc -l | tr -d " ")
       printf "Pi:     %s, %s JSONL files\n" "$pi_size" "$pi_count"
       printf "Claude: %s, %s JSONL files\n" "$claude_size" "$claude_count"
     '
   else
-    printf 'Pi:     %s, %s JSONL files\n' "$(du -sh "$LINUX_PI_SESSIONS" 2>/dev/null | awk '{print $1}')" "$(find "$LINUX_PI_SESSIONS" -type f -name '*.jsonl' 2>/dev/null | wc -l)"
-    printf 'Claude: %s, %s JSONL files\n' "$(du -sh "$LINUX_CLAUDE_SESSIONS" 2>/dev/null | awk '{print $1}')" "$(find "$LINUX_CLAUDE_SESSIONS" -type f -name '*.jsonl' 2>/dev/null | wc -l)"
+    printf 'Pi:     %s, %s JSONL files\n' "$(du -sh "$LINUX_PI_SESSIONS" 2>/dev/null | awk '{print $1}')" "$(find "$LINUX_PI_SESSIONS" -path '*/.stversions' -prune -o -type f -name '*.jsonl' -print 2>/dev/null | wc -l)"
+    printf 'Claude: %s, %s JSONL files\n' "$(du -sh "$LINUX_CLAUDE_SESSIONS" 2>/dev/null | awk '{print $1}')" "$(find "$LINUX_CLAUDE_SESSIONS" -path '*/.stversions' -prune -o -type f -name '*.jsonl' -print 2>/dev/null | wc -l)"
   fi
   echo
   echo "Dry run complete. Sessions are merged and normalized only during --apply."
@@ -267,9 +267,9 @@ trap 'rm -rf "$temporary"' EXIT
 
 if [[ $direction == mac-to-linux ]]; then
   mkdir -p "$temporary/raw/pi" "$temporary/raw/claude"
-  rsync -aHz --partial --info=progress2 -e "$SSH_COMMAND" \
+  rsync -aHz --partial --info=progress2 --exclude='.stversions' -e "$SSH_COMMAND" \
     "$MAC_HOST:$MAC_PI_SESSIONS/" "$temporary/raw/pi/"
-  rsync -aHz --partial --info=progress2 -e "$SSH_COMMAND" \
+  rsync -aHz --partial --info=progress2 --exclude='.stversions' -e "$SSH_COMMAND" \
     "$MAC_HOST:$MAC_CLAUDE_SESSIONS/" "$temporary/raw/claude/"
 
   python3 "$NORMALIZER" sessions \
@@ -302,10 +302,10 @@ else
     --map "$LEGACY_LINUX_HOME=$MAC_HOME"
 
   ssh "$MAC_HOST" "mkdir -p '$MAC_PI_SESSIONS' '$MAC_CLAUDE_SESSIONS' '$remote_backup/sessions/pi' '$remote_backup/sessions/claude'"
-  rsync -aHz --partial --info=progress2 --backup \
+  rsync -aHz --partial --info=progress2 --exclude='.stversions' --backup \
     --backup-dir="$remote_backup/sessions/pi" -e "$SSH_COMMAND" \
     "$temporary/normalized/pi/" "$MAC_HOST:$MAC_PI_SESSIONS/"
-  rsync -aHz --partial --info=progress2 --backup \
+  rsync -aHz --partial --info=progress2 --exclude='.stversions' --backup \
     --backup-dir="$remote_backup/sessions/claude" -e "$SSH_COMMAND" \
     "$temporary/normalized/claude/" "$MAC_HOST:$MAC_CLAUDE_SESSIONS/"
 fi
