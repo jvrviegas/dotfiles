@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MAC_HOST=${WORK_SYNC_MAC_HOST:-Joaos-MacBook-Pro.local}
+MAC_PROJECTS=${WORK_SYNC_MAC_PROJECTS:-/Users/joaoviegas/Projects}
+LINUX_PROJECTS=${WORK_SYNC_LINUX_PROJECTS:-$HOME/Projects}
+SSH_COMMAND=${WORK_SYNC_SSH_COMMAND:-ssh}
+
+usage() {
+  cat <<'EOF'
+Usage: work-sync <mac-to-linux|linux-to-mac> [--apply] [--yes]
+
+Synchronize only Git metadata (.git directories and pointer files). Working
+files remain Syncthing's responsibility.
+
+The default is a dry run. --apply performs the transfer after confirmation;
+--yes skips the confirmation prompt.
+
+Environment overrides:
+  WORK_SYNC_MAC_HOST
+  WORK_SYNC_MAC_PROJECTS
+  WORK_SYNC_LINUX_PROJECTS
+  WORK_SYNC_SSH_COMMAND
+EOF
+}
+
+direction=${1:-}
+[[ -n $direction ]] && shift || true
+apply=false
+yes=false
+
+while (($#)); do
+  case $1 in
+    --apply) apply=true ;;
+    --yes) yes=true ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "work-sync: unknown option: $1" >&2; usage >&2; exit 2 ;;
+  esac
+  shift
+done
+
+case $direction in
+  mac-to-linux|linux-to-mac) ;;
+  -h|--help|'') usage; exit 0 ;;
+  *) echo "work-sync: unknown direction: $direction" >&2; usage >&2; exit 2 ;;
+esac
+
+if [[ $(uname -s) != Linux ]]; then
+  echo "work-sync: run this command from the Linux machine" >&2
+  exit 1
+fi
+
+for command in rsync ssh pgrep; do
+  command -v "$command" >/dev/null 2>&1 || {
+    echo "work-sync: required command not found: $command" >&2
+    exit 1
+  }
+done
+
+[[ -d $LINUX_PROJECTS ]] || {
+  echo "work-sync: Linux Projects directory does not exist: $LINUX_PROJECTS" >&2
+  exit 1
+}
+
+ssh "$MAC_HOST" "test -d '$MAC_PROJECTS'" || {
+  echo "work-sync: cannot access Mac Projects directory: $MAC_HOST:$MAC_PROJECTS" >&2
+  exit 1
+}
+
+check_local_processes() {
+  local name pids found=false
+  for name in git git-lfs pi claude; do
+    pids=$(pgrep -x "$name" 2>/dev/null || true)
+    if [[ -n $pids ]]; then
+      printf '  Linux: %-8s PID(s) %s\n' "$name" "${pids//$'\n'/,}"
+      found=true
+    fi
+  done
+  [[ $found == false ]]
+}
+
+check_remote_processes() {
+  ssh "$MAC_HOST" 'found=false
+for name in git git-lfs pi claude; do
+  pids=$(pgrep -x "$name" 2>/dev/null || true)
+  if [ -n "$pids" ]; then
+    printf "  macOS: %-8s PID(s) %s\n" "$name" "$(printf "%s" "$pids" | tr "\n" "," | sed "s/,$//")"
+    found=true
+  fi
+done
+[ "$found" = false ]'
+}
+
+if $apply; then
+  echo "Checking for active Git and coding-agent processes..."
+  processes_ok=true
+  check_local_processes || processes_ok=false
+  check_remote_processes || processes_ok=false
+  if [[ $processes_ok == false ]]; then
+    echo "work-sync: close the processes above before transferring Git metadata" >&2
+    exit 1
+  fi
+
+  if [[ $yes == false ]]; then
+    if [[ ! -t 0 ]]; then
+      echo "work-sync: confirmation requires a terminal; use --yes to bypass" >&2
+      exit 1
+    fi
+    echo
+    echo "Syncthing must report Projects as Up to Date on both machines."
+    echo "The source below is authoritative; destination-only Git state may be deleted."
+    printf 'Continue with %s? [y/N] ' "$direction"
+    read -r reply
+    [[ $reply == [yY] || $reply == [yY][eE][sS] ]] || {
+      echo "work-sync: cancelled"
+      exit 1
+    }
+  fi
+fi
+
+filters=(
+  --exclude='node_modules/'
+  --exclude='.venv/'
+  --exclude='venv/'
+  --exclude='.next/'
+  --exclude='.turbo/'
+  --exclude='.parcel-cache/'
+  --include='**/.git'
+  --include='**/.git/***'
+  --include='*/'
+  --exclude='*'
+)
+
+rsync_args=(
+  -aH
+  --human-readable
+  --itemize-changes
+  --stats
+  --partial
+  --delete
+  --delete-delay
+  --prune-empty-dirs
+  -e "$SSH_COMMAND"
+)
+
+if $apply; then
+  rsync_args+=(--info=progress2)
+else
+  rsync_args+=(--dry-run)
+  echo "Dry run only; rerun with --apply to transfer."
+fi
+
+case $direction in
+  mac-to-linux)
+    source_path="$MAC_HOST:$MAC_PROJECTS/"
+    destination_path="$LINUX_PROJECTS/"
+    ;;
+  linux-to-mac)
+    source_path="$LINUX_PROJECTS/"
+    destination_path="$MAC_HOST:$MAC_PROJECTS/"
+    ;;
+esac
+
+echo "Direction: $source_path -> $destination_path"
+rsync "${rsync_args[@]}" "${filters[@]}" "$source_path" "$destination_path"
+
+echo
+if $apply; then
+  echo "Git metadata handoff complete: $direction"
+else
+  echo "Dry run complete. Review the changes, then use:"
+  echo "  work-sync $direction --apply"
+fi
