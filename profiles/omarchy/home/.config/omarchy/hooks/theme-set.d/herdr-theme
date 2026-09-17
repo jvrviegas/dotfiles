@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Keep Herdr's navigation cursor subtle and synchronized with Omarchy's theme.
+set -euo pipefail
+
+colors="$HOME/.local/state/omarchy/current/theme/colors.toml"
+config="$HOME/.config/herdr/config.toml"
+
+[[ -f $colors && -f $config ]] || exit 0
+command -v herdr >/dev/null || exit 0
+
+selection=$(awk -F '"' '/^[[:space:]]*selection[[:space:]]*=/ { print $2; exit }' "$colors")
+[[ $selection =~ ^#[[:xdigit:]]{6}$ ]] || exit 0
+
+HERDR_SELECTION="$selection" python - "$config" <<'PY'
+import os
+import re
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text()
+value = os.environ["HERDR_SELECTION"]
+line = f'selection_bg = "{value}"'
+pattern = r'(?m)^selection_bg\s*=.*$'
+
+if re.search(pattern, text):
+    updated = re.sub(pattern, line, text, count=1)
+else:
+    header = "[theme.custom]"
+    if header not in text:
+        raise SystemExit("Herdr config has no [theme.custom] section")
+    updated = text.replace(header, f"{header}\n{line}", 1)
+
+if updated != text:
+    path.write_text(updated)
+PY
+
+herdr config check >/dev/null
+herdr server reload-config >/dev/null 2>&1 || true
