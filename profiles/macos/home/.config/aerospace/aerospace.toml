@@ -31,14 +31,15 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 ]
 
 # ===== Gaps =====
-# yabai: top/bottom/left/right_padding=4, window_gap=6, external_bar=all:42:0
+# Uniform 8pt outer margins and bar-to-window spacing; retain 6pt inner gaps.
+# Top: SketchyBar offset 8 + height 36 + gap 8 = 52; built-in reserves 38pt.
 [gaps]
     inner.horizontal = 6
     inner.vertical = 6
-    outer.left = 4
-    outer.bottom = 4
-    outer.top = 46
-    outer.right = 4
+    outer.left = 8
+    outer.bottom = 8
+    outer.top = [{ monitor."built-in" = 14 }, 52]
+    outer.right = 8
 
 # ===== Key Mapping =====
 [key-mapping]
