@@ -8,18 +8,22 @@ start-at-login = true
 # Flatten workspace tree on startup to ensure tiling works
 after-startup-command = ['flatten-workspace-tree']
 
-# Normalizations (keep flat tree structure like yabai BSP)
+# AeroSpace tree normalization (not identical to yabai BSP)
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
 
-# Layout defaults (equivalent to yabai layout=bsp, split_ratio=0.50)
+# Closest layout defaults to yabai BSP; splitting/placement are not identical.
+# yabai opacity/borders, Alt-mouse move/resize and drop-to-swap are not ported.
 default-root-container-layout = 'tiles'
 default-root-container-orientation = 'auto'
 
 accordion-padding = 30
 
-# Mouse follows focus when focused monitor changes
-on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+# Match yabai mouse_follows_focus=off (focus-follows-mouse defaults to off).
+on-focused-monitor-changed = []
+
+# Match yabai's SketchyBar focus notification.
+on-focus-changed = ['exec-and-forget sketchybar --trigger front_app_switched']
 
 # Notify sketchybar on workspace change
 exec-on-workspace-change = ['/bin/bash', '-c',
@@ -33,7 +37,7 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     inner.vertical = 6
     outer.left = 4
     outer.bottom = 4
-    outer.top = [{ monitor."Built-in Retina Display" = 6 }, 46]
+    outer.top = 46
     outer.right = 4
 
 # ===== Key Mapping =====
@@ -43,7 +47,12 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 # ===== Main Bindings =====
 [mode.main.binding]
 
-    # --- Navigation (Kanata converts ctrl+m/n/e/i to arrows, stripping ctrl) ---
+    # --- Navigation: literal skhd bindings plus Kanata's transformed keys ---
+    cmd-ctrl-m = 'focus left'
+    cmd-ctrl-n = 'focus down'
+    cmd-ctrl-e = 'focus up'
+    cmd-ctrl-i = 'focus right'
+    # Kanata converts ctrl+m/n/e/i to arrows, stripping ctrl.
     cmd-left = 'focus left'
     cmd-down = 'focus down'
     cmd-up = 'focus up'
@@ -56,25 +65,26 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     cmd-shift-i = 'move right'
 
     # --- Workspace focus ---
-    alt-1 = 'workspace 1'
-    alt-2 = 'workspace 2'
-    alt-3 = 'workspace 3'
-    alt-4 = 'workspace 4'
-    alt-5 = 'workspace 5'
-    alt-6 = 'workspace 6'
-    alt-7 = 'workspace 7'
-    alt-8 = 'workspace 8'
+    cmd-1 = 'workspace 1'
+    cmd-2 = 'workspace 2'
+    cmd-3 = 'workspace 3'
+    cmd-4 = 'workspace 4'
+    cmd-5 = 'workspace 5'
+    cmd-6 = 'workspace 6'
+    cmd-7 = 'workspace 7'
+    cmd-8 = 'workspace 8'
+    cmd-9 = 'workspace 9'
 
     # --- Send window to workspace ---
-    alt-shift-1 = 'move-node-to-workspace 1'
-    alt-shift-2 = 'move-node-to-workspace 2'
-    alt-shift-3 = 'move-node-to-workspace 3'
-    alt-shift-4 = 'move-node-to-workspace 4'
-    alt-shift-5 = 'move-node-to-workspace 5'
-    alt-shift-6 = 'move-node-to-workspace 6'
-    alt-shift-7 = 'move-node-to-workspace 7'
-    alt-shift-8 = 'move-node-to-workspace 8'
-    alt-shift-9 = 'move-node-to-workspace 9'
+    cmd-shift-1 = 'move-node-to-workspace 1'
+    cmd-shift-2 = 'move-node-to-workspace 2'
+    cmd-shift-3 = 'move-node-to-workspace 3'
+    cmd-shift-4 = 'move-node-to-workspace 4'
+    cmd-shift-5 = 'move-node-to-workspace 5'
+    cmd-shift-6 = 'move-node-to-workspace 6'
+    cmd-shift-7 = 'move-node-to-workspace 7'
+    cmd-shift-8 = 'move-node-to-workspace 8'
+    cmd-shift-9 = 'move-node-to-workspace 9'
 
     # --- Move window to workspace AND follow focus ---
     cmd-ctrl-1 = ['move-node-to-workspace 1', 'workspace 1']
@@ -143,6 +153,11 @@ run = 'layout floating'
 
 [[on-window-detected]]
 if.app-name-regex-substring = 'System Information'
+if.window-title-regex-substring = '^About This Mac$'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = '[Ff][Oo][Rr][Tt][Ii][Cc][Ll][Ii][Ee][Nn][Tt]'
 run = 'layout floating'
 
 [[on-window-detected]]
