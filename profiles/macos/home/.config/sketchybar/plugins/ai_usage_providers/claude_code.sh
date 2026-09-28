@@ -407,12 +407,10 @@ if ! jq -e . >/dev/null 2>&1 <<<"$blocks_json"; then
   exit 0
 fi
 
-active_block="$(jq -c '(.blocks // []) | map(select(.isActive == true)) | sort_by(.startTime) | last // null' <<<"$blocks_json")"
-latest_block="$(jq -c '(.blocks // []) | sort_by(.startTime) | last // null' <<<"$blocks_json")"
-block="$active_block"
-if [[ "$block" == "null" ]]; then
-  block="$latest_block"
-fi
+# An ended block belongs to an expired five-hour session. Reusing the latest
+# ended block makes the fallback show exhausted usage after the window reset.
+# With no active block, the next Claude request starts a fresh session.
+block="$(jq -c '(.blocks // []) | map(select(.isActive == true)) | sort_by(.startTime) | last // {}' <<<"$blocks_json")"
 
 fiveh_used_tokens="$(jq -r '.totalTokens // 0' <<<"$block")"
 fiveh_used_cost="$(jq -r '.costUSD // 0' <<<"$block")"

@@ -11,14 +11,14 @@ cat > "$TMP_DIR/bin/ccusage" <<'MOCK'
 set -euo pipefail
 case "$1" in
   blocks)
-    cat <<'JSON'
+    cat <<JSON
 {
   "blocks": [
     {
       "id": "2026-05-12T06:00:00.000Z",
       "startTime": "2026-05-12T06:00:00.000Z",
       "endTime": "2026-05-12T11:00:00.000Z",
-      "isActive": true,
+      "isActive": ${AI_USAGE_TEST_BLOCK_ACTIVE:-true},
       "totalTokens": 250,
       "costUSD": 12.5
     }
@@ -61,5 +61,20 @@ jq -e '
   .windows.weekly.remaining_percent == 50 and
   .windows.weekly.reset_at == "2026-05-17T00:00:00Z"
 ' <<<"$output" >/dev/null
+
+inactive_output="$(PATH="$TMP_DIR/bin:$PATH" \
+  AI_USAGE_CLAUDE_API_ENABLED=false \
+  AI_USAGE_CLAUDE_5H_TOKEN_LIMIT=1000 \
+  AI_USAGE_CLAUDE_WEEKLY_TOKEN_LIMIT=2000 \
+  AI_USAGE_TEST_BLOCK_ACTIVE=false \
+  "$ROOT_DIR/plugins/ai_usage_providers/claude_code.sh")"
+
+jq -e '
+  .remaining_percent == 100 and
+  .reset_at == null and
+  .windows["5h"].remaining_percent == 100 and
+  .windows["5h"].used_tokens == 0 and
+  .windows["5h"].reset_at == null
+' <<<"$inactive_output" >/dev/null
 
 echo "ai_usage_claude_provider_test: ok"

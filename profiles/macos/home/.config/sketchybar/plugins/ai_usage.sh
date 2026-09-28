@@ -6,8 +6,9 @@ CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sketchybar"
 CACHE_FILE="$CACHE_DIR/ai_usage.json"
 ENV_FILE="$CONFIG_DIR/ai_usage.env"
 PROVIDER_DIR="$CONFIG_DIR/plugins/ai_usage_providers"
-TTL_SECONDS="${AI_USAGE_TTL_SECONDS:-300}"
+TTL_SECONDS="${AI_USAGE_TTL_SECONDS:-1800}"
 STALE_AFTER_SECONDS="${AI_USAGE_STALE_AFTER_SECONDS:-$((TTL_SECONDS * 3))}"
+CACHE_LOCK_DIR="$CACHE_DIR/ai_usage.lock"
 
 prepend_path_dir() {
   local dir="$1"
@@ -131,16 +132,50 @@ cache_age() {
   echo $((now - modified))
 }
 
+acquire_cache_lock() {
+  local attempts=0 owner
+  while ! mkdir "$CACHE_LOCK_DIR" 2>/dev/null; do
+    owner="$(cat "$CACHE_LOCK_DIR/pid" 2>/dev/null || true)"
+    if [[ "$owner" =~ ^[0-9]+$ ]] && ! kill -0 "$owner" 2>/dev/null; then
+      rm -rf "$CACHE_LOCK_DIR"
+      continue
+    fi
+    attempts=$((attempts + 1))
+    if (( attempts >= 200 )); then
+      return 1
+    fi
+    sleep 0.05
+  done
+  printf '%s\n' "$$" > "$CACHE_LOCK_DIR/pid"
+}
+
+release_cache_lock() {
+  rm -rf "$CACHE_LOCK_DIR"
+}
+
+refresh_cache_locked() (
+  acquire_cache_lock || return 1
+  trap release_cache_lock EXIT INT TERM
+  refresh_cache
+)
+
 ensure_cache() {
   local age
   age="$(cache_age)"
-  if (( age > TTL_SECONDS )); then
-    refresh_cache || true
+  if (( age <= TTL_SECONDS )) && [[ -f "$CACHE_FILE" ]]; then
+    return
   fi
 
-  if [[ ! -f "$CACHE_FILE" ]]; then
-    refresh_cache || true
-  fi
+  (
+    acquire_cache_lock || exit 0
+    trap release_cache_lock EXIT INT TERM
+
+    # Another SketchyBar callback may have refreshed while this process waited.
+    age="$(cache_age)"
+    if (( age > TTL_SECONDS )) || [[ ! -f "$CACHE_FILE" ]]; then
+      refresh_cache || true
+    fi
+  )
 }
 
 provider_display() {
@@ -418,8 +453,8 @@ popup() {
 case "${1:-render}" in
   render) render ;;
   popup) popup ;;
-  refresh) export AI_USAGE_CLAUDE_API_FORCE=1; refresh_cache && render ;;
-  refresh-popup) export AI_USAGE_CLAUDE_API_FORCE=1; refresh_cache && popup ;;
+  refresh) export AI_USAGE_CLAUDE_API_FORCE=1; refresh_cache_locked && render ;;
+  refresh-popup) export AI_USAGE_CLAUDE_API_FORCE=1; refresh_cache_locked && popup ;;
   doctor) doctor ;;
   cache) ensure_cache; cat "$CACHE_FILE" ;;
   *) echo "usage: $0 [render|popup|refresh|refresh-popup|doctor|cache]" >&2; exit 2 ;;

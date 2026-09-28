@@ -18,7 +18,8 @@
 - Popup refresh row runs `plugins/ai_usage.sh refresh`, then updates compact and popup labels.
 - `plugins/ai_usage_visibility.sh` owns local presentation preferences in `ai_usage.env`: `get` normalizes missing/invalid values to visible, and `toggle <provider>` atomically updates only the selected `AI_USAGE_<PROVIDER>_VISIBLE` key while preserving unrelated lines.
 - `items/ai_usage.lua` keeps `ai_usage.settings` drawn independently of provider items; its popup rows update only the selected provider's `drawing` state after persistence.
-- Default AI usage cache/background refresh is 1800s (30 minutes) to avoid hammering provider usage endpoints; users can override with `AI_USAGE_TTL_SECONDS`.
+- Default AI usage cache/background refresh is 1800s (30 minutes) to avoid hammering provider usage endpoints; users can override with `AI_USAGE_TTL_SECONDS`. `plugins/ai_usage.sh:ensure_cache()` serializes refreshes with a cache-directory lock because Claude/GPT/DeepSeek item callbacks can otherwise enter refresh concurrently; this is especially dangerous for Claude's rotating OAuth refresh token.
+- Claude `ccusage` fallback uses only an active five-hour block. If no block is active, the next request starts a fresh session, so the provider reports an estimated 100% with no reset timestamp instead of reusing an exhausted, ended block.
 - SketchyBar click handlers may run with a minimal `PATH`; `plugins/ai_usage.sh` bootstraps `~/.nvm/versions/node/*/bin`, `~/.local/bin`, Homebrew paths, and prefers the newest lexicographic NVM bin so `npx ccusage` does not fall back to an old Node (e.g. v12) or disappear on refresh.
 - Phase 7 estimate transparency: providers emit `is_estimate` and `basis`. `plugins/ai_usage.sh render/popup` prefixes estimated values with `≈`; `plugins/ai_usage.sh doctor` explains source and basis.
 - `plugins/ai_usage.sh popup` formats reset/update timestamps into local short labels via Node when available.
