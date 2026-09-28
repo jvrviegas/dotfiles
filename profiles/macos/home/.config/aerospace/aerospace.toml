@@ -22,23 +22,21 @@ accordion-padding = 30
 # Match yabai mouse_follows_focus=off (focus-follows-mouse defaults to off).
 on-focused-monitor-changed = []
 
-# Match yabai's SketchyBar focus notification.
-on-focus-changed = ['exec-and-forget sketchybar --trigger front_app_switched']
-
-# Notify sketchybar on workspace change
-exec-on-workspace-change = ['/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE'
-]
+# SketchyBar callbacks disabled for the native menu bar trial.
+# on-focus-changed = ['exec-and-forget sketchybar --trigger front_app_switched']
+# exec-on-workspace-change = ['/bin/bash', '-c',
+#     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE'
+# ]
 
 # ===== Gaps =====
-# Uniform 8pt outer margins and bar-to-window spacing; retain 6pt inner gaps.
-# Top: SketchyBar offset 8 + height 36 + gap 8 = 52; built-in reserves 38pt.
+# 8pt side/bottom margins and 6pt inner gaps; top margin varies by monitor.
+# Native macOS menu bar reserves its own space; 4pt built-in, 8pt external.
 [gaps]
     inner.horizontal = 6
     inner.vertical = 6
     outer.left = 8
     outer.bottom = 8
-    outer.top = [{ monitor."built-in" = 14 }, 52]
+    outer.top = [{ monitor."built-in" = 4 }, 8]
     outer.right = 8
 
 # ===== Key Mapping =====
