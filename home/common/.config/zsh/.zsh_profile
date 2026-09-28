@@ -54,7 +54,7 @@ fi
 # Git
 setupWorkGitlab() {
     git config user.name "João Viegas"
-    git config user.email "joao.viegas@rummo.com"
+    git config user.email "joao.viegas@procimo.com"
 }
 
 setupPersonalGithub() {
