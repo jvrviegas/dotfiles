@@ -52,16 +52,6 @@ if [[ ! -d /usr/share/omarchy ]] && command -v tmux-notes-sessionizer &>/dev/nul
 fi
 
 # Git
-setupWorkGitlab() {
-    git config user.name "João Viegas"
-    git config user.email "joao.viegas@procimo.com"
-}
-
-setupPersonalGithub() {
-    git config user.name "João Vitor Viegas Rêgo"
-    git config user.email "jvrviegas@gmail.com"
-}
-
 gitwip() {
     git add . && git commit -m "WIP"
 }
