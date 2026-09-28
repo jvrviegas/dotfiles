@@ -1,7 +1,6 @@
 theme = the-witcher
 
 # font-family = "Zenbones Brainy"
-font-size = 11
 
 window-decoration = true
 gtk-titlebar = false
