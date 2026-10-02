@@ -28,7 +28,18 @@ if ! command -v wezterm &>/dev/null; then
     echo "  ⚠ wezterm: COPR not available, install manually from https://wezfurlong.org/wezterm/"
 fi
 if ! command -v ghostty &>/dev/null; then
-  echo "  - Ghostty: install manually from https://ghostty.org/download or COPR"
+  echo "  - Installing Ghostty"
+  sudo dnf install -y --skip-unavailable ghostty 2>/dev/null || true
+fi
+if ! command -v ghostty &>/dev/null; then
+  for copr in pgdev/ghostty scottames/ghostty; do
+    sudo dnf copr enable -y "$copr" 2>/dev/null \
+      && sudo dnf install -y --skip-unavailable ghostty 2>/dev/null \
+      && break
+  done
+fi
+if ! command -v ghostty &>/dev/null; then
+  echo "  ⚠ ghostty: package/COPR install failed; install manually from https://ghostty.org/download"
 fi
 
 # Development

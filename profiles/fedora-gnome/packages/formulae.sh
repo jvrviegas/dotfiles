@@ -8,7 +8,15 @@ sudo dnf upgrade -y --refresh
 # Core utilities
 sudo dnf install -y --skip-unavailable \
   coreutils \
+  curl \
+  less \
+  lsof \
   openssh \
+  procps-ng \
+  python3 \
+  rsync \
+  ruby \
+  unzip \
   git \
   gh
 
@@ -19,6 +27,7 @@ sudo dnf install -y --skip-unavailable \
 
 # Shell & prompt
 sudo dnf install -y --skip-unavailable \
+  zsh \
   fzf \
   eza \
   tmux \
@@ -208,8 +217,37 @@ if ! command -v quickemu &>/dev/null; then
     echo "  - quickgui (GUI frontend) unavailable; quickemu CLI is enough"
 fi
 
+# Bun JavaScript runtime
+if ! command -v bun &>/dev/null; then
+  echo "  - Installing Bun"
+  curl -fsSL https://bun.sh/install | bash
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+else
+  echo "  - Bun already installed"
+fi
+
 # AI
-curl -fsSL https://claude.ai/install.sh | bash
+if ! command -v claude &>/dev/null; then
+  echo "  - Installing Claude Code"
+  curl -fsSL https://claude.ai/install.sh | bash
+else
+  echo "  - Claude Code already installed"
+fi
+
+if ! command -v opencode &>/dev/null; then
+  echo "  - Installing opencode"
+  curl -fsSL https://opencode.ai/install | bash
+else
+  echo "  - opencode already installed"
+fi
+
+if ! command -v pi &>/dev/null; then
+  echo "  - Installing Pi"
+  curl -fsSL https://pi.dev/install.sh | sh
+else
+  echo "  - Pi already installed"
+fi
 
 # herdr (agent multiplexer / terminal workspace manager)
 if ! command -v herdr &>/dev/null; then
