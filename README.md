@@ -25,6 +25,29 @@ Legacy entry points remain as thin wrappers:
 ./omarchy.sh       # omarchy
 ```
 
+## Fedora runtimes
+
+Fedora uses mise for Node LTS, Bun, Lua 5.4, and pnpm. Defaults live in
+`profiles/fedora-gnome/home/.config/mise/config.toml`; project `mise.toml` files
+can override them. LuaJIT and LuaRocks remain Fedora packages.
+
+To migrate an existing Fedora setup, run:
+
+```bash
+./install --profile fedora-gnome
+exec zsh
+mise ls
+```
+
+The package phase installs mise and deploys its runtime configuration before
+installing the runtimes and global npm helpers. The config phase enables mise
+in zsh instead of nvm/asdf. Old `~/.nvm`, `~/.asdf`, and `~/.bun` directories
+are left untouched for rollback. Reinstall any additional global npm packages
+you need using the mise-managed Node. Fedora LuaRocks still targets its distro
+Lua; it is not automatically configured for mise's Lua.
+
+Run migration checks with `bash tests/fedora-runtimes.sh`.
+
 ## Layout
 
 ```text

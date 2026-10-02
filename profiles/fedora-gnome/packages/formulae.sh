@@ -46,9 +46,12 @@ sudo dnf install -y --skip-unavailable \
   fd-find \
   ripgrep
 
-# Lua
+# Lua comes from mise; retain LuaJIT/LuaRocks and Lua build dependencies.
 sudo dnf install -y --skip-unavailable \
-  lua \
+  gcc \
+  make \
+  readline-devel \
+  ncurses-devel \
   luajit \
   luarocks
 
@@ -74,14 +77,9 @@ sudo dnf install -y --skip-unavailable \
 rustup-init -y --no-modify-path 2>/dev/null || true
 source "$HOME/.cargo/env" 2>/dev/null || true
 
-# ASDF (git clone install)
-if [ ! -d "$HOME/.asdf" ]; then
-  echo "  - Installing asdf"
-  git clone https://github.com/asdf-vm/asdf.git "$HOME/.asdf" --branch v0.14.0
-  echo "  - asdf installed"
-else
-  echo "  - asdf already installed"
-fi
+# mise replaces asdf, nvm, and the standalone Bun installer on Fedora.
+source "$DOTFILES_ROOT/profiles/fedora-gnome/install-runtimes.sh"
+profile_install_runtimes || return
 
 # Mobile development
 sudo dnf install -y --skip-unavailable \
@@ -215,16 +213,6 @@ if ! command -v quickemu &>/dev/null; then
   sudo dnf install -y --skip-unavailable quickemu
   sudo dnf install -y --skip-unavailable quickgui 2>/dev/null || \
     echo "  - quickgui (GUI frontend) unavailable; quickemu CLI is enough"
-fi
-
-# Bun JavaScript runtime
-if ! command -v bun &>/dev/null; then
-  echo "  - Installing Bun"
-  curl -fsSL https://bun.sh/install | bash
-  export BUN_INSTALL="$HOME/.bun"
-  export PATH="$BUN_INSTALL/bin:$PATH"
-else
-  echo "  - Bun already installed"
 fi
 
 # AI

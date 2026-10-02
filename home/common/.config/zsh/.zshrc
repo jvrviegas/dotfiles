@@ -1,6 +1,12 @@
-# PATH setup
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$BUN_INSTALL/bin:$PATH"
+# Fedora and Omarchy use mise; macOS keeps its existing runtime managers.
+export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+_dotfiles_use_mise=0
+if [[ -d /usr/share/omarchy || -f /etc/fedora-release ]] && command -v mise &>/dev/null; then
+  _dotfiles_use_mise=1
+else
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+fi
 export PATH="${PATH}:${HOME}/.cargo/bin"
 
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -15,7 +21,7 @@ else
   export PNPM_HOME="$HOME/.local/share/pnpm"
   export ANDROID_HOME="$HOME/Android/Sdk"
   [ -d "/usr/lib64/dotnet" ] && export DOTNET_ROOT="/usr/lib64/dotnet"
-  export PATH="$PNPM_HOME:$PATH"
+  [[ $_dotfiles_use_mise == 0 ]] && export PATH="$PNPM_HOME:$PATH"
   for _jdk in /usr/lib/jvm/java-*-openjdk; do
     [ -d "$_jdk" ] && export JAVA_HOME="$_jdk"
   done
@@ -31,8 +37,8 @@ else
 fi
 command -v starship &> /dev/null && eval "$(starship init zsh)"
 
-# Omarchy manages language runtimes with mise.
-[[ -d /usr/share/omarchy ]] && command -v mise &> /dev/null && eval "$(mise activate zsh)"
+# Interactive runtime switching on Fedora and Omarchy.
+[[ $_dotfiles_use_mise == 1 ]] && eval "$(mise activate zsh)"
 
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
@@ -61,8 +67,8 @@ command -v fzf &> /dev/null && source <(fzf --zsh)
 # eval "$(fnm env --use-on-cd --shell zsh)"
 # source <(fnm completions --shell zsh)
 
-# NVM remains available on non-Omarchy systems. Omarchy uses mise instead.
-if [[ ! -d /usr/share/omarchy ]]; then
+# Keep nvm only where mise is not managing the runtimes.
+if [[ ! -d /usr/share/omarchy && $_dotfiles_use_mise == 0 ]]; then
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -87,8 +93,8 @@ command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
 
 source $HOME/.config/zsh/.zsh_profile
 
-# bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+# Legacy Bun completions belong only to the standalone installation.
+[[ $_dotfiles_use_mise == 0 && -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # Go binaries (asdf)
 command -v go &> /dev/null && export PATH="$PATH:$(go env GOBIN)"

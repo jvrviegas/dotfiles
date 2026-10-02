@@ -17,8 +17,8 @@ if [[ "$(uname)" == "Darwin" ]]; then
   alias skhdr='launchctl kickstart -k "gui/$(id -u)/com.koekeishiya.skhd" && echo "skhd restarted"'
 fi
 
-# ASDF remains available on non-Omarchy systems. Omarchy uses mise instead.
-if [[ ! -d /usr/share/omarchy ]]; then
+# Keep asdf on legacy setups, but never load it alongside Fedora/Omarchy mise.
+if [[ ! -d /usr/share/omarchy && ${_dotfiles_use_mise:-0} == 0 ]]; then
   if [ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]; then
     . /opt/homebrew/opt/asdf/libexec/asdf.sh
   elif [ -f /opt/asdf-vm/asdf.sh ]; then

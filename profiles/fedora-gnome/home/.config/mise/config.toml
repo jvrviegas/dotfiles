@@ -1,0 +1,6 @@
+# Fedora runtime defaults. Project mise.toml files can override these versions.
+[tools]
+node = "lts"
+bun = "latest"
+lua = "5.4"
+pnpm = "latest"
