@@ -2,6 +2,7 @@
 
 # Dependencies needed by the Fedora GNOME profile configuration.
 
+# xprop is required by Pop Shell.
 echo "• Installing GNOME configuration dependencies"
 sudo dnf install -y --skip-unavailable \
   bluez-libs-devel \
@@ -10,6 +11,7 @@ sudo dnf install -y --skip-unavailable \
   gnome-shell-extension-common \
   gnome-shell-extension-pop-shell \
   pop-launcher \
+  xprop \
   gtk-murrine-engine \
   meson \
   ninja-build \
