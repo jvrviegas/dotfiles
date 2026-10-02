@@ -1,0 +1,7 @@
+{
+  "uuid": "pop-launcher-toggle@dotfiles",
+  "name": "Pop Launcher Toggle",
+  "description": "Close the Pop Shell launcher by pressing Super+Space again.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "version": 1
+}

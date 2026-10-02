@@ -8,6 +8,8 @@ sudo dnf install -y --skip-unavailable \
   glib2-devel \
   gnome-extensions-app \
   gnome-shell-extension-common \
+  gnome-shell-extension-pop-shell \
+  pop-launcher \
   gtk-murrine-engine \
   meson \
   ninja-build \

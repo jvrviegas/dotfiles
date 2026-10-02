@@ -116,7 +116,6 @@ fi
 
 # extensions.gnome.org IDs and UUIDs. gext selects a GNOME-compatible release.
 GNOME_EXTENSIONS=(
-  "4481:forge@jmmaranan.com"
   "1460:Vitals@CoreCoding.com"
   "307:dash-to-dock@micxgx.gmail.com"
   "3193:blur-my-shell@aunetx"
@@ -191,7 +190,8 @@ install_git_directory_extension https://github.com/maxgallup/tailscale-status.gi
 # GNOME on Wayland may not notice a newly installed extension until the next
 # login. Persist UUIDs now so each extension activates after that reload.
 GNOME_EXTENSION_UUIDS=(
-  "forge@jmmaranan.com"
+  "pop-shell@system76.com"
+  "pop-launcher-toggle@dotfiles"
   "Vitals@CoreCoding.com"
   "dash-to-dock@micxgx.gmail.com"
   "blur-my-shell@aunetx"
@@ -218,6 +218,8 @@ import sys
 
 key = ["org.gnome.shell", "enabled-extensions"]
 current = ast.literal_eval(subprocess.check_output(["gsettings", "get", *key], text=True).strip())
+# Never run two competing tiling extensions together.
+current = [uuid for uuid in current if uuid != "forge@jmmaranan.com"]
 for uuid in sys.argv[1:]:
     path = os.path.expanduser(f"~/.local/share/gnome-shell/extensions/{uuid}")
     system_path = f"/usr/share/gnome-shell/extensions/{uuid}"
@@ -231,7 +233,6 @@ PYEOF
 declare -A EXTENSION_DCONF_PATHS=(
   [blur-my-shell]="/org/gnome/shell/extensions/blur-my-shell/"
   [dash-to-dock]="/org/gnome/shell/extensions/dash-to-dock/"
-  [forge]="/org/gnome/shell/extensions/forge/"
   [just-perfection]="/org/gnome/shell/extensions/just-perfection/"
   [vertical-workspaces]="/org/gnome/shell/extensions/vertical-workspaces/"
   [vitals]="/org/gnome/shell/extensions/vitals/"
@@ -256,14 +257,25 @@ dconf write /org/gnome/shell/extensions/coding-agent-rate-limit-indicator/refres
 
 gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
 gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Super>f']"
-# Disable the standalone Super overview trigger; use Super+Space instead.
+# Reserve Super+Space for Pop Shell's application launcher.
 gsettings set org.gnome.mutter overlay-key ''
-gsettings set org.gnome.shell.keybindings toggle-overview "['<Super>space']"
-# Super+Space is assigned to input-source switching by default; retain only
-# the dedicated keyboard key so Overview can own the shortcut.
+gsettings set org.gnome.shell.keybindings toggle-overview "['<Super>s']"
+dconf write /org/gnome/shell/extensions/pop-shell/activate-launcher "['<Super>space']"
+dconf write /org/gnome/shell/extensions/pop-shell/tile-by-default true
+# Directional layout: m = left, n = down, e = up, i = right.
+# Global move bindings reposition tiled windows without entering tiling mode.
+for direction_key in left:m down:n up:e right:i; do
+  direction="${direction_key%%:*}"
+  key="${direction_key#*:}"
+  dconf write "/org/gnome/shell/extensions/pop-shell/focus-$direction" "['<Super>$key']"
+  dconf write "/org/gnome/shell/extensions/pop-shell/tile-move-$direction-global" "['<Super><Control>$key']"
+done
+# Super+m belongs to Pop Shell focus-left, not GNOME maximize.
+gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "[]"
+# Retain dedicated input-source keys without conflicting with the launcher.
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source "['XF86Keyboard']"
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Shift>XF86Keyboard']"
-# Let Flameshot own Super+2 rather than GNOME's built-in screenshot UI.
+# Let Flameshot own Print rather than GNOME's built-in screenshot UI.
 gsettings set org.gnome.shell.keybindings show-screenshot-ui "[]"
 
 CUSTOM_KB_BASE="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
@@ -276,15 +288,15 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${C
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_0} binding "'<Super>Return'"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} name 'Flameshot'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} command 'flameshot gui'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} binding "'<Super>2'"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_1} binding "'Print'"
 # Fallback for GNOME sessions where Vicinae's evdev input server cannot grab Alt+Space.
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_2} name 'Toggle Vicinae'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_2} command 'vicinae toggle'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CUSTOM_KB_2} binding "'<Alt>space'"
 
 for i in {1..8}; do
-  gsettings set org.gnome.desktop.wm.keybindings "switch-to-workspace-$i" "['<Alt>$i']"
-  gsettings set org.gnome.desktop.wm.keybindings "move-to-workspace-$i" "['<Alt><Shift>$i']"
+  gsettings set org.gnome.desktop.wm.keybindings "switch-to-workspace-$i" "['<Super>$i']"
+  gsettings set org.gnome.desktop.wm.keybindings "move-to-workspace-$i" "['<Super><Shift>$i']"
 done
 gsettings set org.gnome.shell.keybindings toggle-message-tray "[]"
 for i in {1..9}; do
