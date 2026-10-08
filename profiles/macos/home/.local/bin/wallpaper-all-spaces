@@ -42,15 +42,17 @@ def main():
     def set_desktop(desktop):
         nonlocal updated
         content = desktop.setdefault("Content", {})
-        choices = content.get("Choices")
-        if choices:
-            choices[0]["Configuration"] = config
-        else:
-            content["Choices"] = [{
-                "Configuration": config,
-                "Files": [],
-                "Provider": "com.apple.wallpaper.choice.image",
-            }]
+        # The configuration belongs to its provider. Updating only the URL
+        # leaves aerial/video choices intact and macOS displays their fallback.
+        content["Choices"] = [{
+            "Configuration": config,
+            "Files": [],
+            "Provider": "com.apple.wallpaper.choice.image",
+        }]
+        # Drop options belonging to the previous provider (e.g. aerialVariant)
+        # and disable any old rotation list. The image provider supplies defaults.
+        content.pop("EncodedOptionValues", None)
+        content["Shuffle"] = "$null"
         desktop["LastSet"] = now
         updated += 1
 

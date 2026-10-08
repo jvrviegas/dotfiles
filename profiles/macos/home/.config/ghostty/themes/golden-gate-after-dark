@@ -1,0 +1,23 @@
+# Golden Gate After Dark — graphite and reflective silver
+background = #101820
+foreground = #E3E7EA
+cursor-color = #B4C2CE
+cursor-text = #101820
+selection-background = #3A5369
+selection-foreground = #F2F5F7
+palette = 0=#1b2833
+palette = 1=#E67D78
+palette = 2=#A3BE8C
+palette = 3=#E5C07B
+palette = 4=#7CB4D8
+palette = 5=#B9A0CF
+palette = 6=#80C3BC
+palette = 7=#CBD5DC
+palette = 8=#7D8F9D
+palette = 9=#F19D97
+palette = 10=#C0D9A8
+palette = 11=#F5D89A
+palette = 12=#A3D1EB
+palette = 13=#D6BBEA
+palette = 14=#A1DDD4
+palette = 15=#F2F5F7

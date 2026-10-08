@@ -1,0 +1,23 @@
+# Obsidian Glass Vivid — graphite and reflective silver
+background = #08090A
+foreground = #E4E9E8
+cursor-color = #BACACD
+cursor-text = #08090A
+selection-background = #424C52
+selection-foreground = #EFF3F2
+palette = 0=#151719
+palette = 1=#E06C75
+palette = 2=#98C379
+palette = 3=#E5C07B
+palette = 4=#61AFEF
+palette = 5=#C678DD
+palette = 6=#56B6C2
+palette = 7=#D3DAD9
+palette = 8=#707A7E
+palette = 9=#FF8B95
+palette = 10=#B2E097
+palette = 11=#FFD68A
+palette = 12=#82C7FF
+palette = 13=#E29BFA
+palette = 14=#7BDDE8
+palette = 15=#EFF3F2

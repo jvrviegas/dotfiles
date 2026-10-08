@@ -5,7 +5,7 @@ sbar.bar({
 	height = 36,
 	color = colors.bar.bg,
 	border_color = colors.bar.border,
-	border_width = 0,
+	border_width = colors.bar.border_width or 0,
 	corner_radius = 14,
 	margin = 8,
 	y_offset = 8,

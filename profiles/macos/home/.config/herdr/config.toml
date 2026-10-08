@@ -1,0 +1,159 @@
+# ~/.config/herdr/config.toml
+# Ported from ~/.config/tmux/tmux.conf
+# Save this to ~/.config/herdr/config.toml, then run `herdr server reload-config`.
+
+# Skip the first-run onboarding flow.
+onboarding = false
+
+[update]
+channel = "stable"
+
+# --- Scrollback (tmux: set -g history-limit 10000) ---
+# herdr sizes scrollback in BYTES, not lines. ~10 MB per pane.
+[advanced]
+scrollback_limit_bytes = 10485760
+
+# --- New panes inherit the current dir (tmux default behavior) ---
+[terminal]
+new_cwd = "follow"
+
+# ============================================================
+# Theme — managed by theme-switch. The block between the markers
+# is replaced from ~/.config/herdr/themes/<theme>.toml on switch.
+# [theme.custom] overrides tokens on top of the selected built-in base theme.
+# `terminal` preserves our terminal-based base while applying these colors.
+# active_row_bg paints active Space / focused Agent rows; selection_bg is Navigate mode.
+# ============================================================
+# BEGIN_HERDR_THEME
+# Golden Gate After Dark — neutral chrome with clearly distinct semantic states.
+[theme]
+name = "terminal"
+auto_switch = false
+[theme.custom]
+panel_bg = "#101820"
+surface0 = "#1b2833"
+surface1 = "#354756"
+surface_dim = "#2D4050"
+active_row_bg = "#2D4050"  # active Space / focused Agent, independent of overlay0
+selection_bg = "#3A5369"
+overlay0 = "#7D8F9D"
+overlay1 = "#A2ADB5"
+subtext0 = "#B4C2CE"
+text = "#E3E7EA"
+accent = "#E58B65"
+yellow = "#E5C07B"
+green = "#A3BE8C"
+red = "#E67D78"
+blue = "#7CB4D8"
+teal = "#80C3BC"
+peach = "#E58B65"
+mauve = "#B9A0CF"
+# END_HERDR_THEME
+
+# ============================================================
+# UI / sidebar (the sidebar is herdr's equivalent of your status bar)
+# ============================================================
+[ui]
+mouse_capture = true
+confirm_close = true
+prompt_new_tab_name = false     # tmux doesn't prompt for window names; skip it
+pane_borders = true
+# With 3-5 agents running, float the ones needing you (blocked/done) to the top.
+agent_panel_sort = "priority"
+
+# --- Notifications: the thing plain tmux couldn't do ---
+# Fire a desktop notification (via your terminal) when an agent finishes or
+# gets blocked. Use "system" for OS-native, or "herdr" for an in-app toast.
+[ui.toast]
+delivery = "terminal"
+delay_seconds = 1
+
+[ui.sound]
+enabled = true
+
+# --- Resume agents in their native session after a restart ---
+[session]
+resume_agents_on_restore = true
+
+# ============================================================
+# Keybindings (prefix = ctrl+b, same as your tmux)
+# ============================================================
+[keys]
+prefix = "ctrl+b"
+
+# vi-style pane focus (your h/j/k/l select-pane) — these are herdr defaults,
+# listed here for clarity.
+focus_pane_left  = "prefix+h"
+focus_pane_down  = "prefix+j"
+focus_pane_up    = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# tmux `prefix ^` last-window  ->  herdr last_pane (toggles last focused pane).
+last_pane        = "prefix+tab"
+cycle_pane_next  = ""            # free up prefix+tab (was cycle-next by default)
+
+# tmux `prefix t` toggled the status bar -> toggle the herdr sidebar.
+# (This also frees prefix+b, which herdr uses for sidebar by default, so your
+#  find_branch binding below can live on prefix+b like in tmux.)
+toggle_sidebar   = "prefix+t"
+
+# Native sidebar workspace navigation.
+workspace_picker = "prefix+w"
+# tmux `bind e` -> open the native navigator (goto / session navigator overlay).
+goto = "prefix+e"
+
+# --- Custom command keybindings (your run-shell / send-keys / popups) ---
+detach = "prefix+d"
+
+# tmux-sessionizer -> herdr-sessionizer: fzf a project, open workspace with
+# agent/code/terminal tabs. Runs in a temp pane (fzf needs a TTY); it detects
+# it's inside herdr and focuses the workspace instead of nesting a new client.
+[[keys.command]]
+key = "prefix+s"
+type = "pane"
+command = "herdr-sessionizer"
+description = "project sessionizer"
+
+# tmux `bind r source-file` -> reload herdr config.
+[[keys.command]]
+key = "prefix+shift+r"
+type = "shell"
+command = "herdr server reload-config"
+description = "reload config"
+
+# tmux `bind b send-keys find_branch` -> run find_branch in a temp pane.
+[[keys.command]]
+key = "prefix+b"
+type = "pane"
+command = "find_branch"
+description = "find branch"
+
+# tmux `bind i tmux neww tmux-cht.sh` -> cheat.sh in a temp pane.
+# Uses herdr-cht.sh (tmux-cht.sh hard-codes `tmux neww`, which fails here).
+[[keys.command]]
+key = "prefix+i"
+type = "pane"
+command = "herdr-cht.sh"
+description = "cheat.sh"
+
+# tmux `bind C-o popup opencode` -> opencode in a temp pane over the current dir.
+[[keys.command]]
+key = "prefix+ctrl+o"
+type = "pane"
+command = "opencode"
+description = "opencode here"
+
+# tmux `bind C-l popup claude` -> claude in a temp pane over the current dir.
+[[keys.command]]
+key = "prefix+ctrl+l"
+type = "pane"
+command = "claude"
+description = "claude here"
+
+# OPTIONAL — tmux `bind f` fzf pane finder, rebuilt on herdr's CLI.
+# Uncomment once you've confirmed the JSON shape (see notes in chat).
+# [[keys.command]]
+# key = "prefix+f"
+# type = "pane"
+# command = "herdr pane list --json | jq -r '.[] | \"\\(.id)\\t\\(.cwd)\"' | fzf --reverse | cut -f1 | xargs herdr pane focus"
+# description = "find pane"

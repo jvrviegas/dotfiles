@@ -1,0 +1,18 @@
+# Obsidian Glass Vivid: restrained silver, semantic colour only for failures.
+add_newline = false
+command_timeout = 1800000
+[username]
+show_always = true
+style_user = "bold #E5C07B"
+style_root = "bold #E06C75"
+[directory]
+style = "bold #61AFEF"
+[git_branch]
+style = "#C678DD"
+[git_status]
+style = "#E5C07B"
+[character]
+success_symbol = "[❯](bold #98C379)"
+error_symbol = "[❯](bold #E06C75)"
+[cmd_duration]
+style = "#959EA2"

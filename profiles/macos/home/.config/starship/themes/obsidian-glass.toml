@@ -1,0 +1,18 @@
+# Obsidian Glass: restrained silver, semantic colour only for failures.
+add_newline = false
+command_timeout = 1800000
+[username]
+show_always = true
+style_user = "bold #959EA2"
+style_root = "bold #D18B8B"
+[directory]
+style = "bold #8DBBE9"
+[git_branch]
+style = "#B59BCB"
+[git_status]
+style = "#D0B477"
+[character]
+success_symbol = "[❯](bold #BACACD)"
+error_symbol = "[❯](bold #D18B8B)"
+[cmd_duration]
+style = "#959EA2"

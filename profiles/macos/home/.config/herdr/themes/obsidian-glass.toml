@@ -1,0 +1,22 @@
+# Obsidian Glass — neutral chrome with clearly distinct semantic states.
+[theme]
+name = "terminal"
+auto_switch = false
+[theme.custom]
+panel_bg = "#08090A"
+surface0 = "#151719"
+surface1 = "#303538"
+surface_dim = "#30383D"
+selection_bg = "#424C52"
+overlay0 = "#707A7E"
+overlay1 = "#959EA2"
+subtext0 = "#BACACD"
+text = "#E4E9E8"
+accent = "#BACACD"
+yellow = "#D0B477"
+green = "#93BD9F"
+red = "#D18B8B"
+blue = "#8AAFD0"
+teal = "#82BFC5"
+peach = "#C5A58D"
+mauve = "#B59BCB"

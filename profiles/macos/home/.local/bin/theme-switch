@@ -1,0 +1,160 @@
+#!/usr/bin/env bash
+
+THEMES=("golden-gate-after-dark" "obsidian-glass" "obsidian-glass-vivid" "the-mandalorian" "the-witcher" "monokai-pro" "hollow-knight" "red-dead-redemption-2" "darth-vader" "gruvbox")
+THEME_DIR="$HOME/.config/theme"
+WALLPAPER_DIR="$HOME/.config/wallpapers"
+TMUX_THEME_DIR="$HOME/.config/tmux/themes"
+NVIM_INIT="$HOME/.config/nvim/init.lua"
+GHOSTTY_CONFIG="$HOME/.config/ghostty/config"
+KITTY_CONFIG="$HOME/.config/kitty/kitty.conf"
+ALACRITTY_CONFIG="$HOME/.config/alacritty/alacritty.toml"
+PI_SETTINGS="$HOME/.pi/agent/settings.json"
+
+# Select theme via fzf or argument
+THEME="${1:-$(printf '%s\n' "${THEMES[@]}" | fzf --prompt='  Theme: ' --height=10 --reverse)}"
+
+if [[ -z "$THEME" ]]; then
+  exit 0
+fi
+
+# Validate theme name
+if ! printf '%s\n' "${THEMES[@]}" | grep -qx "$THEME"; then
+  echo "Unknown theme: $THEME"
+  echo "Available: ${THEMES[*]}"
+  exit 1
+fi
+
+# Persist selection
+mkdir -p "$THEME_DIR"
+echo "$THEME" > "$THEME_DIR/current"
+
+# Platform-specific helpers
+IS_MACOS=false
+[[ "$(uname -s)" == "Darwin" ]] && IS_MACOS=true
+
+sedi() {
+  if $IS_MACOS; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
+
+# --- Wallpaper ---
+for ext in jpg jpeg png; do
+  WALLPAPER="$WALLPAPER_DIR/${THEME}.${ext}"
+  if [[ -f "$WALLPAPER" ]]; then
+    if $IS_MACOS && command -v wallpaper-all-spaces >/dev/null 2>&1; then
+      wallpaper-all-spaces "$WALLPAPER"
+    elif [[ "${XDG_CURRENT_DESKTOP,,}" == *gnome* ]] && command -v gsettings >/dev/null 2>&1; then
+      WALLPAPER_URI="$(python3 -c 'import pathlib, sys; print(pathlib.Path(sys.argv[1]).resolve().as_uri())' "$WALLPAPER")"
+      gsettings set org.gnome.desktop.background picture-uri "$WALLPAPER_URI"
+      if gsettings list-keys org.gnome.desktop.background | grep -qx 'picture-uri-dark'; then
+        gsettings set org.gnome.desktop.background picture-uri-dark "$WALLPAPER_URI"
+      fi
+    fi
+    break
+  fi
+done
+
+# --- Open Bar (GNOME) ---
+if [[ "$IS_MACOS" == false && "${XDG_CURRENT_DESKTOP,,}" == *gnome* ]]; then
+  OPENBAR_THEME_HELPER="$HOME/.config/gnome/apply-openbar-theme.sh"
+  if [[ -x "$OPENBAR_THEME_HELPER" ]] && ! "$OPENBAR_THEME_HELPER" "$THEME"; then
+    echo "Open Bar theme update failed: $THEME" >&2
+    exit 1
+  fi
+fi
+
+# --- Ghostty ---
+if [[ -f "$GHOSTTY_CONFIG" ]]; then
+  sedi "s/^theme = .*/theme = ${THEME}/" "$GHOSTTY_CONFIG"
+fi
+
+# --- Neovim (persistent) ---
+if [[ "$THEME" != obsidian-glass && "$THEME" != obsidian-glass-vivid && "$THEME" != golden-gate-after-dark && -f "$NVIM_INIT" ]]; then
+  sedi "/^[[:space:]]*--/!s/vim\.cmd\.colorscheme '.*'/vim.cmd.colorscheme '${THEME}'/" "$NVIM_INIT"
+fi
+
+# --- Neovim (live - send to all running instances) ---
+NVIM_COMMAND="<Cmd>colorscheme ${THEME}<CR>"
+if [[ "$THEME" == obsidian-glass || "$THEME" == obsidian-glass-vivid || "$THEME" == golden-gate-after-dark ]]; then
+  NVIM_COMMAND="<Cmd>runtime after/plugin/obsidian-glass.lua<CR>${NVIM_COMMAND}"
+fi
+for sock in /tmp/nvim.*/0 /var/folders/*/*/T/nvim.*/0 \
+  /tmp/nvim.*/*/nvim.* /var/folders/*/*/T/nvim.*/*/nvim.*; do
+  [[ -S "$sock" ]] && nvim --server "$sock" --remote-send "$NVIM_COMMAND" 2>/dev/null &
+done
+wait 2>/dev/null
+
+# --- Tmux ---
+if [[ -f "$TMUX_THEME_DIR/${THEME}.sh" ]]; then
+  cp "$TMUX_THEME_DIR/${THEME}.sh" "$TMUX_THEME_DIR/current.sh"
+  chmod +x "$TMUX_THEME_DIR/current.sh"
+  bash "$TMUX_THEME_DIR/current.sh" 2>/dev/null || true
+fi
+
+# --- Kitty ---
+if [[ -f "$KITTY_CONFIG" && -f "$HOME/.config/kitty/themes/${THEME}.conf" ]]; then
+  sedi "/# BEGIN_KITTY_THEME/,/# END_KITTY_THEME/s#include .*#include themes/${THEME}.conf#" "$KITTY_CONFIG"
+fi
+
+# --- Alacritty ---
+if [[ -f "$ALACRITTY_CONFIG" && -f "$HOME/.config/alacritty/themes/${THEME}.toml" ]]; then
+  sedi "s#~/.config/alacritty/themes/.*\.toml#~/.config/alacritty/themes/${THEME}.toml#" "$ALACRITTY_CONFIG"
+fi
+
+# --- WezTerm ---
+WEZTERM_CONFIG="$HOME/.config/wezterm/wezterm.lua"
+if [[ -f "$WEZTERM_CONFIG" ]]; then
+  if [[ "$THEME" == obsidian-glass ]]; then
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Obsidian Glass'/" "$WEZTERM_CONFIG"
+  elif [[ "$THEME" == golden-gate-after-dark ]]; then
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Golden Gate After Dark'/" "$WEZTERM_CONFIG"
+  elif [[ "$THEME" == obsidian-glass-vivid ]]; then
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Obsidian Glass Vivid'/" "$WEZTERM_CONFIG"
+  else
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Tokyo Night'/" "$WEZTERM_CONFIG"
+  fi
+fi
+
+# --- Starship ---
+STARSHIP_THEME="$HOME/.config/starship/themes/${THEME}.toml"
+if [[ -f "$STARSHIP_THEME" ]]; then
+  cp "$STARSHIP_THEME" "$HOME/.config/starship/starship.toml"
+fi
+
+# --- Pi ---
+if [[ -f "$PI_SETTINGS" && -f "$HOME/.pi/agent/themes/${THEME}.json" ]]; then
+  python3 - "$PI_SETTINGS" "$THEME" <<'PY'
+import json, sys
+path, theme = sys.argv[1:]
+with open(path) as f:
+    data = json.load(f)
+data["theme"] = theme
+with open(path, "w") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+fi
+
+# --- Herdr ---
+# Splices ~/.config/herdr/themes/<theme>.toml between the BEGIN/END markers.
+# Theme overrides are layered on Herdr's valid `terminal` base theme.
+HERDR_CONFIG="$HOME/.config/herdr/config.toml"
+HERDR_THEME_FILE="$HOME/.config/herdr/themes/${THEME}.toml"
+if [[ -f "$HERDR_CONFIG" && -f "$HERDR_THEME_FILE" ]] && command -v herdr >/dev/null 2>&1; then
+  awk -v themefile="$HERDR_THEME_FILE" '
+    /# BEGIN_HERDR_THEME/ { print; while ((getline line < themefile) > 0) print line; close(themefile); skip=1; next }
+    /# END_HERDR_THEME/ { skip=0 }
+    !skip
+  ' "$HERDR_CONFIG" > "${HERDR_CONFIG}.tmp" && mv "${HERDR_CONFIG}.tmp" "$HERDR_CONFIG"
+  herdr server reload-config >/dev/null 2>&1
+fi
+
+# --- Sketchybar (macOS) ---
+if $IS_MACOS && command -v sketchybar >/dev/null 2>&1; then
+  sketchybar --reload 2>/dev/null &
+fi
+
+echo "Switched to: $THEME"

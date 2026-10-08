@@ -1,0 +1,12 @@
+[metadata]
+name = "Obsidian Glass"
+[colors]
+background = "#08090A"
+foreground = "#E4E9E8"
+cursor_bg = "#BACACD"
+cursor_fg = "#08090A"
+cursor_border = "#BACACD"
+selection_bg = "#424C52"
+selection_fg = "#EFF3F2"
+ansi = ["#151719", "#D18B8B", "#93BD9F", "#D0B477", "#8AAFD0", "#B59BCB", "#82BFC5", "#D3DAD9"]
+brights = ["#707A7E", "#E6A3A3", "#B0D7BA", "#E7CB91", "#ADCDEE", "#CEB4E4", "#A0D8DE", "#EFF3F2"]

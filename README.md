@@ -48,6 +48,12 @@ Lua; it is not automatically configured for mise's Lua.
 
 Run migration checks with `bash tests/fedora-runtimes.sh`.
 
+## macOS theme
+
+The macOS profile defaults to [Golden Gate After Dark](profiles/macos/GOLDEN-GATE-AFTER-DARK.md),
+including terminal, Neovim, prompt and Herdr palettes. Obsidian Glass variants
+remain available through `theme-switch`. Linux profiles are unchanged.
+
 ## Layout
 
 ```text
