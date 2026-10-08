@@ -7,7 +7,7 @@ Flow: `lib/deploy.sh:deploy_common_home()` → macOS overlay; profile files win.
 - Modern Neovim sockets use `T/nvim.<user>/<random>/nvim.<pid>.0`; macOS switcher covers these alongside legacy paths and reloads the family loader for A/B switching.
 - Neovim config is a separate local Git repo, not part of common deployment. Theme overlay adds files only; `profiles/macos/home/.config/nvim/after/plugin/obsidian-glass.lua` reads the current selection after init loads.
 - Sketchybar palette loads dynamically through `profiles/macos/home/.config/sketchybar/colors.lua`; reload command does not start a stopped service.
-- `profiles/macos/GOLDEN-GATE-AFTER-DARK.md`: default palette, unchanged native wallpaper, application/recovery. `profiles/macos/OBSIDIAN-GLASS.md`: alternate palettes/wallpapers.
+- `profiles/macos/GOLDEN-GATE-AFTER-DARK.md`: default palette, bundled Golden_Dark_6k PNG, application/recovery. `profiles/macos/OBSIDIAN-GLASS.md`: alternate palettes/wallpapers.
 - Herdr canonical override: `active_row_bg` controls active Space/focused Agent backgrounds; `surface_dim` does not. `selection_bg` is the Navigate-mode cursor. Golden Gate explicitly uses dark bay-blue to avoid the bright overlay0 fallback. Regression: `profiles/macos/tests/golden-gate-after-dark.sh`.
 - `profiles/macos/tests/obsidian-glass.sh`: offline checks, isolated tmux socket, Herdr text/selection contrast guards.
 - Herdr requires its own `profiles/macos/home/.config/herdr/themes/obsidian-glass.toml`; otherwise sidebar/tabs retain the previously selected theme. Profile config provides the default; macOS switcher splices the palette and reloads the running server.

@@ -28,6 +28,9 @@ def luminance(color):
 for role in ('text', 'mauve', 'green'):
     high, low = sorted((luminance(theme[role]), luminance(theme['active_row_bg'])), reverse=True)
     assert (high + 0.05) / (low + 0.05) >= 4.5, role
+wallpaper = root / 'wallpapers/golden-gate-after-dark.png'
+with wallpaper.open('rb') as image:
+    assert image.read(8) == b'\x89PNG\r\n\x1a\n'
 assert (root / 'theme/current').read_text().strip() == 'golden-gate-after-dark'
 assert 'theme = golden-gate-after-dark' in (root / 'ghostty/config').read_text()
 assert (root / 'starship/starship.toml').read_text() == (root / 'starship/themes/golden-gate-after-dark.toml').read_text()

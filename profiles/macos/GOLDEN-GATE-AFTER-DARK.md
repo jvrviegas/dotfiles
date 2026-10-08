@@ -29,9 +29,11 @@ and an `after/plugin/obsidian-glass.lua` loader supporting all three themes.
 
 ## Wallpaper
 
-The theme does not bundle or change Apple's Golden Gate wallpaper. Select its
-dark variant in macOS System Settings. Switching to this theme leaves the
-current wallpaper alone; Obsidian variants still have their own wallpapers.
+The supplied `Golden_Dark_6k.png` is bundled at
+`profiles/macos/home/.config/wallpapers/golden-gate-after-dark.png` and deployed
+to `~/.config/wallpapers/golden-gate-after-dark.png`. Selecting the theme applies
+it across Mission Control spaces through `wallpaper-all-spaces`. The original
+6016 × 4147 PNG is preserved; the Downloads copy is no longer required.
 
 ## Herdr selection
 
