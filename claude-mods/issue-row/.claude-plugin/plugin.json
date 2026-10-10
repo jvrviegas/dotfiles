@@ -1,0 +1,6 @@
+{
+  "name": "issue-row",
+  "version": "0.1.0",
+  "description": "Shows the Linear issue for the current branch above the prompt, with its PR and CI state",
+  "types": "./types/index.d.ts"
+}

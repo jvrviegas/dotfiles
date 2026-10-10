@@ -54,6 +54,22 @@ The macOS profile defaults to [Golden Gate After Dark](profiles/macos/GOLDEN-GAT
 including terminal, Neovim, prompt and Herdr palettes. Obsidian Glass variants
 remain available through `theme-switch`. Linux profiles are unchanged.
 
+## Claude Code mods
+
+`claude-mods/` is a local plugin marketplace, deployed to `~/.claude/mods` by every
+profile. `issue-row` shows the Linear issue for the current branch above the prompt,
+with its PR and CI state. Install it once per machine, after the config phase:
+
+```bash
+claude plugin marketplace add ~/.claude/mods
+claude plugin install issue-row@dotfiles-mods
+```
+
+It reads issues through the claude.ai Linear connector, so allow that tool in
+`~/.claude/settings.json` (`permissions.allow`): `mcp__claude_ai_Linear__get_issue`.
+After editing a mod, rerun the config phase and `/reload-plugins`. Run its tests with
+`claude plugin test claude-mods/issue-row`.
+
 ## Layout
 
 ```text
@@ -61,6 +77,7 @@ home/common/                 Shared files, mirroring paths below $HOME
 profiles/macos/              macOS home overlay, packages, and system settings
 profiles/fedora-gnome/       Fedora GNOME overlay, packages, and desktop setup
 profiles/omarchy/            Omarchy overlay, packages, and safe configuration
+claude-mods/                 Claude Code mods marketplace, deployed to ~/.claude/mods
 lib/deploy.sh                Shared backup and deployment module
 install                      Unified installer interface
 ```

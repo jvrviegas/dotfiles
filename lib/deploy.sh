@@ -98,6 +98,7 @@ deploy_common_home() {
   echo "• Deploying shared configuration"
   deploy_overlay "$DOTFILES_ROOT/home/common"
   deploy_overlay "$DOTFILES_ROOT/agent-skills" "$HOME/.agents/skills"
+  deploy_overlay "$DOTFILES_ROOT/claude-mods" "$HOME/.claude/mods"
 
   mkdir -p "$HOME/.config/theme" "$HOME/.config/tmux/themes"
   if [[ ! -f $HOME/.config/theme/current ]]; then

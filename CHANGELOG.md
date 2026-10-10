@@ -9,6 +9,14 @@ For updates covering both packages and configuration, separate them under each p
 
 ## Unreleased
 
+### All profiles
+
+#### Added
+
+- `claude-mods/`: local Claude Code plugin marketplace, deployed to `~/.claude/mods`,
+  with the `issue-row` mod (Linear issue, PR and CI state for the current branch
+  above the prompt).
+
 ### Fedora GNOME
 
 #### Added

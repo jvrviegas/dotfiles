@@ -41,6 +41,7 @@ profiles/
 ├── macos/                      # macOS overlay, Homebrew packages, system settings
 ├── fedora-gnome/               # Fedora overlay, dnf/Flatpak packages, GNOME settings
 └── omarchy/                    # Omarchy-safe Hyprland, shell, XKB, and systemd files
+claude-mods/                    # Claude Code mods marketplace, deployed to ~/.claude/mods
 lib/deploy.sh                   # Shared backup/deployment implementation
 install                         # Unified installer interface
 ```
