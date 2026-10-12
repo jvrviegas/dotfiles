@@ -61,6 +61,16 @@ local groups = {
   NeoTreeEndOfBuffer = { fg = c.panel, bg = c.panel },
   GitSignsAdd = { fg = c.green }, GitSignsChange = { fg = c.blue }, GitSignsDelete = { fg = c.red },
 }
+-- Let terminal transparency show through surfaces; retain selection, cursor,
+-- diff and statusline backgrounds for contrast.
+for _, name in ipairs({
+  'Normal', 'NormalNC', 'NormalFloat', 'FloatBorder', 'FloatTitle',
+  'SignColumn', 'FoldColumn', 'EndOfBuffer', 'TabLineFill',
+  'TelescopeNormal', 'TelescopeBorder', 'NeoTreeNormal', 'NeoTreeNormalNC',
+  'NeoTreeEndOfBuffer', 'Pmenu',
+}) do
+  groups[name].bg = nil
+end
 for name, value in pairs(groups) do hl(name, value) end
 for kind, color in pairs({ Error = c.red, Warn = c.yellow, Info = c.blue, Hint = c.cyan, Ok = c.green }) do
   hl('Diagnostic' .. kind, { fg = color })

@@ -35,8 +35,8 @@ assert (root / 'theme/current').read_text().strip() == 'golden-gate-after-dark'
 assert 'theme = golden-gate-after-dark' in (root / 'ghostty/config').read_text()
 assert (root / 'starship/starship.toml').read_text() == (root / 'starship/themes/golden-gate-after-dark.toml').read_text()
 PY
-nvim --headless -u NONE "+set rtp^=$config/nvim" '+colorscheme golden-gate-after-dark' \
-  "+lua assert(vim.g.colors_name == 'golden-gate-after-dark'); assert(vim.api.nvim_get_hl(0,{name='Normal'}).bg == 0x101820); assert(vim.api.nvim_get_hl(0,{name='Function'}).fg == 0x7CB4D8); assert(vim.api.nvim_get_hl(0,{name='Keyword'}).fg == 0xB9A0CF); assert(require('lualine.themes.golden-gate-after-dark').normal.a.bg == '#E58B65')" '+qa'
+nvim --headless -u NONE "+set rtp^=$config/nvim" \
+  "+luafile profiles/macos/tests/golden-gate-nvim.lua" '+qa'
 
 export GOLDEN_GATE_TEST_SOCKET="golden-gate-validation-$$"
 trap 'command tmux -L "$GOLDEN_GATE_TEST_SOCKET" kill-server 2>/dev/null || true' EXIT

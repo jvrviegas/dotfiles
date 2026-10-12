@@ -26,6 +26,9 @@ theme-switch obsidian-glass-vivid
 Re-running the macOS installer selects Golden Gate After Dark again.
 Neovim's separate `init.lua` is untouched; the profile adds colourscheme files
 and an `after/plugin/obsidian-glass.lua` loader supporting all three themes.
+Neovim editor, gutters, floating windows, completion menu, Telescope and Neo-tree
+surfaces are transparent, inheriting the terminal background/opacity. Selection,
+search, cursor-line, diff and statusline backgrounds remain for readability.
 
 ## Wallpaper
 
