@@ -1,0 +1,18 @@
+# Golden Gate After Dark: restrained silver, semantic colour only for failures.
+add_newline = false
+command_timeout = 1800000
+[username]
+show_always = true
+style_user = "bold #E58B65"
+style_root = "bold #E67D78"
+[directory]
+style = "bold #7CB4D8"
+[git_branch]
+style = "#B9A0CF"
+[git_status]
+style = "#E5C07B"
+[character]
+success_symbol = "[❯](bold #A3BE8C)"
+error_symbol = "[❯](bold #E67D78)"
+[cmd_duration]
+style = "#A2ADB5"

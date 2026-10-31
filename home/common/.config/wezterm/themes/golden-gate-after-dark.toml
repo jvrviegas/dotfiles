@@ -1,0 +1,12 @@
+[metadata]
+name = "Golden Gate After Dark"
+[colors]
+background = "#101820"
+foreground = "#E3E7EA"
+cursor_bg = "#B4C2CE"
+cursor_fg = "#101820"
+cursor_border = "#B4C2CE"
+selection_bg = "#3A5369"
+selection_fg = "#F2F5F7"
+ansi = ["#1b2833", "#E67D78", "#A3BE8C", "#E5C07B", "#7CB4D8", "#B9A0CF", "#80C3BC", "#CBD5DC"]
+brights = ["#7D8F9D", "#F19D97", "#C0D9A8", "#F5D89A", "#A3D1EB", "#D6BBEA", "#A1DDD4", "#F2F5F7"]

@@ -1,0 +1,12 @@
+[metadata]
+name = "Obsidian Glass Vivid"
+[colors]
+background = "#08090A"
+foreground = "#E4E9E8"
+cursor_bg = "#BACACD"
+cursor_fg = "#08090A"
+cursor_border = "#BACACD"
+selection_bg = "#424C52"
+selection_fg = "#EFF3F2"
+ansi = ["#151719", "#E06C75", "#98C379", "#E5C07B", "#61AFEF", "#C678DD", "#56B6C2", "#D3DAD9"]
+brights = ["#707A7E", "#FF8B95", "#B2E097", "#FFD68A", "#82C7FF", "#E29BFA", "#7BDDE8", "#EFF3F2"]

@@ -12,7 +12,8 @@ OPENBAR_SYSTEM_DIR="/usr/share/gnome-shell/extensions/openbar@neuromorph"
 
 usage() {
   printf 'Usage: %s <theme>\n' "${0##*/}" >&2
-  printf 'Themes: the-mandalorian the-witcher monokai-pro hollow-knight ' >&2
+  printf 'Themes: golden-gate-after-dark obsidian-glass obsidian-glass-vivid ' >&2
+  printf 'the-mandalorian the-witcher monokai-pro hollow-knight ' >&2
   printf 'red-dead-redemption-2 darth-vader gruvbox\n' >&2
 }
 
@@ -23,6 +24,26 @@ fi
 
 THEME="$1"
 case "$THEME" in
+  golden-gate-after-dark)
+    black="101820"
+    white="e3e7ea"
+    border="a2adb5"
+    secondary="7cb4d8"
+    primary="e58b65"
+    menu_border="a2adb5"
+    ;;
+  obsidian-glass|obsidian-glass-vivid)
+    black="08090a"
+    white="e4e9e8"
+    border="959ea2"
+    secondary="8aafd0"
+    primary="bacacd"
+    menu_border="959ea2"
+    if [[ "$THEME" == obsidian-glass-vivid ]]; then
+      secondary="61afef"
+      primary="61afef"
+    fi
+    ;;
   the-mandalorian)
     black="0a0a0f"
     white="e4e4ec"

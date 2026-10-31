@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-THEMES=("the-mandalorian" "the-witcher" "monokai-pro" "hollow-knight" "red-dead-redemption-2" "darth-vader" "gruvbox")
+THEMES=("golden-gate-after-dark" "obsidian-glass" "obsidian-glass-vivid" "the-mandalorian" "the-witcher" "monokai-pro" "hollow-knight" "red-dead-redemption-2" "darth-vader" "gruvbox")
 THEME_DIR="$HOME/.config/theme"
 WALLPAPER_DIR="$HOME/.config/wallpapers"
 TMUX_THEME_DIR="$HOME/.config/tmux/themes"
@@ -72,13 +72,18 @@ if [[ -f "$GHOSTTY_CONFIG" ]]; then
 fi
 
 # --- Neovim (persistent) ---
-if [[ -f "$NVIM_INIT" ]]; then
+if [[ "$THEME" != obsidian-glass && "$THEME" != obsidian-glass-vivid && "$THEME" != golden-gate-after-dark && -f "$NVIM_INIT" ]]; then
   sedi "/^[[:space:]]*--/!s/vim\.cmd\.colorscheme '.*'/vim.cmd.colorscheme '${THEME}'/" "$NVIM_INIT"
 fi
 
 # --- Neovim (live - send to all running instances) ---
-for sock in /tmp/nvim.*/0 /var/folders/*/*/T/nvim.*/0; do
-  [[ -S "$sock" ]] && nvim --server "$sock" --remote-send "<Cmd>colorscheme ${THEME}<CR>" 2>/dev/null &
+NVIM_COMMAND="<Cmd>colorscheme ${THEME}<CR>"
+if [[ "$THEME" == obsidian-glass || "$THEME" == obsidian-glass-vivid || "$THEME" == golden-gate-after-dark ]]; then
+  NVIM_COMMAND="<Cmd>runtime after/plugin/obsidian-glass.lua<CR>${NVIM_COMMAND}"
+fi
+for sock in /tmp/nvim.*/0 /var/folders/*/*/T/nvim.*/0 \
+  /tmp/nvim.*/*/nvim.* /var/folders/*/*/T/nvim.*/*/nvim.*; do
+  [[ -S "$sock" ]] && nvim --server "$sock" --remote-send "$NVIM_COMMAND" 2>/dev/null &
 done
 wait 2>/dev/null
 
@@ -91,12 +96,32 @@ fi
 
 # --- Kitty ---
 if [[ -f "$KITTY_CONFIG" && -f "$HOME/.config/kitty/themes/${THEME}.conf" ]]; then
-  sedi "/# BEGIN_KITTY_THEME/,/# END_KITTY_THEME/s/include .*/include ${THEME}.conf/" "$KITTY_CONFIG"
+  sedi "/# BEGIN_KITTY_THEME/,/# END_KITTY_THEME/s#include .*#include themes/${THEME}.conf#" "$KITTY_CONFIG"
 fi
 
 # --- Alacritty ---
 if [[ -f "$ALACRITTY_CONFIG" && -f "$HOME/.config/alacritty/themes/${THEME}.toml" ]]; then
   sedi "s#~/.config/alacritty/themes/.*\.toml#~/.config/alacritty/themes/${THEME}.toml#" "$ALACRITTY_CONFIG"
+fi
+
+# --- WezTerm ---
+WEZTERM_CONFIG="$HOME/.config/wezterm/wezterm.lua"
+if [[ -f "$WEZTERM_CONFIG" ]]; then
+  if [[ "$THEME" == obsidian-glass ]]; then
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Obsidian Glass'/" "$WEZTERM_CONFIG"
+  elif [[ "$THEME" == golden-gate-after-dark ]]; then
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Golden Gate After Dark'/" "$WEZTERM_CONFIG"
+  elif [[ "$THEME" == obsidian-glass-vivid ]]; then
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Obsidian Glass Vivid'/" "$WEZTERM_CONFIG"
+  else
+    sedi "s/config.color_scheme = .*/config.color_scheme = 'Tokyo Night'/" "$WEZTERM_CONFIG"
+  fi
+fi
+
+# --- Starship ---
+STARSHIP_THEME="$HOME/.config/starship/themes/${THEME}.toml"
+if [[ -f "$STARSHIP_THEME" ]]; then
+  cp "$STARSHIP_THEME" "$HOME/.config/starship/starship.toml"
 fi
 
 # --- Pi ---

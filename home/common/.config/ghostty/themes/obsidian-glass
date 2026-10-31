@@ -1,0 +1,23 @@
+# Obsidian Glass — graphite and reflective silver
+background = #08090A
+foreground = #E4E9E8
+cursor-color = #BACACD
+cursor-text = #08090A
+selection-background = #424C52
+selection-foreground = #EFF3F2
+palette = 0=#151719
+palette = 1=#D18B8B
+palette = 2=#93BD9F
+palette = 3=#D0B477
+palette = 4=#8AAFD0
+palette = 5=#B59BCB
+palette = 6=#82BFC5
+palette = 7=#D3DAD9
+palette = 8=#707A7E
+palette = 9=#E6A3A3
+palette = 10=#B0D7BA
+palette = 11=#E7CB91
+palette = 12=#ADCDEE
+palette = 13=#CEB4E4
+palette = 14=#A0D8DE
+palette = 15=#EFF3F2

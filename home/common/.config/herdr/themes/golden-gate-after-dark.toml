@@ -1,0 +1,23 @@
+# Golden Gate After Dark — neutral chrome with clearly distinct semantic states.
+[theme]
+name = "terminal"
+auto_switch = false
+[theme.custom]
+panel_bg = "#101820"
+surface0 = "#1b2833"
+surface1 = "#354756"
+surface_dim = "#2D4050"
+active_row_bg = "#2D4050"  # active Space / focused Agent, independent of overlay0
+selection_bg = "#3A5369"
+overlay0 = "#7D8F9D"
+overlay1 = "#A2ADB5"
+subtext0 = "#B4C2CE"
+text = "#E3E7EA"
+accent = "#E58B65"
+yellow = "#E5C07B"
+green = "#A3BE8C"
+red = "#E67D78"
+blue = "#7CB4D8"
+teal = "#80C3BC"
+peach = "#E58B65"
+mauve = "#B9A0CF"
