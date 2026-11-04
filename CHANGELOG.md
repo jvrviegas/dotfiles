@@ -17,6 +17,16 @@ For updates covering both packages and configuration, separate them under each p
   with the `issue-row` mod (Linear issue, PR and CI state for the current branch
   above the prompt).
 
+### macOS
+
+#### Added
+
+- `~/.config/herdr-app/keys.json`: Herdr desktop app keys, with tmux-style ctrl+b
+  bindings carried over from the herdr TUI.
+- Herdr app mods `projects` (ctrl+f: pick a folder under `~/Projects` or a Git repo
+  in `$HOME`, then go to or create its space, like `herdr-sessionizer`) and
+  `space-picker` (ctrl+b w: go to a space, without the tab rows of cmd+p).
+
 ### Fedora GNOME
 
 #### Added

@@ -38,3 +38,7 @@ windows-11.conf
 claude/
 .pi/
 agent-skills/**/.deps/
+
+# Herdr app writes these into every mod folder
+**/.config/herdr-app/mods/*/jsconfig.json
+**/.config/herdr-app/mods/*/gpui-kit.d.ts
