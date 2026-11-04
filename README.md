@@ -70,6 +70,20 @@ It reads issues through the claude.ai Linear connector, so allow that tool in
 After editing a mod, rerun the config phase and `/reload-plugins`. Run its tests with
 `claude plugin test claude-mods/issue-row`.
 
+## Herdr app
+
+The macOS profile deploys the Herdr desktop app's keys and two popup mods to
+`~/.config/herdr-app`. The app reloads them live, with no restart needed.
+
+| Key | Mod | What it does |
+|---|---|---|
+| ctrl+f | `projects` | Search folders under `~/Projects` and Git repos in `$HOME`, then go to or create that folder's space |
+| ctrl+b w | `space-picker` | Search your spaces and go to one |
+
+The app writes `jsconfig.json` and `gpui-kit.d.ts` into each mod folder, so they
+are not tracked. Check a mod after editing it with
+`herdr-app check ~/.config/herdr-app/mods/<name>`.
+
 ## Layout
 
 ```text
