@@ -80,6 +80,22 @@ The macOS profile deploys the Herdr desktop app's keys and two popup mods to
 | ctrl+f | `projects` | Search folders under `~/Projects` and Git repos in `$HOME`, then go to or create that folder's space |
 | ctrl+b w | `space-picker` | Search your spaces and go to one |
 
+It also deploys four themed layouts. Switch to one with ctrl+shift+l or
+`herdr-app do layout.switch '{"name":"<layout>"}'`:
+
+| Layout | Theme | Agents panel | Claude Code is |
+|---|---|---|---|
+| `death-star` | `darth-vader` | Imperial Fleet | a Star Destroyer |
+| `kaer-morhen` | `the-witcher` | Notice Board | a Wolf School medallion |
+| `hallownest` | `hollow-knight` | Hunter's Journal | the Knight |
+| `horseshoe-overlook` | `red-dead-redemption-2` | The Gang | the Gunslinger |
+
+The agents panel is one mod, `agent-roster`, with a pack per layout in `packs.js`
+(words, fonts, characters). Each character is a 16×12 pixel SVG in `art/<pack>/`
+whose lit pixels show the status. To change the art, edit and run
+`tools/draw-imperial.py` or `tools/draw-packs.py`. Pass a path to also get
+preview sheets.
+
 The app writes `jsconfig.json` and `gpui-kit.d.ts` into each mod folder, so they
 are not tracked. Check a mod after editing it with
 `herdr-app check ~/.config/herdr-app/mods/<name>`.

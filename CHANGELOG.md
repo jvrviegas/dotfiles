@@ -26,6 +26,16 @@ For updates covering both packages and configuration, separate them under each p
 - Herdr app mods `projects` (ctrl+f: pick a folder under `~/Projects` or a Git repo
   in `$HOME`, then go to or create its space, like `herdr-sessionizer`) and
   `space-picker` (ctrl+b w: go to a space, without the tab rows of cmd+p).
+- Herdr app themes `darth-vader`, `the-witcher`, `hollow-knight` and
+  `red-dead-redemption-2`, built from the same palettes as `theme-switch`.
+- Herdr app layouts `death-star`, `kaer-morhen`, `hallownest` and
+  `horseshoe-overlook`: each uses its theme, shows its wallpaper faintly behind the
+  panes (`backgrounds/`), and draws the focused pane and the tab-bar rule in its accent.
+- Herdr app mod `agent-roster`: the agents list as the Imperial Fleet, the Witcher
+  notice board, Hollow Knight's Hunter's Journal or the Red Dead gang, picked by the
+  layout. Each agent is an 8-bit character for its program whose lit pixels and motion
+  show its status. Fonts are bundled with their licenses (OFL, Apache 2.0), and
+  `tools/` holds the scripts that draw the art.
 
 ### Fedora GNOME
 
