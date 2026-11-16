@@ -72,15 +72,19 @@ After editing a mod, rerun the config phase and `/reload-plugins`. Run its tests
 
 ## Herdr app
 
-The macOS profile deploys the Herdr desktop app's keys and two popup mods to
-`~/.config/herdr-app`. The app reloads them live, with no restart needed.
+The macOS profile deploys the Herdr desktop app's settings, keys, themes,
+backgrounds, layouts, and custom mods to `~/.config/herdr-app`. The app reloads
+them live, with no restart needed. App-managed mods, generated SDK files,
+backups, caches, and session state are not tracked.
 
 | Key | Mod | What it does |
 |---|---|---|
 | ctrl+f | `projects` | Search folders under `~/Projects` and Git repos in `$HOME`, then go to or create that folder's space |
 | ctrl+b w | `space-picker` | Search your spaces and go to one |
 
-It also deploys four themed layouts. Switch to one with ctrl+shift+l or
+Layouts include Office, Glass, World of Codecraft, the standard Main,
+Terminals and Win98 layouts, and the four themed layouts below.
+Switch to one with cmd+shift+l or
 `herdr-app do layout.switch '{"name":"<layout>"}'`:
 
 | Layout | Theme | Agents panel | Claude Code is |

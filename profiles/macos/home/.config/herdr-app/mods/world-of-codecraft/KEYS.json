@@ -1,0 +1,17 @@
+{
+  "layout:World-of-Codecraft": {
+    "ctrl-shift-j": {
+      "command": "layout.toggle",
+      "args": {
+        "id": "place"
+      }
+    },
+    "ctrl-shift-b": {
+      "command": "layout.toggle",
+      "args": {
+        "id": "gauche"
+      }
+    },
+    "ctrl-shift-i": "world-of-codecraft.mode"
+  }
+}

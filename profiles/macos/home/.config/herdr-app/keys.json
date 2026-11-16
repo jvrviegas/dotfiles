@@ -101,6 +101,24 @@
     "ctrl-b ctrl-o": "mod.open:tui-opencode",
     "ctrl-b ctrl-l": "mod.open:tui-claude"
   },
+  "layout:World-of-Codecraft": {
+    "ctrl-shift-j": {
+      "command": "layout.toggle",
+      "args": {
+        "id": "place"
+      }
+    },
+    "ctrl-shift-b": {
+      "command": "layout.toggle",
+      "args": {
+        "id": "gauche"
+      }
+    },
+    "ctrl-shift-i": "world-of-codecraft.mode"
+  },
+  "layout:office": {
+    "ctrl-shift-i": "layout.toggle:office"
+  },
   "terminal": {
     "cmd-c": "terminal.copy",
     "cmd-v": "terminal.paste",
