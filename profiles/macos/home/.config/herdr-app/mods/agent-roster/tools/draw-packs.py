@@ -1,4 +1,4 @@
-# Draws the agent roster's Witcher, Hollow Knight and Red Dead packs: 16x12 characters as
+# Draws the agent roster's themed packs: 16x12 characters as
 # crisp-edged SVGs in ../art/<pack>, each one's lit pixels ('e') as <sprite>-eye.svg, and
 # the pack's header emblem.svg.
 # Usage: python3 draw-packs.py [preview-folder]   (writes art-<pack>.png sheets there)
@@ -76,6 +76,24 @@ PACKS = {
             ".....fFmmFf.....", "......ffff......", "..cccrrrrrrccc..", ".cccccrRRrccccc."],
   },
   "emblem": '<path d="M4.5 2h5v10.5a2.5 2.5 0 0 0 5 0V2h5v10.5a7.5 7.5 0 0 1-15 0z"/>',
+ },
+ "mandalorian": {
+  "bg": "#0a0a0f", "status": ["#e8c070", "#e85858", "#78c878"],
+  "pal": {"s": "#7888a8", "h": "#c8c8d6", "d": "#39455d", "e": "#0a0a0f",
+          "b": "#2d84a8", "w": "#e4e4ec", "g": "#78c878", "G": "#589858", "a": "#c09848"},
+  "sprites": {
+   "mando": ["....ssssssss....", "...sshhhhhhss...", "..sshhhhhhsss...", "..shhhhhssssss..", "..seeeeeeeeees..", "..ssssseesssss..",
+            "..shhsseesssss..", "..shssseessdds..", "...dssseessdd...", "....ssseesss....", "..ddssddddssdd..", ".ddssddddddssdd."],
+   "bo-katan": [".....bbbbbb.....", "....bbwwwwbb....", "...bbwwbbwwbb...", "..bbbwwbbwwbbb..", "..bbeewwwweebb..", "..bbbeewweebb...",
+            "..bbwwweewwbbb..", "..bgwwweewwggb..", "...bgwweewgbb...", "....bgweewgb....", "...ddbbbbbbdd...", "..ddbbddddbbdd.."],
+   "ig-11": ["......dddd......", ".....dssssd.....", ".....seesss.....", ".....sssess.....", ".....dssssd.....", "......ssss......",
+            "......dssd......", ".....daaaad.....", "...ddsaaaasdd...", "..dd.dssssd.dd..", "..s..ddssdd..s..", ".....ds..sd....."],
+   "grogu": [".......gg.......", ".....gggggg.....", "ggg.gggggggg.ggg", ".GggggggggggggG.", "..GGggeeggeeGG..", "....gggggggg....",
+            ".....ggGGgg.....", ".....aaGGaa.....", "...aaaaaaaaaa...", "...aaddddaaa....", "....aaaaaaa.....", ".....dddddd....."],
+   "armorer": [".....aaaaaa.....", "...a.aaaaaa.a...", "...aaaaaaaaaa...", "..aawwaaaawwaa..", "..aaeeeeeeeeaa..", "..aaaddaaddaaa..",
+            "..aadddeeddaaa..", "...adadeeadaa...", "....aadeeda.....", "...ddaaaaaadd...", "..ddaaddddaadd..", ".dddaddddddaddd."],
+  },
+  "emblem": '<path fill-rule="evenodd" d="M12 2a8 8 0 0 1 8 8v8l-5 4H9l-5-4v-8a8 8 0 0 1 8-8zM6 10v3h4.5v7h3v-7H18v-3z"/>',
  },
 }
 def svg(rows, pal, only=None):

@@ -77,13 +77,16 @@ backgrounds, layouts, and custom mods to `~/.config/herdr-app`. The app reloads
 them live, with no restart needed. App-managed mods, generated SDK files,
 backups, caches, and session state are not tracked.
 
+All `theme-switch` palettes have a matching desktop theme. Select one with
+`herdr-app do app.theme '{"name":"<theme>"}'`. Themed layouts set their own palette.
+
 | Key | Mod | What it does |
 |---|---|---|
 | ctrl+f | `projects` | Search folders under `~/Projects` and Git repos in `$HOME`, then go to or create that folder's space |
 | ctrl+b w | `space-picker` | Search your spaces and go to one |
 
 Layouts include Office, Glass, World of Codecraft, the standard Main,
-Terminals and Win98 layouts, and the four themed layouts below.
+Terminals and Win98 layouts, and the five themed layouts below.
 Switch to one with cmd+shift+l or
 `herdr-app do layout.switch '{"name":"<layout>"}'`:
 
@@ -93,6 +96,7 @@ Switch to one with cmd+shift+l or
 | `kaer-morhen` | `the-witcher` | Notice Board | a Wolf School medallion |
 | `hallownest` | `hollow-knight` | Hunter's Journal | the Knight |
 | `horseshoe-overlook` | `red-dead-redemption-2` | The Gang | the Gunslinger |
+| `the-mandalorian` | `the-mandalorian` | Bounty Board | Din Djarin |
 
 The agents panel is one mod, `agent-roster`, with a pack per layout in `packs.js`
 (words, fonts, characters). Each character is a 16×12 pixel SVG in `art/<pack>/`

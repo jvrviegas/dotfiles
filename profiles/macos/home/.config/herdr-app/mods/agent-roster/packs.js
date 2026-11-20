@@ -11,9 +11,32 @@ export const LAYOUTS = {
   "kaer-morhen": "witcher",
   hallownest: "hallownest",
   "horseshoe-overlook": "outlaws",
+  "the-mandalorian": "mandalorian",
 };
 
 export const PACKS = {
+  mandalorian: {
+    title: "BOUNTY BOARD",
+    unit: ["BOUNTY", "BOUNTIES"],
+    head: { family: "Orbitron", weight: 700, size: 10.5 },
+    sub: { family: "Share Tech Mono", weight: 400, size: 10.5 },
+    rule: "accent",
+    sections: { blocked: "AWAITING SIGNAL", done: "BOUNTY CLAIMED", working: "TRACKING TARGET", idle: "STANDING BY" },
+    pinned: "PRIORITY BOUNTY",
+    pinTip: "Make priority bounty",
+    sortTitle: "SORT BOUNTIES",
+    empty: "No bounties posted. Agents appear when they report their status.",
+    classes: {
+      claude: ["DIN DJARIN", "mando"],
+      codex: ["BO-KATAN", "bo-katan"],
+      opencode: ["IG-11", "ig-11"],
+      pi: ["GROGU", "grogu"],
+    },
+    other: ["THE ARMORER", "armorer"],
+    tag: (id) => `PUCK-${id}`,
+    clock: "T+",
+    motion: "bob",
+  },
   imperial: {
     title: "IMPERIAL FLEET",
     unit: ["UNIT", "UNITS"],
